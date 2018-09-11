@@ -1,17 +1,16 @@
-package com.WWI16AMA.backend_api;
+package com.WWI16AMA.backend_api.Member;
 
-import java.util.Date;
-import java.util.List;
-
-import com.WWI16AMA.backend_api.Address;
+import com.WWI16AMA.backend_api.Member.FlightAuthorization;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import java.util.Date;
+import java.util.List;
 
 @Entity
-public class Members {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,12 +36,12 @@ public class Members {
 
     private String memberBankingAccount;
 
-    private List<Offices> offices; //TODO: Using a list might be usefull since its possible to have more then one office
+    private List<Office> offices; //TODO: Using a list might be usefull since its possible to have more then one office
 
-    private List<Authorizations> flightAuthorization; //TODO: see above
+    private List<FlightAuthorization> flightAuthorization; //TODO: see above
 
 
-    public Members () {
+    public Member() {
 
     }
 
@@ -137,19 +136,19 @@ public class Members {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public Offices getOffices(int id) {
+    public Office getOffices(int id) {
         return offices.get(id);
     }
 
-    public void setOffices(Offices offices) {
+    public void setOffices(Office offices) {
         this.offices.add(offices);
     }
 
-    public Authorizations getFlightAuthorization(int id) {
+    public FlightAuthorization getFlightAuthorization(int id) {
         return flightAuthorization.get(id);
     }
 
-    public void setFlightAuthorization(Authorizations flightAuthorization) {
+    public void setFlightAuthorization(FlightAuthorization flightAuthorization) {
         this.flightAuthorization.add(flightAuthorization);
     }
 }
