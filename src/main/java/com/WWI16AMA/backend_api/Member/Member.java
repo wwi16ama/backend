@@ -1,11 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.WWI16AMA.backend_api.Member.FlightAuthorization;
-import org.springframework.data.annotation.Id;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,43 +13,52 @@ public class Member {
     private Integer id;
 
     private String firstName;
-
     private String lastName;
-
     private Date dateOfBirth;
-
     private String sex;
-
     private String status;
-
     private String email;
-
+    @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
-
     private String bankingAccount;
-
     private boolean admissioned;
-
     private String memberBankingAccount;
-
+    @ManyToMany(cascade = {CascadeType.ALL})
     private List<Office> offices; //TODO: Using a list might be usefull since its possible to have more then one office
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<FlightAuthorization> flightAuthorization = new ArrayList<FlightAuthorization>(10); //TODO: see above
 
-    private List<FlightAuthorization> flightAuthorization; //TODO: see above
-
-
-    public Member() {
+    private Member() {
 
     }
 
-
+    /**
+     * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
+     * @param firstName
+     * @param lastName
+     * @param dateOfBirth
+     * @param sex
+     * @param status
+     * @param email
+     * @param address
+     * @param bankingAccount
+     * @param admissioned
+     */
+    public Member(String firstName, String lastName, Date dateOfBirth, String sex, String status, String email, Address address, String bankingAccount, boolean admissioned){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.sex = sex;
+        this.status = status;
+        this.email = email;
+        this.address = address;
+        this.bankingAccount = bankingAccount;
+        this.admissioned = admissioned;
+    }
     //Getter & Setter
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getFirstName() {

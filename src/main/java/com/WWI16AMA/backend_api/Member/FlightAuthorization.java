@@ -1,17 +1,27 @@
 package com.WWI16AMA.backend_api.Member;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
 
-
+@Entity
 public class FlightAuthorization {
 
+    @Entity
     public enum Authorization {
         PPLA("PPL-A"),
         PPLB("PPL-B"),
         BZFI("BZF-I"),
         BZFII("BZF-II"),
         LEHRBEFUGNIS("Lehrbefugnis");
+
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private int id;
 
         private String title;
 
@@ -24,6 +34,11 @@ public class FlightAuthorization {
         }
     }
 
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     private Authorization authorization;
 
