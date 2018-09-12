@@ -1,9 +1,16 @@
 package com.WWI16AMA.backend_api.Member;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Address {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     private int postalCode;
 
@@ -45,7 +52,14 @@ public class Address {
         this.country = country;
     }
 
-    public Address () {
+    private Address () {
 
+    }
+
+    public Address(int postalCode, String city, String state, String country){
+        this.postalCode = postalCode;
+        this.city = city;
+        this.state = state;
+        this.country = country;
     }
 }
