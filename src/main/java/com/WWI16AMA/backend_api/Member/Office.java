@@ -26,7 +26,7 @@ public enum Office {
         this.title = title.toUpperCase();
     }
 
-    public String title() {
+    public String getTitle() {
         return title;
     }
 }
