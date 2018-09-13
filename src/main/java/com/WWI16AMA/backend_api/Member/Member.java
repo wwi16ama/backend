@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,9 +15,9 @@ public class Member {
 
     private String firstName;
     private String lastName;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String sex;
-    private String status;
+    private Status status;
     private String email;
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
@@ -44,7 +45,7 @@ public class Member {
      * @param bankingAccount
      * @param admissioned
      */
-    public Member(String firstName, String lastName, Date dateOfBirth, String sex, String status, String email, Address address, String bankingAccount, boolean admissioned){
+    public Member(String firstName, String lastName, LocalDate dateOfBirth, String sex, Status status, String email, Address address, String bankingAccount, boolean admissioned){
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -77,11 +78,11 @@ public class Member {
         this.lastName = lastName;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -93,13 +94,11 @@ public class Member {
         this.sex = sex;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setStatus(Status status) { this.status = status; }
 
     public String getEmail() {
         return email;
