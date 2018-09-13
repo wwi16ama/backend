@@ -49,8 +49,7 @@ public class Address {
         this.streetNumber = streetNumber;
     }
 
-    public Address(int id, int postalCode, String city, String streetAddress, int streetNumber) {
-        this.id = id;
+    public Address(int postalCode, String city, String streetAddress, int streetNumber) {
         this.postalCode = postalCode;
         this.city = city;
         this.streetAddress = streetAddress;
