@@ -22,22 +22,6 @@ import java.time.Month;
 @AutoConfigureMockMvc
 public class ApplicationTests {
 
-	@Autowired
-	private MockMvc mockMvc;
 
-	@Autowired
-	MemberRepository memberRepository;
-
-	@Test
-	public void testRepository(){
-
-		long found = memberRepository.count();
-
-		Address adr = new Address(25524, "Itzehoe", "Twietbergstraße", 53);
-		Member mem = new Member("Karl", "Hansen", LocalDate.of(1996, Month.DECEMBER, 21), "male", Status.PASSIVE, "karl.hansen@mail.com", adr, "123456789", false);
-		memberRepository.save(mem);
-
-		assertThat(memberRepository.count()).isEqualTo(found +1);
-	}
 
 }
