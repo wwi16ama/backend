@@ -13,12 +13,9 @@ public class Address {
     private int id;
 
     private int postalCode;
-
     private String city;
-
-    private String state;
-
-    private String country;
+    private String streetAddress;
+    private int streetNumber;
 
     public int getPostalCode() {
         return postalCode;
@@ -36,30 +33,27 @@ public class Address {
         this.city = city;
     }
 
-    public String getState() {
-        return state;
+    public String getStreetAddress() {
+        return streetAddress;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
     }
 
-    public String getCountry() {
-        return country;
+    public int getStreetNumber() {
+        return streetNumber;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setStreetNumber(int streetNumber) {
+        this.streetNumber = streetNumber;
     }
 
-    private Address () {
-
-    }
-
-    public Address(int postalCode, String city, String state, String country){
+    public Address(int id, int postalCode, String city, String streetAddress, int streetNumber) {
+        this.id = id;
         this.postalCode = postalCode;
         this.city = city;
-        this.state = state;
-        this.country = country;
+        this.streetAddress = streetAddress;
+        this.streetNumber = streetNumber;
     }
 }
