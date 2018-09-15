@@ -26,13 +26,25 @@ public class Application {
 			Member member = new Member("Matthis","Gördel", LocalDate.of(1996, Month.NOVEMBER, 22),"m",Status.ACTIVE,"marg667@outlook.com",address,"32323232142",true);
             FlightAuthorization flights = new FlightAuthorization();
             flights.setAuthorization("PPLA");
-            flights.setDateOfIssue(new Date(20170909));
-            flights.setExpires(new Date(20180909));
+            flights.setDateOfIssue(LocalDate.of(1993, Month.MAY, 15));
+            flights.setExpires(LocalDate.of(1993, Month.MAY, 15));
             member.setFlightAuthorization(flights);
 
 
 
 			repository.save(member);
+
+			Address address1 = new Address(71705,"Möglingen","HabIchDirSchonMalGeschrieben-Strasse",321);
+			Member member1 = new Member("Jörg","Granini", LocalDate.of(1993, Month.MAY, 15),"m",Status.PASSIVE,"marg667@web.com",address1,"334324322142",true);
+			FlightAuthorization flights1 = new FlightAuthorization();
+			flights1.setAuthorization("PPLA");
+			flights1.setDateOfIssue(LocalDate.of(1993, Month.MAY, 15));
+			flights1.setExpires(LocalDate.of(1993, Month.MAY, 15));
+			member1.setFlightAuthorization(flights1);
+
+
+
+			repository.save(member1);
 		};
 	}
 }
