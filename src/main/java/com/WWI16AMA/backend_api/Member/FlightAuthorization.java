@@ -25,15 +25,14 @@ public class FlightAuthorization {
 
         private String title;
 
-        Authorization(String title){
+        Authorization(String title) {
             this.title = title;
         }
 
-        public String title(){
+        public String title() {
             return title;
         }
     }
-
 
 
     @Id
@@ -46,7 +45,7 @@ public class FlightAuthorization {
 
     private Date expires;
 
-    public String getAuthorization() {	//kp ob das dumm oder schlau is
+    public String getAuthorization() {    //kp ob das dumm oder schlau is
         return authorization.title();
     }
 
@@ -71,7 +70,7 @@ public class FlightAuthorization {
         this.expires = expires;
     }
 
-    public FlightAuthorization () {
+    public FlightAuthorization() {
 
     }
 }

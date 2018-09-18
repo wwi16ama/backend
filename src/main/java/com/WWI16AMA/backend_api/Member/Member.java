@@ -3,7 +3,6 @@ package com.WWI16AMA.backend_api.Member;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -35,6 +34,7 @@ public class Member {
 
     /**
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
+     *
      * @param firstName
      * @param lastName
      * @param dateOfBirth
@@ -45,7 +45,7 @@ public class Member {
      * @param bankingAccount
      * @param admissioned
      */
-    public Member(String firstName, String lastName, LocalDate dateOfBirth, String sex, Status status, String email, Address address, String bankingAccount, boolean admissioned){
+    public Member(String firstName, String lastName, LocalDate dateOfBirth, String sex, Status status, String email, Address address, String bankingAccount, boolean admissioned) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -98,7 +98,9 @@ public class Member {
         return status;
     }
 
-    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public String getEmail() {
         return email;

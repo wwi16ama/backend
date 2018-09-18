@@ -15,7 +15,9 @@ public enum Status {
     private int id;
     private String title;
 
-    Status(String title){ this.title = title; }
+    Status(String title) {
+        this.title = title;
+    }
 
     public void setTitle(String title) {
         this.title = title.toUpperCase();
