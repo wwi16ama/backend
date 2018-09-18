@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
 @Entity
 public class FlightAuthorization {
 
-    @Entity
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     public enum Authorization {
         PPLA("PPL-A"),
         PPLB("PPL-B"),
@@ -18,12 +19,9 @@ public class FlightAuthorization {
         LEHRBEFUGNIS("Lehrbefugnis");
 
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        @Column(name="flight_auth_Id")
-        private int id;
 
-        @JsonValue
+
+
         public String getTitle() {
             return title;
         }
@@ -32,6 +30,7 @@ public class FlightAuthorization {
             this.title = title;
         }
 
+        @Enumerated(EnumType.STRING)
         private String title;
 
         Authorization(String title){
@@ -50,6 +49,7 @@ public class FlightAuthorization {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @Enumerated(EnumType.STRING)
     private Authorization authorization;
 
     private Date dateOfIssue;

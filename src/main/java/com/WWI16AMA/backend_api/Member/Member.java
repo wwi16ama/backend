@@ -30,15 +30,14 @@ public class Member {
     @JoinTable(
             name = "members_offices",
             joinColumns = { @JoinColumn(name = "member_Id") },
-            inverseJoinColumns = { @JoinColumn(name = "offic_Id") }
+            inverseJoinColumns = { @JoinColumn(name = "office_Id") }
     )
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = Office.class)
-    private List<Office> offices = new ArrayList<>(10); //TODO: Using a list might be usefull since its possible to have more then one office
+    @OrderColumn
+    private Office[] offices = new Office[10]; //TODO: Using a list might be usefull since its possible to have more then one office
     private int office_code;
     @OneToMany(cascade = {CascadeType.ALL}) @ElementCollection(targetClass = FlightAuthorization.class) @JoinColumn(name="member_Id") @Enumerated(EnumType.STRING)
-    private List<FlightAuthorization> flightAuthorization = new ArrayList<FlightAuthorization>(10); //TODO: see above
-
+    @OrderColumn
+    private FlightAuthorization[] flightAuthorization = new FlightAuthorization[10];
 
     public int getOffice_code() {
         return office_code;
@@ -170,19 +169,19 @@ public class Member {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public Office getOffices(int id) {
-        return offices.get(id);
+    public Office[] getOffices() {
+        return offices;
     }
 
-    public void setOffices(Office offices) {
-        this.offices.add(offices);
+    public void setOffices(Office[] offices) {
+        this.offices = offices;
     }
 
-    public FlightAuthorization getFlightAuthorization(int id) {
-        return flightAuthorization.get(id);
+    public FlightAuthorization[] getFlightAuthorization() {
+        return flightAuthorization;
     }
 
-    public void setFlightAuthorization(FlightAuthorization flightAuthorization) {
-        this.flightAuthorization.add(flightAuthorization);
+    public void setFlightAuthorization(FlightAuthorization[] flightAuthorization) {
+        this.flightAuthorization = flightAuthorization;
     }
 }

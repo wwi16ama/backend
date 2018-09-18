@@ -7,21 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public enum Office {
+public class Office{
+
+public enum officeName {
     FLUGWART("Flugwart"),
     IMBETRIEBSKONTROLLTURMARBEITEND("ImBetriebskontrollturmArbeitend"),
     KASSIERER("Kassierer"),
     SYSTEMADMINISTRATOR("Systemadministrator"),
     VORSTANDSVORSITZENDER("Vorstandsvorsitzender");
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
     private String title;
     @ManyToMany(mappedBy = "offices")
     private List<Member> members = new ArrayList<>();
 
-    Office(String title) {
+    officeName(String title) {
         this.title = title;
     }
 
@@ -33,6 +32,24 @@ public enum Office {
     public String getTitle() {
         return title;
     }
+
+}
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    @Enumerated(EnumType.STRING)
+    officeName officeName;
+
+    public Office.officeName getOfficeName() {
+        return officeName;
+    }
+
+    public void setOfficeName(Office.officeName officeName) {
+        this.officeName = officeName;
+    }
+
 
 }
 
