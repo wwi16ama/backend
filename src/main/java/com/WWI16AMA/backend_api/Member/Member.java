@@ -32,29 +32,12 @@ public class Member {
             joinColumns = { @JoinColumn(name = "member_Id") },
             inverseJoinColumns = { @JoinColumn(name = "office_Id") }
     )
-    @OrderColumn
-    private Office[] offices = new Office[10]; //TODO: Using a list might be usefull since its possible to have more then one office
+
+    private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be usefull since its possible to have more then one office
     private int office_code;
     @OneToMany(cascade = {CascadeType.ALL}) @ElementCollection(targetClass = FlightAuthorization.class) @JoinColumn(name="member_Id") @Enumerated(EnumType.STRING)
-    @OrderColumn
-    private FlightAuthorization[] flightAuthorization = new FlightAuthorization[10];
 
-    public int getOffice_code() {
-        return office_code;
-    }
-
-    public void setOffice_code(int office_code) {
-        this.office_code = office_code;
-    }
-
-    public int getFlight_auth_code() {
-        return flight_auth_code;
-    }
-
-    public void setFlight_auth_code(int flight_auth_code) {
-        this.flight_auth_code = flight_auth_code;
-    }
-
+    private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
     private int flight_auth_code;
 
@@ -64,6 +47,7 @@ public class Member {
 
     /**
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
+     * @param firstName
      * @param firstName
      * @param lastName
      * @param dateOfBirth
@@ -169,19 +153,19 @@ public class Member {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public Office[] getOffices() {
+    public List<Office> getOffices() {
         return offices;
     }
 
-    public void setOffices(Office[] offices) {
+    public void setOffices(List<Office> offices) {
         this.offices = offices;
     }
 
-    public FlightAuthorization[] getFlightAuthorization() {
+    public List<FlightAuthorization> getFlightAuthorization() {
         return flightAuthorization;
     }
 
-    public void setFlightAuthorization(FlightAuthorization[] flightAuthorization) {
+    public void setFlightAuthorization(List<FlightAuthorization> flightAuthorization) {
         this.flightAuthorization = flightAuthorization;
     }
 }
