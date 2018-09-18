@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,8 +57,13 @@ public class ApplicationTests {
     public void testGetMemberController() throws Exception {
 
         long found = memberRepository.count();
+        String limit = found != 0 ? Long.toString(found) : "1337";
 
-        this.mockMvc.perform(get("/members")).andExpect(status().isOk())
+        System.out.println("\r\n\tfound:"+found+"\r\n\r\n");
+
+        this.mockMvc.perform(get("/members").param("limit", limit))
+                .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content", IsCollectionWithSize.hasSize((int) found)));
 

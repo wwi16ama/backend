@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
+import java.time.LocalDate;
 
 
 @Entity
@@ -41,9 +41,9 @@ public class FlightAuthorization {
 
     private Authorization authorization;
 
-    private Date dateOfIssue;
+    private LocalDate dateOfIssue;
 
-    private Date expires;
+    private LocalDate expires;
 
     public String getAuthorization() {    //kp ob das dumm oder schlau is
         return authorization.title();
@@ -54,19 +54,19 @@ public class FlightAuthorization {
         this.authorization = Authorization.valueOf(authorization.replace("-", "").toUpperCase());
     }
 
-    public Date getDateOfIssue() {
+    public LocalDate getDateOfIssue() {
         return dateOfIssue;
     }
 
-    public void setDateOfIssue(Date dateOfIssue) {
+    public void setDateOfIssue(LocalDate dateOfIssue) {
         this.dateOfIssue = dateOfIssue;
     }
 
-    public Date getExpires() {
+    public LocalDate getExpires() {
         return expires;
     }
 
-    public void setExpires(Date expires) {
+    public void setExpires(LocalDate expires) {
         this.expires = expires;
     }
 
