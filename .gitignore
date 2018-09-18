@@ -120,4 +120,4 @@ buildNumber.properties
 
 # Own additions
 
-./src/main/resources/application.properties
+src/main/resources/
