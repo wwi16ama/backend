@@ -25,7 +25,7 @@ public class Member {
     private boolean admissioned;
     private String memberBankingAccount;
     @ManyToMany(cascade = {CascadeType.ALL})
-    private List<Office> offices; //TODO: Using a list might be usefull since its possible to have more then one office
+    private List<Office> offices; //TODO: Using a list might be usefull since its possible to have more than one office
     @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<FlightAuthorization>(10); //TODO: see above
 
