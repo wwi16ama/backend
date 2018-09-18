@@ -1,9 +1,8 @@
 package com.WWI16AMA.backend_api.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import javax.persistence.*;
 import java.util.Date;
 
 
@@ -21,13 +20,24 @@ public class FlightAuthorization {
 
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
+        @Column(name="flight_auth_Id")
         private int id;
+
+        @JsonValue
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
 
         private String title;
 
         Authorization(String title){
             this.title = title;
         }
+
 
         public String title(){
             return title;

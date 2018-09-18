@@ -1,9 +1,10 @@
 package com.WWI16AMA.backend_api.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public enum Office {
@@ -17,6 +18,8 @@ public enum Office {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String title;
+    @ManyToMany(mappedBy = "offices")
+    private List<Member> members = new ArrayList<>();
 
     Office(String title) {
         this.title = title;
@@ -26,8 +29,10 @@ public enum Office {
         this.title = title.toUpperCase();
     }
 
+    @JsonValue
     public String getTitle() {
         return title;
     }
+
 }
 

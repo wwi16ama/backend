@@ -22,6 +22,8 @@ public class Application {
 	@Bean
 	public CommandLineRunner demo(MemberRepository repository) {
 		return (args) -> {
+
+			/*
             Address address = new Address(71706,"Markgröningen","HabIchDirSchonMalGeschrieben-Gasse",123);
 			Member member = new Member("Matthis","Gördel", LocalDate.of(1996, Month.NOVEMBER, 22),"m",Status.ACTIVE,"marg667@outlook.com",address,"32323232142",true);
             FlightAuthorization flights = new FlightAuthorization();
@@ -33,6 +35,8 @@ public class Application {
 
 
 			repository.save(member);
+
+			*/
 		};
 	}
 }
