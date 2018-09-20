@@ -30,7 +30,7 @@ public class Application {
 			Transaction transaction = session.beginTransaction();
 			initOfficeTable().forEach(office -> {session.save(office);});
 			transaction.commit();
-
+			session.close();
 
 
 
