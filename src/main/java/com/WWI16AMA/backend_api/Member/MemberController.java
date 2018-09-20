@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.awt.*;
-import java.io.FileNotFoundException;
-
-import static org.springframework.http.ResponseEntity.status;
-
 @RestController
 @RequestMapping(path = "/members")
 public class MemberController {
@@ -25,19 +20,19 @@ public class MemberController {
     /**
      * Get Request which delivers all Users.
      *
-     * @param limit Defines the amount of objects to receive
-     * @param start Defines the page to view
+     * @param limit     Defines the amount of objects to receive
+     * @param start     Defines the page to view
      * @param direction Defines the sorting order
-     * @param orderBy Defines the field by which the sort is to be performed
+     * @param orderBy   Defines the field by which the sort is to be performed
      * @return Returns an Iterable of Members paged and sorted by given parameters
      */
-    @GetMapping(path="")
+    @GetMapping(path = "")
     public ResponseEntity<Iterable<Member>> getAllUsersPaged(
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int start,
             @RequestParam(defaultValue = "asc") String direction,
             @RequestParam(defaultValue = "lastName") String orderBy
-    ) throws IllegalArgumentException{
+    ) throws IllegalArgumentException {
 
         Sort sort;
 
@@ -51,9 +46,9 @@ public class MemberController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({org.springframework.data.mapping.PropertyReferenceException.class, IllegalArgumentException.class})
-    @ResponseBody ErrorInfo
+    @ResponseBody
+    ErrorInfo
     handleBadRequest(HttpServletRequest req, Exception ex) {
-        return new ErrorInfo( req.getRequestURL().toString()+"?"+req.getQueryString(), ex );
+        return new ErrorInfo(req.getRequestURL().toString() + "?" + req.getQueryString(), ex);
     }
-
 }

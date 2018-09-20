@@ -46,7 +46,7 @@ public class Address {
         this.streetAddress = streetAddress;
     }
 
-    private Address(){
+    private Address() {
 
     }
 }
