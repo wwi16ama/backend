@@ -2,7 +2,6 @@ package com.WWI16AMA.backend_api.Member;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,7 +22,7 @@ public class MemberController {
     @Autowired
     private MemberRepository memberRepository;
 
-    @RequestMapping("/")
+    @RequestMapping("/detail/all")
     public ResponseEntity<Iterable<Member>> home(){
 
         return new ResponseEntity<>(memberRepository.findAll(), HttpStatus.OK);
@@ -31,8 +30,18 @@ public class MemberController {
     }
 
 
+    @GetMapping(value = "/")
+    public ResponseEntity<List<memberView>> show(){
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+        List<memberView> listing = new ArrayList<>();
+        memberRepository.findAll().forEach(member -> {listing.add(new memberView(member.getId(), member.getFirstName(), member.getLastName()));});
+
+        return new ResponseEntity<List<memberView>>(listing, HttpStatus.OK);
+
+    }
+
+
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Member> delete(@PathVariable int id){
 
         //return greetingRepository.findById(id).orElse(new Greeting("Muss ja.")
@@ -42,7 +51,7 @@ public class MemberController {
 
     }
 
-    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Member> detail(@PathVariable int id){
 
         //return greetingRepository.findById(id).orElse(new Greeting("Muss ja.")
@@ -51,7 +60,8 @@ public class MemberController {
 
     }
 
-    @RequestMapping(value = "/adding", method = RequestMethod.POST)
+
+    @PostMapping(value = "/")
     public ResponseEntity<Member> update(@RequestBody Member member) {
 
         Session session = SESSION_FACTORY.openSession();
@@ -80,13 +90,16 @@ public class MemberController {
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/updateNewAdress/{id}")
-    public ResponseEntity<Member> updateNewAdress(@RequestBody Member greet, @PathVariable long id){
+    @PutMapping(value="/{id}")
+    public ResponseEntity<Member> updateNewAdress(@RequestBody Member member, @PathVariable int id){
 
+        member.setId(id);
+        memberRepository.save(member);
 
-
-        return new ResponseEntity<Member>(greet, HttpStatus.OK);
+        return new ResponseEntity<Member>(member, HttpStatus.OK);
     }
+
+
 
 
 }

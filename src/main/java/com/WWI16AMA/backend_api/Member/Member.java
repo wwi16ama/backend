@@ -1,5 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,21 +11,38 @@ import java.util.List;
 @Entity
 public class Member {
     // Der Verfasser sagt:
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="member_Id")
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /*
+        @Id
+        @GenericGenerator(name = "sequence_member_id", strategy = "com.xyz.ids.memberIdGenerator")
+        @GeneratedValue(generator = "sequence_member_id")
+        @Column(name="member_id")
+        */
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
+    @Column(nullable = false)
     private String firstName;
+    @Column(nullable = false)
     private String lastName;
+    @Column(nullable = false)
     private LocalDate dateOfBirth;
-    private String sex;
+    @Column(nullable = false) @Enumerated(EnumType.STRING)
+    private Gender gender;
+    @Column(nullable = false) @Enumerated(EnumType.STRING)
     private Status status;
+    @Column(nullable = false)
     private String email;
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
-
     private Address address;
+    @Column(nullable = false)
     private String bankingAccount;
+    @Column(nullable = false)
     private boolean admissioned;
     private String memberBankingAccount;
 
@@ -35,10 +54,10 @@ public class Member {
     )
     private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be usefull since its possible to have more then one office
 
-    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL}) @ElementCollection(targetClass = FlightAuthorization.class) @JoinColumn(name="member_Id") @Enumerated(EnumType.STRING)
+    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
+    @JoinColumn(name="member_Id") @Enumerated(EnumType.STRING)
 
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
-
 
 
     public Member() {
@@ -51,18 +70,18 @@ public class Member {
      * @param firstName
      * @param lastName
      * @param dateOfBirth
-     * @param sex
+     * @param gender
      * @param status
      * @param email
      * @param address
      * @param bankingAccount
      * @param admissioned
      */
-    public Member(String firstName, String lastName, LocalDate dateOfBirth, String sex, Status status, String email, Address address, String bankingAccount, boolean admissioned){
+    public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status, String email, Address address, String bankingAccount, boolean admissioned){
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
-        this.sex = sex;
+        this.gender = gender;
         this.status = status;
         this.email = email;
         this.address = address;
@@ -99,12 +118,12 @@ public class Member {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getSex() {
-        return sex;
+    public Gender getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public Status getStatus() {

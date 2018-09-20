@@ -21,7 +21,7 @@ public enum officeName {
     private String title;
 
     officeName(String title) {
-        this.title = title;
+        this.title = title.toUpperCase();
     }
 
     public void setTitle(String title) {
@@ -34,9 +34,7 @@ public enum officeName {
     }
 
 
-
 }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,14 +50,6 @@ public enum officeName {
 
     public void setOfficeName(Office.officeName officeName) {
         this.officeName = officeName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Office(Office.officeName officeName) {
