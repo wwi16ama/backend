@@ -7,7 +7,8 @@ import javax.persistence.Id;
 public enum Gender {
 
     MALE("male"),
-    FEMALE("female");
+    FEMALE("female"),
+    OTHER("other");
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
