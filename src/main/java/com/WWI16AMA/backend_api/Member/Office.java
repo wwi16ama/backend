@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 
 @Entity
@@ -16,9 +17,8 @@ public enum officeName {
     SYSTEMADMINISTRATOR("Systemadministrator"),
     VORSTANDSVORSITZENDER("Vorstandsvorsitzender");
 
+    @Enumerated(EnumType.STRING)
     private String title;
-    @ManyToMany(mappedBy = "offices")
-    private List<Member> members = new ArrayList<>();
 
     officeName(String title) {
         this.title = title;
@@ -33,13 +33,17 @@ public enum officeName {
         return title;
     }
 
+
+
 }
 
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Enumerated(EnumType.STRING)
+    @Column(name="office_name")
     officeName officeName;
 
     public Office.officeName getOfficeName() {
@@ -50,6 +54,20 @@ public enum officeName {
         this.officeName = officeName;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Office(Office.officeName officeName) {
+        this.officeName = officeName;
+    }
+
+    Office(){
+
+    }
 }
 

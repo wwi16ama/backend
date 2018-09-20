@@ -1,16 +1,25 @@
 package com.WWI16AMA.backend_api.Member;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 @RestController
 @RequestMapping(path = "/members")
 public class MemberController {
 
+    private final static SessionFactory SESSION_FACTORY = HibernateUtil.getSessionFactory();
     @Autowired
     private MemberRepository memberRepository;
 
@@ -43,10 +52,32 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/adding", method = RequestMethod.POST)
-    public ResponseEntity<Member> update(@RequestBody Member greet) {
+    public ResponseEntity<Member> update(@RequestBody Member member) {
 
-        memberRepository.save(greet);
-        return new ResponseEntity<>(greet, HttpStatus.OK);
+        Session session = SESSION_FACTORY.openSession();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Office> criteria = builder.createQuery(Office.class);
+        Root<Office> officeRoot = criteria.from(Office.class);
+        criteria.select(officeRoot);
+        List<Office> listing = session.createQuery(criteria).getResultList();
+        List<Office> myOffices = new ArrayList<>();
+
+        for(Office office : member.getOffices()){
+
+            for(Office db_Office : listing){
+
+                if(db_Office.getOfficeName().equals(office.getOfficeName())){
+
+                    myOffices.add(db_Office);
+                }
+            }
+        }
+
+        member.setOffices(myOffices);
+
+        memberRepository.save(member);
+
+        return new ResponseEntity<>(member, HttpStatus.OK);
     }
 
     @RequestMapping(value="/updateNewAdress/{id}")

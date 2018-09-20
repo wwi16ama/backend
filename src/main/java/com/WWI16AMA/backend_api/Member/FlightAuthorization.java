@@ -10,16 +10,13 @@ import java.util.Date;
 @Entity
 public class FlightAuthorization {
 
-    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+
     public enum Authorization {
         PPLA("PPL-A"),
         PPLB("PPL-B"),
         BZFI("BZF-I"),
         BZFII("BZF-II"),
         LEHRBEFUGNIS("Lehrbefugnis");
-
-
-
 
 
         public String getTitle() {
@@ -45,8 +42,9 @@ public class FlightAuthorization {
 
 
 
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Enumerated(EnumType.STRING)
@@ -84,4 +82,5 @@ public class FlightAuthorization {
     public FlightAuthorization () {
 
     }
+
 }

@@ -26,20 +26,20 @@ public class Member {
     private String bankingAccount;
     private boolean admissioned;
     private String memberBankingAccount;
-    @ManyToMany(cascade = {CascadeType.ALL})
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
             name = "members_offices",
             joinColumns = { @JoinColumn(name = "member_Id") },
             inverseJoinColumns = { @JoinColumn(name = "office_Id") }
     )
-
     private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be usefull since its possible to have more then one office
-    private int office_code;
-    @OneToMany(cascade = {CascadeType.ALL}) @ElementCollection(targetClass = FlightAuthorization.class) @JoinColumn(name="member_Id") @Enumerated(EnumType.STRING)
+
+    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL}) @ElementCollection(targetClass = FlightAuthorization.class) @JoinColumn(name="member_Id") @Enumerated(EnumType.STRING)
 
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
-    private int flight_auth_code;
+
 
     public Member() {
 

@@ -1,16 +1,20 @@
 package com.WWI16AMA.backend_api;
 
-import com.WWI16AMA.backend_api.Member.*;
+import com.WWI16AMA.backend_api.Member.*;;
+import com.fasterxml.classmate.AnnotationConfiguration;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+
+import org.hibernate.Session;
 import org.springframework.context.annotation.Bean;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
 
 @SpringBootApplication
 public class Application {
@@ -23,20 +27,31 @@ public class Application {
 	public CommandLineRunner demo(MemberRepository repository) {
 		return (args) -> {
 
-			/*
-            Address address = new Address(71706,"Markgröningen","HabIchDirSchonMalGeschrieben-Gasse",123);
-			Member member = new Member("Matthis","Gördel", LocalDate.of(1996, Month.NOVEMBER, 22),"m",Status.ACTIVE,"marg667@outlook.com",address,"32323232142",true);
-            FlightAuthorization flights = new FlightAuthorization();
-            flights.setAuthorization("PPLA");
-            flights.setDateOfIssue(new Date(20170909));
-            flights.setExpires(new Date(20180909));
-            member.setFlightAuthorization(flights);
+
+			Session session = HibernateUtil.getSessionFactory().openSession();
+
+			Transaction transaction = session.beginTransaction();
+			initOfficeTable().forEach(office -> {session.save(office);});
+			transaction.commit();
 
 
 
-			repository.save(member);
 
-			*/
 		};
+	}
+
+	private static ArrayList<Office> initOfficeTable(){
+
+		Office office = new Office(Office.officeName.FLUGWART);
+		Office office1 = new Office(Office.officeName.IMBETRIEBSKONTROLLTURMARBEITEND);
+		Office office2 = new Office(Office.officeName.KASSIERER);
+		Office office3 = new Office(Office.officeName.VORSTANDSVORSITZENDER);
+		Office office4 = new Office(Office.officeName.SYSTEMADMINISTRATOR);
+
+		ArrayList<Office> list = new ArrayList<>();
+		list.add(office); list.add(office1); list.add(office2); list.add(office3); list.add(office4);
+
+		return list;
+
 	}
 }
