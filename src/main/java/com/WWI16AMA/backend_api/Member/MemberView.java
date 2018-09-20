@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({ "id", "firstName", "lastName"})
-public class memberView {
+public class MemberView {
 
 
-    public memberView() {
+    public MemberView() {
     }
 
-    public memberView(int id, String firstName, String lastName) {
+    public MemberView(int id, String firstName, String lastName) {
         Id = id;
         this.firstName = firstName;
         this.lastName = lastName;
