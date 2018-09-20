@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping(path = "/members")
+@RequestMapping(path = "members")
 public class MemberController {
 
     @Autowired
