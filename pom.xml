@@ -6,7 +6,7 @@
 	<groupId>com.WWI16AMA</groupId>
 	<artifactId>backend_api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>backend_api</name>
 	<description>Demo project for Spring Boot</description>
@@ -63,7 +63,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>${project.artifactId}</finalName>
 	</build>
-
-
 </project>
