@@ -1,5 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,44 +14,62 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+
+    @Column(nullable = false)
     private String firstName;
+    @Column(nullable = false)
     private String lastName;
+    @Column(nullable = false)
     private LocalDate dateOfBirth;
-    private String sex;
+    @Column(nullable = false) @Enumerated(EnumType.STRING)
+    private Gender gender;
+    @Column(nullable = false) @Enumerated(EnumType.STRING)
     private Status status;
+    @Column(nullable = false)
     private String email;
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     private Address address;
+    @Column(nullable = false)
     private String bankingAccount;
+    @Column(nullable = false)
     private boolean admissioned;
     private String memberBankingAccount;
-    @ManyToMany(cascade = {CascadeType.ALL})
-    private List<Office> offices; //TODO: Using a list might be usefull since its possible to have more than one office
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<FlightAuthorization> flightAuthorization = new ArrayList<FlightAuthorization>(10); //TODO: see above
 
-    private Member() {
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinTable(
+            name = "members_offices",
+            joinColumns = { @JoinColumn(name = "member_Id") },
+            inverseJoinColumns = { @JoinColumn(name = "office_Id") }
+    )
+    private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be usefull since its possible to have more then one office
+
+    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
+    @JoinColumn(name="member_Id") @Enumerated(EnumType.STRING)
+
+    private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
+
+
+    public Member() {
 
     }
 
     /**
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
-     *
      * @param firstName
      * @param lastName
      * @param dateOfBirth
-     * @param sex
+     * @param gender
      * @param status
      * @param email
      * @param address
      * @param bankingAccount
      * @param admissioned
      */
-    public Member(String firstName, String lastName, LocalDate dateOfBirth, String sex, Status status, String email, Address address, String bankingAccount, boolean admissioned) {
+    public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status, String email, Address address, String bankingAccount, boolean admissioned){
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
-        this.sex = sex;
+        this.gender = gender;
         this.status = status;
         this.email = email;
         this.address = address;
@@ -86,21 +106,19 @@ public class Member {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getSex() {
-        return sex;
+    public Gender getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+    public void setStatus(Status status) { this.status = status; }
 
     public String getEmail() {
         return email;
@@ -142,19 +160,19 @@ public class Member {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public Office getOffices(int id) {
-        return offices.get(id);
+    public List<Office> getOffices() {
+        return offices;
     }
 
-    public void setOffices(Office offices) {
-        this.offices.add(offices);
+    public void setOffices(List<Office> offices) {
+        this.offices = offices;
     }
 
-    public FlightAuthorization getFlightAuthorization(int id) {
-        return flightAuthorization.get(id);
+    public List<FlightAuthorization> getFlightAuthorization() {
+        return flightAuthorization;
     }
 
-    public void setFlightAuthorization(FlightAuthorization flightAuthorization) {
-        this.flightAuthorization.add(flightAuthorization);
+    public void setFlightAuthorization(List<FlightAuthorization> flightAuthorization) {
+        this.flightAuthorization = flightAuthorization;
     }
 }

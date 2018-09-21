@@ -1,16 +1,15 @@
 package com.WWI16AMA.backend_api.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+
+import javax.persistence.*;
 
 
 @Entity
 public class FlightAuthorization {
 
-    @Entity
+
     public enum Authorization {
         PPLA("PPL-A"),
         PPLB("PPL-B"),
@@ -19,10 +18,15 @@ public class FlightAuthorization {
         LEHRBEFUGNIS("Lehrbefugnis");
 
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        private int id;
+        public String getTitle() {
+            return title;
+        }
 
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        @Enumerated(EnumType.STRING)
         private String title;
 
         Authorization(String title) {
@@ -36,9 +40,10 @@ public class FlightAuthorization {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Enumerated(EnumType.STRING)
     private Authorization authorization;
 
     private LocalDate dateOfIssue;
