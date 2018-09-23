@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+
 public enum Office{
     FLUGWART("Flugwart"),
     IMBETRIEBSKONTROLLTURMARBEITEND("ImBetriebskontrollturmArbeitend"),
@@ -19,7 +19,6 @@ public enum Office{
 
     private String title;
 
-    Office(){}
 
     Office(String title){
         this.title = title.toUpperCase();
@@ -32,4 +31,6 @@ public enum Office{
     public String getTitle() {
         return title;
     }
+
+
 }

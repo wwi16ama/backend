@@ -36,7 +36,7 @@ public class Member {
     private boolean admissioned;
     private String memberBankingAccount;
 
-    @ManyToMany
+    @ManyToMany @ElementCollection
     private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be useful since its possible to have more then one office
 
     @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
