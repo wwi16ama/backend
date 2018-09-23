@@ -1,10 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.WWI16AMA.backend_api.ErrorInfo;
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "members")
@@ -52,7 +49,9 @@ public class MemberController {
         else throw new IllegalArgumentException("Sorting direction is neiter 'asc' nor 'desc'");
         List<MemberView> listing = new ArrayList<>();
         memberRepository.findAll(PageRequest.of(start, limit, sort))
-                .forEach(member -> {listing.add(new MemberView(member.getId(), member.getFirstName(), member.getLastName()));});
+                .forEach(member -> {
+                    listing.add(new MemberView(member.getId(), member.getFirstName(), member.getLastName()));
+                });
         return new ResponseEntity<Iterable<MemberView>>(listing, HttpStatus.OK);
     }
 
@@ -87,15 +86,14 @@ public class MemberController {
         List<Office> myOffices = new ArrayList<>();
 
         for (Office office : member.getOffices()) {
-
             for (Office db_Office : listing) {
-
-                if(db_Office.getOfficeName().equals(office.getOfficeName())){
-
+                if (db_Office.getOfficeName().equals(office.getOfficeName())) {
                     myOffices.add(db_Office);
                 }
             }
         }
+
+        session.close();
 
         member.setOffices(myOffices);
 
@@ -107,12 +105,11 @@ public class MemberController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<Member> updateNewAdress(@RequestBody Member member, @PathVariable int id) {
 
-        member.setId(id);   // TODO
+        member.setId(id);// TODO
         memberRepository.save(member);
 
         return new ResponseEntity<Member>(member, HttpStatus.OK);
     }
-
 
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

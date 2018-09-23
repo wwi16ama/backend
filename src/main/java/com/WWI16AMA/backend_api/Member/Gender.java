@@ -11,11 +11,13 @@ public enum Gender {
     OTHER("other");
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
 
-    Gender(String title){ this.title = title; }
+    Gender(String title) {
+        this.title = title;
+    }
 
     public void setTitle(String title) {
         this.title = title.toUpperCase();

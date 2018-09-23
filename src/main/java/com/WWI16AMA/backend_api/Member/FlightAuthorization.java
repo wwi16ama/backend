@@ -1,9 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-
 import javax.persistence.*;
+import java.time.LocalDate;
 
 
 @Entity

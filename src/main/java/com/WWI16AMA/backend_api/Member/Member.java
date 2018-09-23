@@ -1,7 +1,5 @@
 package com.WWI16AMA.backend_api.Member;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,9 +19,11 @@ public class Member {
     private String lastName;
     @Column(nullable = false)
     private LocalDate dateOfBirth;
-    @Column(nullable = false) @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
-    @Column(nullable = false) @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
     @Column(nullable = false)
     private String email;
@@ -38,13 +38,14 @@ public class Member {
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
             name = "members_offices",
-            joinColumns = { @JoinColumn(name = "member_Id") },
-            inverseJoinColumns = { @JoinColumn(name = "office_Id") }
+            joinColumns = {@JoinColumn(name = "member_Id")},
+            inverseJoinColumns = {@JoinColumn(name = "office_Id")}
     )
     private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be usefull since its possible to have more then one office
 
     @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
-    @JoinColumn(name="member_Id") @Enumerated(EnumType.STRING)
+    @JoinColumn(name = "member_Id")
+    @Enumerated(EnumType.STRING)
 
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
@@ -55,6 +56,7 @@ public class Member {
 
     /**
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
+     *
      * @param firstName
      * @param lastName
      * @param dateOfBirth
@@ -65,7 +67,7 @@ public class Member {
      * @param bankingAccount
      * @param admissioned
      */
-    public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status, String email, Address address, String bankingAccount, boolean admissioned){
+    public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status, String email, Address address, String bankingAccount, boolean admissioned) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -76,10 +78,14 @@ public class Member {
         this.bankingAccount = bankingAccount;
         this.admissioned = admissioned;
     }
-    //Getter & Setter
+
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -118,7 +124,9 @@ public class Member {
         return status;
     }
 
-    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public String getEmail() {
         return email;

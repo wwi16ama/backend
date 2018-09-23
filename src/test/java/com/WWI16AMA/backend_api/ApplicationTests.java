@@ -1,9 +1,6 @@
 package com.WWI16AMA.backend_api;
 
-import com.WWI16AMA.backend_api.Member.Address;
-import com.WWI16AMA.backend_api.Member.Member;
-import com.WWI16AMA.backend_api.Member.MemberRepository;
-import com.WWI16AMA.backend_api.Member.Status;
+import com.WWI16AMA.backend_api.Member.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.hamcrest.collection.IsCollectionWithSize;
@@ -27,6 +24,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -45,7 +44,7 @@ public class ApplicationTests {
 
         Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
-                LocalDate.of(1996, Month.DECEMBER, 21), "male", Status.PASSIVE,
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "123456789", false);
         memberRepository.save(mem);
 
@@ -71,7 +70,7 @@ public class ApplicationTests {
 
         Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Hauke", "Haien",
-                LocalDate.of(1796, Month.DECEMBER, 3), "male", Status.PASSIVE,
+                LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "123456789", false);
         Integer id = memberRepository.save(mem).getId();
 
@@ -92,7 +91,7 @@ public class ApplicationTests {
 
         Address adr = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem = new Member("Kurt", "Krömer",
-                LocalDate.of(1975, Month.DECEMBER, 2), "male", Status.PASSIVE,
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "123456789", false);
 
 
@@ -110,7 +109,7 @@ public class ApplicationTests {
 
         Address adr = new Address(54231, "Krefeld", "Bühnenstraße 5");
         Member mem = new Member("Kurt", "Prödel",
-                LocalDate.of(1975, Month.MAY, 10), "male", Status.PASSIVE,
+                LocalDate.of(1975, Month.MAY, 10), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr,
                 "123456789", false);
 

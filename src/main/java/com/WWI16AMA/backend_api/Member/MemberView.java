@@ -1,9 +1,8 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({ "id", "firstName", "lastName"})
+@JsonPropertyOrder({"id", "firstName", "lastName"})
 public class MemberView {
 
 
@@ -20,7 +19,6 @@ public class MemberView {
     private int Id;
     private String firstName;
     private String lastName;
-
 
 
     public int getId() {

@@ -1,6 +1,9 @@
 package com.WWI16AMA.backend_api.Member;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Address {
@@ -9,13 +12,19 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    public Address(){
-
-    }
-
     private int postalCode;
     private String city;
     private String streetAddress;
+
+    public Address() {
+
+    }
+
+    public Address(int postalCode, String city, String streetAddress) {
+        this.postalCode = postalCode;
+        this.city = city;
+        this.streetAddress = streetAddress;
+    }
 
     public int getPostalCode() {
         return postalCode;
@@ -39,15 +48,5 @@ public class Address {
 
     public void setStreetAddress(String streetAddress) {
         this.streetAddress = streetAddress;
-    }
-
-    public Address(int postalCode, String city, String streetAddress) {
-        this.postalCode = postalCode;
-        this.city = city;
-        this.streetAddress = streetAddress;
-    }
-
-    private Address() {
-
     }
 }
