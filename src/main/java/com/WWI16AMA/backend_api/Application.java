@@ -27,17 +27,17 @@ public class Application {
 
             officeRepository.saveAll(initOfficeTable());
 
-            generateSomeMembers(memberRepository, initOfficeTable());
+            //generateSomeMembers(memberRepository, initOfficeTable());
         };
     }
 
     private static ArrayList<Office> initOfficeTable() {
 
-        Office office = Office.FLUGWART;
-        Office office1 = Office.IMBETRIEBSKONTROLLTURMARBEITEND;
-        Office office2 = Office.KASSIERER;
-        Office office3 = Office.VORSTANDSVORSITZENDER;
-        Office office4 = Office.SYSTEMADMINISTRATOR;
+        Office office = new Office(Office.OfficeName.FLUGWART);
+        Office office1 = new Office(Office.OfficeName.IMBETRIEBSKONTROLLTURMARBEITEND);
+        Office office2 = new Office(Office.OfficeName.KASSIERER);
+        Office office3 = new Office(Office.OfficeName.SYSTEMADMINISTRATOR);
+        Office office4 = new Office(Office.OfficeName.VORSTANDSVORSITZENDER);
 
         ArrayList<Office> list = new ArrayList<>();
         list.add(office);

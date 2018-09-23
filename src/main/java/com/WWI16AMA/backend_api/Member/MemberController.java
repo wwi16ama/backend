@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Exception.EntryNotFoundException;
+import com.WWI16AMA.backend_api.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -52,17 +53,18 @@ public class MemberController {
 
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Member> delete(@PathVariable int id) throws EntryNotFoundException {
+    public ResponseEntity<ResponseObject> delete(@PathVariable int id) throws EntryNotFoundException {
 
-        Member dbMember = memberRepository.findById(id).orElseThrow(() -> new EntryNotFoundException("Member cannot be found", new Throwable("Member with the Id" + id + "does not exist")));
+        Member dbMember = memberRepository.findById(id).orElseThrow(() ->
+                new EntryNotFoundException(EntryNotFoundException.class.toString() + ": Member cannot be found", new Throwable("Member with the id " + id + " does not exist")));
         memberRepository.delete(dbMember);
-        return new ResponseEntity<>(new Member(), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new ResponseObject("deleting Member", "Member with the id " + id + " was deleted"), HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Member> detail(@PathVariable int id) throws EntryNotFoundException {
 
-        Member dbMember = memberRepository.findById(id).orElseThrow(() -> new EntryNotFoundException("Member cannot be found", new Throwable("Member with the Id" + id + "does not exist")));
+        Member dbMember = memberRepository.findById(id).orElseThrow(() -> new EntryNotFoundException(EntryNotFoundException.class.toString() + ": Member cannot be found", new Throwable("Member with the id " + id + " does not exist")));
         return new ResponseEntity<>(dbMember, HttpStatus.OK);
 
     }
@@ -74,7 +76,7 @@ public class MemberController {
         List<Office> mOffices = new ArrayList<>();
         reqMember.getOffices().forEach(office -> {
             officeRepository.findAll().forEach(dbOffice -> {
-                if (dbOffice.getTitle().equals(office.getTitle())) {
+                if (dbOffice.getOfficeName().equals(office.getOfficeName())) {
                     mOffices.add(dbOffice);
                 }
             });
@@ -87,13 +89,16 @@ public class MemberController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Member> updateNewAdress(@RequestBody Member regMember, @PathVariable int id) throws EntryNotFoundException {
+    public ResponseEntity<Member> updateMember(@RequestBody Member regMember, @PathVariable int id) throws EntryNotFoundException {
 
-        Member dbMember = memberRepository.findById(id).orElseThrow(() -> new EntryNotFoundException("Member cannot be found", new Throwable("Member with the Id" + id + "does not exist")));
+        if (memberRepository.existsById(id)) {
+            regMember.setId(id);
+            memberRepository.save(regMember);
+        } else {
+            throw new EntryNotFoundException(EntryNotFoundException.class.toString() + ": Member cannot be found", new Throwable("Member with the id " + id + " does not exist"));
+        }
 
-        memberRepository.save(dbMember);
-
-        return new ResponseEntity<Member>(dbMember, HttpStatus.OK);
+        return new ResponseEntity<Member>(regMember, HttpStatus.NO_CONTENT);
     }
 
 
