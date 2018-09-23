@@ -1,60 +1,35 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-public class Office {
-
-    public enum OfficeName {
-        FLUGWART("Flugwart"),
-        IMBETRIEBSKONTROLLTURMARBEITEND("ImBetriebskontrollturmArbeitend"),
-        KASSIERER("Kassierer"),
-        SYSTEMADMINISTRATOR("Systemadministrator"),
-        VORSTANDSVORSITZENDER("Vorstandsvorsitzender");
-
-        @Enumerated(EnumType.STRING)
-        private String title;
-
-        OfficeName(String title) {
-            this.title = title.toUpperCase();
-        }
-
-        public void setTitle(String title) {
-            this.title = title.toUpperCase();
-        }
-
-        @JsonValue
-        public String getTitle() {
-            return title;
-        }
-
-
-    }
+public enum Office{
+    FLUGWART("Flugwart"),
+    IMBETRIEBSKONTROLLTURMARBEITEND("ImBetriebskontrollturmArbeitend"),
+    KASSIERER("Kassierer"),
+    SYSTEMADMINISTRATOR("Systemadministrator"),
+    VORSTANDSVORSITZENDER("Vorstandsvorsitzender");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "office_name")
-    OfficeName officeName;
+    private String title;
 
-    public OfficeName getOfficeName() {
-        return officeName;
+    Office(){}
+
+    Office(String title){
+        this.title = title.toUpperCase();
     }
 
-    public void setOfficeName(OfficeName officeName) {
-        this.officeName = officeName;
+    public void setTitle(String title) {
+        this.title = title.toUpperCase();
     }
 
-    public Office(OfficeName officeName) {
-        this.officeName = officeName;
-    }
-
-    Office() {
-
+    public String getTitle() {
+        return title;
     }
 }
-

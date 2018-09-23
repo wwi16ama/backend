@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,40 +14,32 @@ public class Member {
     private Integer id;
 
 
-    @Column(nullable = false)
+    @NotNull
     private String firstName;
-    @Column(nullable = false)
+    @NotNull
     private String lastName;
-    @Column(nullable = false)
+    @NotNull
     private LocalDate dateOfBirth;
-    @Column(nullable = false)
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    @Column(nullable = false)
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Status status;
-    @Column(nullable = false)
+    @NotNull
     private String email;
-    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
-    @Column(nullable = false)
+    @NotNull
     private String bankingAccount;
-    @Column(nullable = false)
+    @NotNull
     private boolean admissioned;
     private String memberBankingAccount;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinTable(
-            name = "members_offices",
-            joinColumns = {@JoinColumn(name = "member_Id")},
-            inverseJoinColumns = {@JoinColumn(name = "office_Id")}
-    )
-    private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be usefull since its possible to have more then one office
+    @ManyToMany
+    private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be useful since its possible to have more then one office
 
     @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "member_Id")
-    @Enumerated(EnumType.STRING)
-
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
 

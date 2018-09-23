@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping(path = "members")
 public class MemberController {
 
-    private final static SessionFactory SESSION_FACTORY = HibernateUtil.getSessionFactory();
     @Autowired
     private MemberRepository memberRepository;
 
@@ -76,26 +75,6 @@ public class MemberController {
 
     @PostMapping(value = "")
     public ResponseEntity<Member> update(@RequestBody Member member) {
-
-        Session session = SESSION_FACTORY.openSession();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Office> criteria = builder.createQuery(Office.class);
-        Root<Office> officeRoot = criteria.from(Office.class);
-        criteria.select(officeRoot);
-        List<Office> listing = session.createQuery(criteria).getResultList();
-        List<Office> myOffices = new ArrayList<>();
-
-        for (Office office : member.getOffices()) {
-            for (Office db_Office : listing) {
-                if (db_Office.getOfficeName().equals(office.getOfficeName())) {
-                    myOffices.add(db_Office);
-                }
-            }
-        }
-
-        session.close();
-
-        member.setOffices(myOffices);
 
         memberRepository.save(member);
 
