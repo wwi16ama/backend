@@ -7,25 +7,12 @@ import java.time.LocalDate;
 @Entity
 public class FlightAuthorization {
 
-
     public enum Authorization {
-        PPLA("PPL-A"),
-        PPLB("PPL-B"),
-        BZFI("BZF-I"),
-        BZFII("BZF-II"),
-        LEHRBEFUGNIS("Lehrbefugnis");
-
-
-        @Enumerated(EnumType.STRING)
-        private String title;
-
-        Authorization(String title) {
-            this.title = title;
-        }
-
-        public String title() {
-            return title;
-        }
+        PPLA,
+        PPLB,
+        BZFI,
+        BZFII,
+        LEHRBEFUGNIS
     }
 
 
@@ -40,8 +27,18 @@ public class FlightAuthorization {
 
     private LocalDate expires;
 
-    public String getAuthorization() {    //kp ob das dumm oder schlau is
-        return authorization.title();
+    public FlightAuthorization() {
+
+    }
+
+    public FlightAuthorization(Authorization authorization, LocalDate dateOfIssue, LocalDate expires) {
+        this.authorization = authorization;
+        this.dateOfIssue = dateOfIssue;
+        this.expires = expires;
+    }
+
+    public String getAuthorization() {
+        return authorization.toString();
     }
 
     public void setAuthorization(String authorization) throws IllegalArgumentException {
@@ -63,9 +60,5 @@ public class FlightAuthorization {
 
     public void setExpires(LocalDate expires) {
         this.expires = expires;
-    }
-
-    public FlightAuthorization() {
-
     }
 }

@@ -1,8 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,10 +14,9 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
-    @NotNull
+    @NotBlank
     private String firstName;
-    @NotNull
+    @NotBlank
     private String lastName;
     @NotNull
     private LocalDate dateOfBirth;
@@ -28,17 +26,17 @@ public class Member {
     @NotNull
     @Enumerated(EnumType.STRING)
     private Status status;
-    @NotNull
+    @NotBlank
     private String email;
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
-    @NotNull
+    @NotBlank
     private String bankingAccount;
     @NotNull
     private boolean admissioned;
     private String memberBankingAccount;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
     private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be useful since its possible to have more then one office
 
     @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
@@ -51,16 +49,6 @@ public class Member {
 
     /**
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
-     *
-     * @param firstName
-     * @param lastName
-     * @param dateOfBirth
-     * @param gender
-     * @param status
-     * @param email
-     * @param address
-     * @param bankingAccount
-     * @param admissioned
      */
     public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status, String email, Address address, String bankingAccount, boolean admissioned) {
         this.firstName = firstName;

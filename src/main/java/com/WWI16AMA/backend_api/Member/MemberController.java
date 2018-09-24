@@ -1,7 +1,5 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.WWI16AMA.backend_api.Exception.EntryNotFoundException;
-import com.WWI16AMA.backend_api.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -9,11 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(path = "members")
@@ -34,7 +30,7 @@ public class MemberController {
      * @return Returns an Iterable of Members paged and sorted by given parameters
      */
     @GetMapping(value = "")
-    public ResponseEntity<Iterable<MemberView>> getAllUsersPaged(
+    public Iterable<MemberView> getAllUsersPaged(
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int start,
             @RequestParam(defaultValue = "asc") String direction,
@@ -46,45 +42,33 @@ public class MemberController {
         if (direction.equals("desc")) sort = new Sort(Sort.Direction.DESC, orderBy);
         else if (direction.equals("asc")) sort = new Sort(Sort.Direction.ASC, orderBy);
         else throw new IllegalArgumentException("Sorting direction is neiter 'asc' nor 'desc'");
+
         List<MemberView> listing = new ArrayList<>();
         memberRepository.findAll(PageRequest.of(start, limit, sort))
-                .forEach(member -> {
-                    listing.add(new MemberView(member.getId(), member.getFirstName(), member.getLastName()));
-                });
-        return new ResponseEntity<Iterable<MemberView>>(listing, HttpStatus.OK);
-    }
-
-
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<ResponseObject> delete(@PathVariable int id) throws EntryNotFoundException {
-
-        Member dbMember = memberRepository.findById(id).orElseThrow(() ->
-                new EntryNotFoundException(EntryNotFoundException.class.toString() + ": Member cannot be found", new Throwable("Member with the id " + id + " does not exist")));
-        memberRepository.delete(dbMember);
-        return new ResponseEntity<>(new ResponseObject("deleting Member", "Member with the id " + id + " was deleted"), HttpStatus.NO_CONTENT);
+                .forEach(member -> listing.add(new MemberView(member.getId(), member.getFirstName(), member.getLastName())));
+        return listing;
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Member> detail(@PathVariable int id) {
 
-        //return greetingRepository.findById(id).orElse(new Greeting("Muss ja.")
-
-        return new ResponseEntity<>(memberRepository.findById(id).get(), HttpStatus.OK);
-
+        return new ResponseEntity<>(memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist")), HttpStatus.OK);
     }
-
 
     @PostMapping(value = "")
     public ResponseEntity<Member> create(@RequestBody Member reqMember) {
 
+        if (reqMember.getId() != null) {
+            throw new IllegalArgumentException("Member has the id: " + reqMember.getId() + ". " +
+                    "Id has to be null when a new member shall be created");
+        }
         List<Office> mOffices = new ArrayList<>();
-        reqMember.getOffices().forEach(office -> {
-            officeRepository.findAll().forEach(dbOffice -> {
-                if (dbOffice.getOfficeName().equals(office.getOfficeName())) {
-                    mOffices.add(dbOffice);
-                }
-            });
-        });
+        reqMember.getOffices().forEach(office -> officeRepository.findAll().forEach(dbOffice -> {
+            if (dbOffice.getTitle().equals(office.getTitle())) {
+                mOffices.add(dbOffice);
+            }
+        }));
 
         reqMember.setOffices(mOffices);
         memberRepository.save(reqMember);
@@ -93,17 +77,25 @@ public class MemberController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Member> updateMember(@RequestBody Member regMember, @PathVariable int id) throws EntryNotFoundException {
+    public ResponseEntity<Void> updateMember(@RequestBody Member regMember, @PathVariable int id) throws NoSuchElementException {
 
         if (memberRepository.existsById(id)) {
             regMember.setId(id);
-            memberRepository.save(regMember);
+            memberRepository.save(regMember);   //TODO weitere validierung?
         } else {
-            throw new EntryNotFoundException(EntryNotFoundException.class.toString() + ": Member cannot be found", new Throwable("Member with the id " + id + " does not exist"));
+            throw new NoSuchElementException("Member with the id " + id + " does not exist");
         }
 
-        return new ResponseEntity<Member>(regMember, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable int id) throws NoSuchElementException {
+
+        Member dbMember = memberRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Member with the id " + id + " does not exist"));
+        memberRepository.delete(dbMember);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 }

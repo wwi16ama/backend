@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"id", "firstName", "lastName"})
 public class MemberView {
 
+    private int Id;
+    private String firstName;
+    private String lastName;
 
     public MemberView() {
     }
@@ -14,12 +17,6 @@ public class MemberView {
         this.firstName = firstName;
         this.lastName = lastName;
     }
-
-
-    private int Id;
-    private String firstName;
-    private String lastName;
-
 
     public int getId() {
         return Id;

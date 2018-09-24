@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -140,9 +139,6 @@ public class ApplicationTests {
 
     /**
      * returns an id from an repository, which points to no entry, so repository.existsById(unusedId) returns false.
-     *
-     * @param repository
-     * @return unusedId
      */
     private int getUnusedId(CrudRepository repository) {
         //get random id with no associated member

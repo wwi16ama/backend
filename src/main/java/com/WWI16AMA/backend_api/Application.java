@@ -1,8 +1,6 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Member.*;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,9 +23,10 @@ public class Application {
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository) {
         return (args) -> {
 
-            officeRepository.saveAll(initOfficeTable());
+            List<Office> offices = initOfficeTable();
+            officeRepository.saveAll(offices);
 
-            //generateSomeMembers(memberRepository, initOfficeTable());
+            generateSomeMembers(memberRepository, offices);
         };
     }
 
@@ -47,16 +46,27 @@ public class Application {
         list.add(office4);
 
         return list;
-
     }
 
-    private static void generateSomeMembers(MemberRepository memberRepository, List<Office> offices){
+    private static void generateSomeMembers(MemberRepository memberRepository, List<Office> offices) {
+
+        FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
+                LocalDate.of(2017, 11, 11),
+                LocalDate.of(2019, 11, 10));
+        FlightAuthorization fl2 = new FlightAuthorization(FlightAuthorization.Authorization.BZFI,
+                LocalDate.of(2016, 10, 13),
+                LocalDate.of(2018, 10, 12));
+        List<FlightAuthorization> flList = new ArrayList<>();
+        flList.add(fl1);
+        flList.add(fl2);
+
         Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
                 LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "123456789", false);
 
         mem.setOffices(offices);
+        mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
 
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");

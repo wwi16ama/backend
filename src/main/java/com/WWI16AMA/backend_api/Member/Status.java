@@ -5,7 +5,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 public enum Status {
-
     ACTIVE("active"),
     PASSIVE("passive"),
     HONORARYMEMBER("honoraryMember");
@@ -17,10 +16,6 @@ public enum Status {
 
     Status(String title) {
         this.title = title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title.toUpperCase();
     }
 
     public String getTitle() {

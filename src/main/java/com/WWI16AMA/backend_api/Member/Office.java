@@ -19,10 +19,6 @@ public class Office {
             this.title = title.toUpperCase();
         }
 
-        public void setTitle(String title) {
-            this.title = title.toUpperCase();
-        }
-
         public String getTitle() {
             return title;
         }
@@ -35,22 +31,23 @@ public class Office {
     private int id;
 
     @Enumerated(EnumType.STRING)
-    OfficeName officeName;
+    private OfficeName title;
 
-    public OfficeName getOfficeName() {
-        return officeName;
-    }
-
-    public void setOfficeName(OfficeName officeName) {
-        this.officeName = officeName;
-    }
-
-    public Office(OfficeName officeName) {
-        this.officeName = officeName;
+    public Office(OfficeName title) {
+        this.title = title;
     }
 
     Office() {
 
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public OfficeName getTitle() {
+        return title;
+    }
+
 }
 
