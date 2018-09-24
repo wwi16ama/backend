@@ -9,4 +9,9 @@ public class ErrorInfo {
         this.url = url;
         this.exception = ex.getLocalizedMessage();
     }
+
+    public ErrorInfo(String url, Exception ex, Throwable cause) {
+        this.url = url;
+        this.exception = ex.getLocalizedMessage()+ " " + cause.getLocalizedMessage();
+    }
 }

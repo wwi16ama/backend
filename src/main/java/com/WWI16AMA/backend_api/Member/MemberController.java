@@ -1,11 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.WWI16AMA.backend_api.ErrorInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import com.WWI16AMA.backend_api.Exception.EntryNotFoundException;
+import com.WWI16AMA.backend_api.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +21,8 @@ public class MemberController {
 
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private OfficeRepository officeRepository;
 
     /**
      * Get Request which delivers all Users.
@@ -58,71 +56,54 @@ public class MemberController {
 
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Member> delete(@PathVariable int id) {
+    public ResponseEntity<ResponseObject> delete(@PathVariable int id) throws EntryNotFoundException {
 
-        //return greetingRepository.findById(id).orElse(new Greeting("Muss ja.")
-        memberRepository.deleteById(id);
-        return new ResponseEntity<>(new Member(), HttpStatus.NO_CONTENT);
+        Member dbMember = memberRepository.findById(id).orElseThrow(() ->
+                new EntryNotFoundException(EntryNotFoundException.class.toString() + ": Member cannot be found", new Throwable("Member with the id " + id + " does not exist")));
+        memberRepository.delete(dbMember);
+        return new ResponseEntity<>(new ResponseObject("deleting Member", "Member with the id " + id + " was deleted"), HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Member> detail(@PathVariable int id) throws Exception {
+    public ResponseEntity<Member> detail(@PathVariable int id) {
 
         //return greetingRepository.findById(id).orElse(new Greeting("Muss ja.")
 
-        Member member = memberRepository.findById(id).get();
-
-//        System.out.println(member.getOffices().get(0));
-//
-//        for (Office office : member.getOffices()){
-//            System.out.println(office);
-//        }
-
-
-        System.out.println(this.marshal(member));
-
-        return new ResponseEntity<>(member, HttpStatus.OK);
+        return new ResponseEntity<>(memberRepository.findById(id).get(), HttpStatus.OK);
 
     }
 
 
     @PostMapping(value = "")
-    public ResponseEntity<Member> update(@RequestBody Member member) throws Exception{
+    public ResponseEntity<Member> create(@RequestBody Member reqMember) {
 
-        memberRepository.save(member);
+        List<Office> mOffices = new ArrayList<>();
+        reqMember.getOffices().forEach(office -> {
+            officeRepository.findAll().forEach(dbOffice -> {
+                if (dbOffice.getOfficeName().equals(office.getOfficeName())) {
+                    mOffices.add(dbOffice);
+                }
+            });
+        });
 
-        for (Office office : member.getOffices()){
-            System.out.println(office);
-        }
+        reqMember.setOffices(mOffices);
+        memberRepository.save(reqMember);
 
-        System.out.print(this.marshal(member));
-
-        return new ResponseEntity<>(member, HttpStatus.OK);
+        return new ResponseEntity<>(reqMember, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Member> updateNewAdress(@RequestBody Member member, @PathVariable int id) {
+    public ResponseEntity<Member> updateMember(@RequestBody Member regMember, @PathVariable int id) throws EntryNotFoundException {
 
-        member.setId(id);// TODO
-        memberRepository.save(member);
+        if (memberRepository.existsById(id)) {
+            regMember.setId(id);
+            memberRepository.save(regMember);
+        } else {
+            throw new EntryNotFoundException(EntryNotFoundException.class.toString() + ": Member cannot be found", new Throwable("Member with the id " + id + " does not exist"));
+        }
 
-        return new ResponseEntity<Member>(member, HttpStatus.OK);
+        return new ResponseEntity<Member>(regMember, HttpStatus.NO_CONTENT);
     }
 
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({org.springframework.data.mapping.PropertyReferenceException.class, IllegalArgumentException.class})
-    @ResponseBody
-    ErrorInfo
-    handleBadRequest(HttpServletRequest req, Exception ex) {
-        return new ErrorInfo(req.getRequestURL().toString() + "?" + req.getQueryString(), ex);
-    }
-
-
-    //TODO wieder löschen
-    private String marshal(Object o) throws com.fasterxml.jackson.core.JsonProcessingException {
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        return ow.writeValueAsString(o);
-    }
 
 }

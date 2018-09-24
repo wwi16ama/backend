@@ -1,5 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -10,7 +12,7 @@ import java.util.List;
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
 
@@ -36,7 +38,7 @@ public class Member {
     private boolean admissioned;
     private String memberBankingAccount;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be useful since its possible to have more then one office
 
     @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
@@ -161,7 +163,9 @@ public class Member {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public List<Office> getOffices() { return offices; }
+    public List<Office> getOffices() {
+        return offices;
+    }
 
     public void setOffices(List<Office> offices) {
         this.offices = offices;
@@ -174,5 +178,4 @@ public class Member {
     public void setFlightAuthorization(List<FlightAuthorization> flightAuthorization) {
         this.flightAuthorization = flightAuthorization;
     }
-
 }
