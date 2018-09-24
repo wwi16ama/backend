@@ -16,7 +16,6 @@ public enum Office{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String title;
 
     Office(){}
@@ -31,5 +30,10 @@ public enum Office{
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public String toString(){
+        return id+", "+title;
     }
 }

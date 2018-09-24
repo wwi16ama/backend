@@ -1,6 +1,8 @@
 package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.ErrorInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -64,19 +66,36 @@ public class MemberController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Member> detail(@PathVariable int id) {
+    public ResponseEntity<Member> detail(@PathVariable int id) throws Exception {
 
         //return greetingRepository.findById(id).orElse(new Greeting("Muss ja.")
 
-        return new ResponseEntity<>(memberRepository.findById(id).get(), HttpStatus.OK);
+        Member member = memberRepository.findById(id).get();
+
+//        System.out.println(member.getOffices().get(0));
+//
+//        for (Office office : member.getOffices()){
+//            System.out.println(office);
+//        }
+
+
+        System.out.println(this.marshal(member));
+
+        return new ResponseEntity<>(member, HttpStatus.OK);
 
     }
 
 
     @PostMapping(value = "")
-    public ResponseEntity<Member> update(@RequestBody Member member) {
+    public ResponseEntity<Member> update(@RequestBody Member member) throws Exception{
 
         memberRepository.save(member);
+
+        for (Office office : member.getOffices()){
+            System.out.println(office);
+        }
+
+        System.out.print(this.marshal(member));
 
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
@@ -98,4 +117,12 @@ public class MemberController {
     handleBadRequest(HttpServletRequest req, Exception ex) {
         return new ErrorInfo(req.getRequestURL().toString() + "?" + req.getQueryString(), ex);
     }
+
+
+    //TODO wieder löschen
+    private String marshal(Object o) throws com.fasterxml.jackson.core.JsonProcessingException {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        return ow.writeValueAsString(o);
+    }
+
 }

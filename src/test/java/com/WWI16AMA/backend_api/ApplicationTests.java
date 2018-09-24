@@ -94,12 +94,14 @@ public class ApplicationTests {
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "123456789", false);
 
+        System.out.println(this.marshal(mem));
+        throw new Error(this.marshal(mem));
 
-        this.mockMvc.perform(post("/members")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(this.marshal(mem))).andExpect(status().isOk());
-
-        assertThat(memberRepository.count()).isEqualTo(found + 1);
+//        this.mockMvc.perform(post("/members")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(this.marshal(mem))).andExpect(status().isOk());
+//
+//        assertThat(memberRepository.count()).isEqualTo(found + 1);
     }
 
     @Test

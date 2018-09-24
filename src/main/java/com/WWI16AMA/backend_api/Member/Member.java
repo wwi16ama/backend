@@ -161,9 +161,7 @@ public class Member {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public List<Office> getOffices() {
-        return offices;
-    }
+    public List<Office> getOffices() { return offices; }
 
     public void setOffices(List<Office> offices) {
         this.offices = offices;
@@ -176,4 +174,5 @@ public class Member {
     public void setFlightAuthorization(List<FlightAuthorization> flightAuthorization) {
         this.flightAuthorization = flightAuthorization;
     }
+
 }
