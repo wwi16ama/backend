@@ -41,10 +41,6 @@ public class Office {
 
     }
 
-    public int getId() {
-        return id;
-    }
-
     public OfficeName getTitle() {
         return title;
     }

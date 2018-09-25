@@ -7,7 +7,7 @@ public class ErrorInfo {
     private String url;
     private String exception;
 
-    public ErrorInfo(HttpServletRequest req, Exception ex) {
+    public ErrorInfo(HttpServletRequest req, Throwable ex) {
         this.url = req.getRequestURL().toString();
         this.exception = ex.getLocalizedMessage();
     }
