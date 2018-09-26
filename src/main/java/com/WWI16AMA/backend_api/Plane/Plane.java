@@ -23,7 +23,7 @@ public class Plane {
     private String name;
     @NotBlank
     private String position;
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
 
