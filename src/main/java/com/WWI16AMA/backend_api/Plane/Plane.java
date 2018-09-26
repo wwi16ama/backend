@@ -1,0 +1,70 @@
+package com.WWI16AMA.backend_api.Plane;
+
+import com.WWI16AMA.backend_api.Member.FlightAuthorization;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+@Entity
+public class Plane {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @NotNull
+    private String number;
+    @NotNull
+    private String name;
+    @NotNull
+    private String position;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private FlightAuthorization.Authorization neededAuthorization;
+
+    Plane() {}
+
+    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position) {
+
+        this.number = number;
+        this.name = name;
+        this.position = position;
+        this.neededAuthorization = neededAuthorization;
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public FlightAuthorization.Authorization getNeededAuthorization() {
+        return neededAuthorization;
+    }
+
+    public void setNeededAuthorization(String neededAuthorization) throws IllegalArgumentException{
+        this.neededAuthorization = FlightAuthorization.Authorization.valueOf(neededAuthorization.replace("-", "").toUpperCase());
+    }
+}

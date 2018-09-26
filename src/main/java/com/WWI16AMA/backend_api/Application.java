@@ -1,5 +1,6 @@
 package com.WWI16AMA.backend_api;
 
+import com.WWI16AMA.backend_api.Plane.*;
 import com.WWI16AMA.backend_api.Member.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,13 +21,23 @@ public class Application {
     }
 
     @Bean
-    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository) {
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
             generateSomeMembers(memberRepository, offices);
+
+            FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
+
+            Plane plane1 = new Plane("D-ERFI","Diamond DA-40 TDI", auth,"Halle1");
+
+            planeRepository.save(plane1);
+
+
+
+
         };
     }
 

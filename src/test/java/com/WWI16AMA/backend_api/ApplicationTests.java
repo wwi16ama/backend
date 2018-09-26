@@ -1,5 +1,7 @@
 package com.WWI16AMA.backend_api;
 
+import com.WWI16AMA.backend_api.Plane.Plane;
+import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.Member.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -35,6 +37,9 @@ public class ApplicationTests {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    PlaneRepository planeRepository;
 
     @Test
     public void testRepository() {
@@ -153,6 +158,31 @@ public class ApplicationTests {
     private String marshal(Object o) throws com.fasterxml.jackson.core.JsonProcessingException {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         return ow.writeValueAsString(o);
+    }
+
+
+    @Test
+    public void testRepositoryPlane() {
+
+        long found = memberRepository.count();
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
+        Plane plane = new Plane("D-ERFI","Diamond DA-40 TDI", auth,"Halle1");
+
+        assertThat(planeRepository.count()).isEqualTo(found +1);
+
+    }
+
+    @Test
+    public void testGetPlaneController() throws Exception {
+
+        long found = planeRepository.count();
+        String limit = found != 0 ? Long.toString(found) : "1337";
+
+        this.mockMvc.perform(get("/planes").param("limit", limit))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content", IsCollectionWithSize.hasSize((int) found)));
     }
 
 }
