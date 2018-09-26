@@ -12,35 +12,22 @@ public class MemberView {
     public MemberView() {
     }
 
-    public MemberView(int id, String firstName, String lastName) {
-        Id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public MemberView(Member mem) {
+        Id = mem.getId();
+        this.firstName = mem.getFirstName();
+        this.lastName = mem.getLastName();
     }
 
     public int getId() {
         return Id;
     }
 
-    public void setId(int id) {
-        Id = id;
-    }
-
     public String getFirstName() {
         return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
     }
 
     public String getLastName() {
         return lastName;
     }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
 
 }

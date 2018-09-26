@@ -6,43 +6,31 @@ import javax.persistence.*;
 @Entity
 public class Office {
 
-    public enum OfficeName {
-        FLUGWART("Flugwart"),
-        IMBETRIEBSKONTROLLTURMARBEITEND("ImBetriebskontrollturmArbeitend"),
-        KASSIERER("Kassierer"),
-        SYSTEMADMINISTRATOR("Systemadministrator"),
-        VORSTANDSVORSITZENDER("Vorstandsvorsitzender");
-
-        private String title;
-
-        OfficeName(String title) {
-            this.title = title.toUpperCase();
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-
-    }
+    @Enumerated(EnumType.STRING)
+    private Title title;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Enumerated(EnumType.STRING)
-    private OfficeName title;
-
-    public Office(OfficeName title) {
-        this.title = title;
-    }
-
     Office() {
 
     }
 
-    public OfficeName getTitle() {
+    public Office(Title title) {
+        this.title = title;
+    }
+
+    public Title getTitle() {
         return title;
+    }
+
+    public enum Title {
+        FLUGWART,
+        IMBETRIEBSKONTROLLTURMARBEITEND,
+        KASSIERER,
+        SYSTEMADMINISTRATOR,
+        VORSTANDSVORSITZENDER
     }
 
 }

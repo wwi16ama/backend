@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping(path = "members")
@@ -35,56 +37,48 @@ public class MemberController {
             @RequestParam(defaultValue = "0") int start,
             @RequestParam(defaultValue = "asc") String direction,
             @RequestParam(defaultValue = "lastName") String orderBy
-    ) throws IllegalArgumentException {
+    ) {
 
-        Sort sort;
-
-        if (direction.equals("desc")) sort = new Sort(Sort.Direction.DESC, orderBy);
-        else if (direction.equals("asc")) sort = new Sort(Sort.Direction.ASC, orderBy);
-        else throw new IllegalArgumentException("Sorting direction is neiter 'asc' nor 'desc'");
-
-        List<MemberView> listing = new ArrayList<>();
-        memberRepository.findAll(PageRequest.of(start, limit, sort))
-                .forEach(member -> listing.add(new MemberView(member.getId(),
-                        member.getFirstName(), member.getLastName())));
-        return listing;
+        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
+        return memberRepository.findAll(PageRequest.of(start, limit, sort)).stream()
+                .map(MemberView::new)
+                .collect(toList());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Member> detail(@PathVariable int id) {
+    public Member detail(@PathVariable int id) {
 
-        return new ResponseEntity<>(memberRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist")),
-                HttpStatus.OK);
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist"));
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Member> create(@RequestBody Member reqMember) {
+    public Member create(@RequestBody Member mem) {
 
-        if (reqMember.getId() != null) {
-            throw new IllegalArgumentException("Member has the id: " + reqMember.getId() + ". " +
-                    "Id has to be null when a new member shall be created");
+        if (mem.getId() != null) {
+            throw new IllegalArgumentException("Id has to be null if you want to save a new Member");
         }
-        List<Office> mOffices = new ArrayList<>();
-        reqMember.getOffices().forEach(office -> officeRepository.findAll().forEach(dbOffice -> {
-            if (dbOffice.getTitle().equals(office.getTitle())) {
-                mOffices.add(dbOffice);
-            }
-        }));
 
-        reqMember.setOffices(mOffices);
-        memberRepository.save(reqMember);
+        List<Office> offices = mem.getOffices()
+                .stream()
+                .map(Office::getTitle)
+                .map(officeRepository::findByTitle)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(toList());
 
-        return new ResponseEntity<>(reqMember, HttpStatus.OK);
+        mem.setOffices(offices);
+        memberRepository.save(mem);
+        return mem;
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Void> updateMember(@RequestBody Member regMember, @PathVariable int id)
+    public ResponseEntity<Void> updateMember(@RequestBody Member mem, @PathVariable int id)
             throws NoSuchElementException {
 
         if (memberRepository.existsById(id)) {
-            regMember.setId(id);
-            memberRepository.save(regMember);   //TODO weitere validierung?
+            mem.setId(id);
+            memberRepository.save(mem);
         } else {
             throw new NoSuchElementException("Member with the id " + id + " does not exist");
         }
@@ -93,7 +87,7 @@ public class MemberController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) throws NoSuchElementException {
+    public ResponseEntity<Void> delete(@PathVariable int id) {
 
         Member dbMember = memberRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Member with the id " + id + " does not exist"));

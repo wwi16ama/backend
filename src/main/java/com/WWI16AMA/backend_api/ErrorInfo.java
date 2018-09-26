@@ -23,8 +23,4 @@ public class ErrorInfo {
         return exception;
     }
 
-    //    public ErrorInfo(String url, Exception ex, Throwable cause) {
-//        this.url = url;
-//        this.exception = ex.getLocalizedMessage() + " " + cause.getLocalizedMessage();
-//    }
 }

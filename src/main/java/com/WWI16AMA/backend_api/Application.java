@@ -32,11 +32,11 @@ public class Application {
 
     private static ArrayList<Office> initOfficeTable() {
 
-        Office office = new Office(Office.OfficeName.FLUGWART);
-        Office office1 = new Office(Office.OfficeName.IMBETRIEBSKONTROLLTURMARBEITEND);
-        Office office2 = new Office(Office.OfficeName.KASSIERER);
-        Office office3 = new Office(Office.OfficeName.SYSTEMADMINISTRATOR);
-        Office office4 = new Office(Office.OfficeName.VORSTANDSVORSITZENDER);
+        Office office = new Office(Office.Title.FLUGWART);
+        Office office1 = new Office(Office.Title.IMBETRIEBSKONTROLLTURMARBEITEND);
+        Office office2 = new Office(Office.Title.KASSIERER);
+        Office office3 = new Office(Office.Title.SYSTEMADMINISTRATOR);
+        Office office4 = new Office(Office.Title.VORSTANDSVORSITZENDER);
 
         ArrayList<Office> list = new ArrayList<>();
         list.add(office);
