@@ -45,7 +45,8 @@ public class MemberController {
 
         List<MemberView> listing = new ArrayList<>();
         memberRepository.findAll(PageRequest.of(start, limit, sort))
-                .forEach(member -> listing.add(new MemberView(member.getId(), member.getFirstName(), member.getLastName())));
+                .forEach(member -> listing.add(new MemberView(member.getId(),
+                        member.getFirstName(), member.getLastName())));
         return listing;
     }
 
@@ -53,7 +54,8 @@ public class MemberController {
     public ResponseEntity<Member> detail(@PathVariable int id) {
 
         return new ResponseEntity<>(memberRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist")), HttpStatus.OK);
+                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist")),
+                HttpStatus.OK);
     }
 
     @PostMapping(value = "")
@@ -77,7 +79,8 @@ public class MemberController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Void> updateMember(@RequestBody Member regMember, @PathVariable int id) throws NoSuchElementException {
+    public ResponseEntity<Void> updateMember(@RequestBody Member regMember, @PathVariable int id)
+            throws NoSuchElementException {
 
         if (memberRepository.existsById(id)) {
             regMember.setId(id);

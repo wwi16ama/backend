@@ -23,6 +23,7 @@ public class MemberControllerAdvice {
         return new ResponseEntity<>(new ErrorInfo(req, ex), HttpStatus.BAD_REQUEST);
     }
 
+    // TODO kommentieren
     @ExceptionHandler(TransactionSystemException.class)
     protected ResponseEntity<ErrorInfo> handleConstraintViolation(HttpServletRequest req, Exception ex) {
         return new ResponseEntity<>(new ErrorInfo(req, ex.getCause().getCause()), HttpStatus.BAD_REQUEST);
