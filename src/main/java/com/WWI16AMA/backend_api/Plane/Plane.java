@@ -2,7 +2,12 @@ package com.WWI16AMA.backend_api.Plane;
 
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 import javax.validation.constraints.NotNull;
 
 @Entity
