@@ -27,7 +27,9 @@ public class Plane {
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
 
-    Plane() {}
+    Plane() {
+        //matthis unnötiger comment
+    }
 
     public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position) {
 
