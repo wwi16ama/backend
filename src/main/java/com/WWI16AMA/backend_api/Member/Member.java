@@ -42,7 +42,7 @@ public class Member {
     @ManyToMany
     private List<Office> offices = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
 
