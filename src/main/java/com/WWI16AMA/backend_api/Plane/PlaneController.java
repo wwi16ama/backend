@@ -5,6 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RestController
 @RequestMapping(path = "planes")
@@ -36,7 +39,11 @@ public class PlaneController {
         else if (direction.equals("asc")) sort = new Sort(Sort.Direction.ASC, orderBy);
         else throw new IllegalArgumentException("Sorting direction is neiter 'asc' nor 'desc'");
 
-        Iterable<Plane> planes = planeRepository.findAll(PageRequest.of(start, limit, sort));
+        List<Plane> planes = new ArrayList<Plane>();
+
+        planeRepository.findAll(PageRequest.of(start, limit, sort))
+                .forEach(plane -> planes.add(plane));
+
         return planes;
     }
 }
