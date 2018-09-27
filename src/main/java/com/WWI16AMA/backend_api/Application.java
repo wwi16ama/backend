@@ -35,6 +35,11 @@ public class Application {
 
             planeRepository.save(plane1);
 
+            FlightAuthorization.Authorization auth2 = FlightAuthorization.Authorization.PPLB;
+
+            Plane plane2 = new Plane("D-FRAE","Platinum DA-40 TDI", auth2,"Halle2");
+
+            planeRepository.save(plane2);
 
 
 

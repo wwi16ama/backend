@@ -3,10 +3,7 @@ package com.WWI16AMA.backend_api.Plane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -26,7 +23,7 @@ public class PlaneController {
      * @return Returns an Iterable of Airplanes paged and sorted by given parameters
      */
     @GetMapping(value = "")
-    public Iterable<Plane> getAllUsersPaged(
+    public Iterable<Plane> getAllPlanesPaged(
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int start,
             @RequestParam(defaultValue = "asc") String direction,
