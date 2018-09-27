@@ -16,7 +16,7 @@ public class Plane {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @NotBlank
     private String number;
     @NotBlank
@@ -38,9 +38,11 @@ public class Plane {
 
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
+
+    public void setId(Integer id) { this.id = id; }
 
     public String getNumber() {
         return number;
@@ -70,7 +72,7 @@ public class Plane {
         return neededAuthorization;
     }
 
-    public void setNeededAuthorization(String neededAuthorization) throws IllegalArgumentException{
+    public void setNeededAuthorization(String neededAuthorization) throws IllegalArgumentException {
         this.neededAuthorization = FlightAuthorization.Authorization.valueOf(neededAuthorization.replace("-", "").toUpperCase());
     }
 }
