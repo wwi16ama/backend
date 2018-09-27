@@ -1,33 +1,37 @@
 package com.WWI16AMA.backend_api.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 
 @Entity
-public enum Office {
-    FLUGWART("Flugwart"),
-    IMBETRIEBSKONTROLLTURMARBEITEND("ImBetriebskontrollturmArbeitend"),
-    KASSIERER("Kassierer"),
-    SYSTEMADMINISTRATOR("Systemadministrator"),
-    VORSTANDSVORSITZENDER("Vorstandsvorsitzender");
+public class Office {
+
+    @Enumerated(EnumType.STRING)
+    private Title title;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String title;
 
-    Office(String title) {
+    Office() {
+
+    }
+
+    public Office(Title title) {
         this.title = title;
     }
 
-    public void setTitle(String title) {
-        this.title = title.toUpperCase();
-    }
-
-    public String getTitle() {
+    public Title getTitle() {
         return title;
     }
+
+    public enum Title {
+        FLUGWART,
+        IMBETRIEBSKONTROLLTURMARBEITEND,
+        KASSIERER,
+        SYSTEMADMINISTRATOR,
+        VORSTANDSVORSITZENDER
+    }
+
 }
 

@@ -4,35 +4,84 @@ import com.WWI16AMA.backend_api.Member.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+
 @SpringBootApplication
-public class Application {
+public class Application extends SpringBootServletInitializer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
+    }
 
-	@Bean
-	public CommandLineRunner demo(MemberRepository repository) {
-		return (args) -> {
-            Address address = new Address(71706,"Markgröningen","HabIchDirSchonMalGeschrieben-Gasse",123);
-			Member member = new Member("Matthis","Gördel", LocalDate.of(1996, Month.NOVEMBER, 22),"m",Status.ACTIVE,"marg667@outlook.com",address,"32323232142",true);
-            FlightAuthorization flights = new FlightAuthorization();
-            flights.setAuthorization("PPLA");
-            flights.setDateOfIssue(new Date(20170909));
-            flights.setExpires(new Date(20180909));
-            member.setFlightAuthorization(flights);
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
+    @Bean
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository) {
+        return (args) -> {
 
+            List<Office> offices = initOfficeTable();
+            officeRepository.saveAll(offices);
 
-			repository.save(member);
-		};
-	}
+            generateSomeMembers(memberRepository, offices);
+        };
+    }
+
+    private static ArrayList<Office> initOfficeTable() {
+
+        Office office = new Office(Office.Title.FLUGWART);
+        Office office1 = new Office(Office.Title.IMBETRIEBSKONTROLLTURMARBEITEND);
+        Office office2 = new Office(Office.Title.KASSIERER);
+        Office office3 = new Office(Office.Title.SYSTEMADMINISTRATOR);
+        Office office4 = new Office(Office.Title.VORSTANDSVORSITZENDER);
+
+        ArrayList<Office> list = new ArrayList<>();
+        list.add(office);
+        list.add(office1);
+        list.add(office2);
+        list.add(office3);
+        list.add(office4);
+
+        return list;
+    }
+
+    private static void generateSomeMembers(MemberRepository memberRepository, List<Office> offices) {
+
+        FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
+                LocalDate.of(2017, 11, 11),
+                LocalDate.of(2019, 11, 10));
+        FlightAuthorization fl2 = new FlightAuthorization(FlightAuthorization.Authorization.BZFI,
+                LocalDate.of(2016, 10, 13),
+                LocalDate.of(2018, 10, 12));
+        List<FlightAuthorization> flList = new ArrayList<>();
+        flList.add(fl1);
+        flList.add(fl2);
+
+        Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
+        Member mem = new Member("Karl", "Hansen",
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
+                "karl.hansen@mail.com", adr, "123456789", false);
+
+        mem.setOffices(offices);
+        mem.setFlightAuthorization(flList);
+        memberRepository.save(mem);
+
+        Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
+        Member mem1 = new Member("Kurt", "Krömer",
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
+                "karl.hansen@mail.com", adr, "123456789", false);
+        mem1.setAddress(adr1);
+
+        memberRepository.save(mem1);
+    }
 }

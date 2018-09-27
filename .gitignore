@@ -11,6 +11,7 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/dataSources.xml
 
 # Generated files
 .idea/**/contentModel.xml
@@ -119,4 +120,6 @@ buildNumber.properties
 
 # Own additions
 
-application.properties
+src/main/resources/
+
+backend_api.iml

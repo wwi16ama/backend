@@ -9,13 +9,22 @@ import javax.persistence.Id;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private int postalCode;
     private String city;
     private String streetAddress;
-    private int streetNumber;
+
+    public Address() {
+
+    }
+
+    public Address(int postalCode, String city, String streetAddress) {
+        this.postalCode = postalCode;
+        this.city = city;
+        this.streetAddress = streetAddress;
+    }
 
     public int getPostalCode() {
         return postalCode;
@@ -39,20 +48,5 @@ public class Address {
 
     public void setStreetAddress(String streetAddress) {
         this.streetAddress = streetAddress;
-    }
-
-    public int getStreetNumber() {
-        return streetNumber;
-    }
-
-    public void setStreetNumber(int streetNumber) {
-        this.streetNumber = streetNumber;
-    }
-
-    public Address(int postalCode, String city, String streetAddress, int streetNumber) {
-        this.postalCode = postalCode;
-        this.city = city;
-        this.streetAddress = streetAddress;
-        this.streetNumber = streetNumber;
     }
 }

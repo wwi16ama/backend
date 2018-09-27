@@ -1,65 +1,78 @@
 package com.WWI16AMA.backend_api.Member;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotNull
     private LocalDate dateOfBirth;
-    private String sex;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private Status status;
+    @NotBlank
+    @Email
     private String email;
-    @OneToOne(cascade = {CascadeType.ALL})
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+    @NotBlank
     private String bankingAccount;
+    @NotNull
     private boolean admissioned;
     private String memberBankingAccount;
-    @ManyToMany(cascade = {CascadeType.ALL})
-    private List<Office> offices; //TODO: Using a list might be usefull since its possible to have more then one office
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<FlightAuthorization> flightAuthorization = new ArrayList<FlightAuthorization>(10); //TODO: see above
 
-    private Member() {
+    @ManyToMany
+    private List<Office> offices = new ArrayList<>();
+
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
+
+
+    public Member() {
 
     }
 
     /**
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
-     * @param firstName
-     * @param lastName
-     * @param dateOfBirth
-     * @param sex
-     * @param status
-     * @param email
-     * @param address
-     * @param bankingAccount
-     * @param admissioned
      */
-    public Member(String firstName, String lastName, LocalDate dateOfBirth, String sex, Status status, String email, Address address, String bankingAccount, boolean admissioned){
+    public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status,
+                  String email, Address address, String bankingAccount, boolean admissioned) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
-        this.sex = sex;
+        this.gender = gender;
         this.status = status;
         this.email = email;
         this.address = address;
         this.bankingAccount = bankingAccount;
         this.admissioned = admissioned;
     }
-    //Getter & Setter
+
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -86,19 +99,21 @@ public class Member {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getSex() {
-        return sex;
+    public Gender getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public String getEmail() {
         return email;
@@ -140,19 +155,19 @@ public class Member {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public Office getOffices(int id) {
-        return offices.get(id);
+    public List<Office> getOffices() {
+        return offices;
     }
 
-    public void setOffices(Office offices) {
-        this.offices.add(offices);
+    public void setOffices(List<Office> offices) {
+        this.offices = offices;
     }
 
-    public FlightAuthorization getFlightAuthorization(int id) {
-        return flightAuthorization.get(id);
+    public List<FlightAuthorization> getFlightAuthorization() {
+        return flightAuthorization;
     }
 
-    public void setFlightAuthorization(FlightAuthorization flightAuthorization) {
-        this.flightAuthorization.add(flightAuthorization);
+    public void setFlightAuthorization(List<FlightAuthorization> flightAuthorization) {
+        this.flightAuthorization = flightAuthorization;
     }
 }

@@ -1,77 +1,63 @@
 package com.WWI16AMA.backend_api.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 
 @Entity
 public class FlightAuthorization {
 
-    @Entity
     public enum Authorization {
-        PPLA("PPL-A"),
-        PPLB("PPL-B"),
-        BZFI("BZF-I"),
-        BZFII("BZF-II"),
-        LEHRBEFUGNIS("Lehrbefugnis");
-
-
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        private int id;
-
-        private String title;
-
-        Authorization(String title){
-            this.title = title;
-        }
-
-        public String title(){
-            return title;
-        }
+        PPLA,
+        PPLB,
+        BZFI,
+        BZFII,
+        LEHRBEFUGNIS
     }
-
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Enumerated(EnumType.STRING)
     private Authorization authorization;
 
-    private Date dateOfIssue;
+    private LocalDate dateOfIssue;
 
-    private Date expires;
+    private LocalDate expires;
 
-    public String getAuthorization() {	//kp ob das dumm oder schlau is
-        return authorization.title();
+    public FlightAuthorization() {
+
     }
 
-    public void setAuthorization(String authorization) throws IllegalArgumentException {
-
-        this.authorization = Authorization.valueOf(authorization.replace("-", "").toUpperCase());
-    }
-
-    public Date getDateOfIssue() {
-        return dateOfIssue;
-    }
-
-    public void setDateOfIssue(Date dateOfIssue) {
+    public FlightAuthorization(Authorization authorization, LocalDate dateOfIssue, LocalDate expires) {
+        this.authorization = authorization;
         this.dateOfIssue = dateOfIssue;
-    }
-
-    public Date getExpires() {
-        return expires;
-    }
-
-    public void setExpires(Date expires) {
         this.expires = expires;
     }
 
-    public FlightAuthorization () {
+    public String getAuthorization() {
+        return authorization.toString();
+    }
 
+    public void setAuthorization(String authorization) throws IllegalArgumentException {
+        this.authorization = Authorization.valueOf(authorization.replace("-", "").toUpperCase());
+    }
+
+    public LocalDate getDateOfIssue() {
+        return dateOfIssue;
+    }
+
+    public void setDateOfIssue(LocalDate dateOfIssue) {
+        this.dateOfIssue = dateOfIssue;
+    }
+
+    public LocalDate getExpires() {
+        return expires;
+    }
+
+    public void setExpires(LocalDate expires) {
+        this.expires = expires;
     }
 }
