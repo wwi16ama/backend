@@ -55,7 +55,7 @@ public class PlaneController {
     public ResponseEntity<Plane> detail(@PathVariable int id) {
 
         return new ResponseEntity<>(planeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("")), HttpStatus.OK);
+                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist")), HttpStatus.OK);
     }
 
     @PostMapping(path = "")
@@ -90,6 +90,6 @@ public class PlaneController {
                 .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist"));
         planeRepository.delete(plane);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
