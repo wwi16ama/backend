@@ -121,5 +121,6 @@ buildNumber.properties
 # Own additions
 
 src/main/resources/
+src/test/resources/
 
 backend_api.iml

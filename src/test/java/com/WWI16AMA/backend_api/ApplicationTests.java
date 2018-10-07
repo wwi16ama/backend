@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.NoSuchElementException;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -88,6 +89,9 @@ public class ApplicationTests {
         Member mem = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "123456789", false);
+
+        Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
+        mem.setOffices(asList(off));
 
         this.mockMvc.perform(post("/members")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -164,7 +168,6 @@ public class ApplicationTests {
                         "Damit ist nicht der erwartete Fall eingetreten.");
             }
         }
-
     }
 
     @Test
