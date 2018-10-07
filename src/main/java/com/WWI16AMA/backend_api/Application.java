@@ -1,7 +1,8 @@
 package com.WWI16AMA.backend_api;
 
-import com.WWI16AMA.backend_api.Plane.*;
 import com.WWI16AMA.backend_api.Member.*;
+import com.WWI16AMA.backend_api.Plane.Plane;
+import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -37,17 +38,19 @@ public class Application extends SpringBootServletInitializer {
             generateSomeMembers(memberRepository, offices);
 
             FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
-
-            Plane plane1 = new Plane("D-ERFI","Diamond DA-40 TDI", auth,"Halle1");
-
-            planeRepository.save(plane1);
-
             FlightAuthorization.Authorization auth2 = FlightAuthorization.Authorization.PPLB;
 
-            Plane plane2 = new Plane("D-FRAE","Platinum DA-40 TDI", auth2,"Halle2");
+            Plane plane1 = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle1");
+            planeRepository.save(plane1);
 
+            Plane plane2 = new Plane("D-EJEK", "DR 400 Remorqueur", auth, "Halle1");
             planeRepository.save(plane2);
 
+            Plane plane3 = new Plane("D-KNIF", " SF25C Falke", auth2, "Halle2");
+            planeRepository.save(plane3);
+
+            Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Diamona", auth2, "Halle2");
+            planeRepository.save(plane4);
 
 
         };

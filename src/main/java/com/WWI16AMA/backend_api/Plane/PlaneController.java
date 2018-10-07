@@ -7,10 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static java.util.stream.Collectors.toList;
 
 
 @RestController
@@ -37,18 +38,10 @@ public class PlaneController {
             @RequestParam(defaultValue = "name") String orderBy
     ) throws IllegalArgumentException {
 
-        Sort sort;
+        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
 
-        if (direction.equals("desc")) sort = new Sort(Sort.Direction.DESC, orderBy);
-        else if (direction.equals("asc")) sort = new Sort(Sort.Direction.ASC, orderBy);
-        else throw new IllegalArgumentException("Sorting direction is neiter 'asc' nor 'desc'");
-
-        List<Plane> planes = new ArrayList<Plane>();
-
-        planeRepository.findAll(PageRequest.of(start, limit, sort))
-                .forEach(plane -> planes.add(plane));
-
-        return planes;
+        return planeRepository.findAll(PageRequest.of(start, limit, sort)).stream()
+                .collect(toList());
     }
 
     @GetMapping(path = "/{id}")
@@ -59,7 +52,7 @@ public class PlaneController {
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<Plane> create(@RequestBody Plane reqPlane) {
+    public Plane create(@RequestBody Plane reqPlane) {
 
         if (reqPlane.getId() != null) {
             throw new IllegalArgumentException("Plane has the ID: " + reqPlane.getId() +
@@ -68,7 +61,7 @@ public class PlaneController {
 
         planeRepository.save(reqPlane);
 
-        return new ResponseEntity<>(reqPlane, HttpStatus.OK);
+        return reqPlane;
     }
 
     @PutMapping(path = "/{id}")
@@ -77,8 +70,8 @@ public class PlaneController {
         if (planeRepository.existsById(id)) {
             putPlane.setId(id);
             planeRepository.save(putPlane);
-        }   else {
-            throw new NoSuchElementException("Member with id "+ id + " does not exist.");
+        } else {
+            throw new NoSuchElementException("Member with id " + id + " does not exist.");
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -200,10 +200,11 @@ public class ApplicationTests {
     @Test
     public void testRepositoryPlane() {
 
-        long found = memberRepository.count();
+        long found = planeRepository.count();
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
         Plane plane = new Plane("D-ERFI","Diamond DA-40 TDI", auth,"Halle1");
+        planeRepository.save(plane);
 
         assertThat(planeRepository.count()).isEqualTo(found +1);
 
@@ -217,8 +218,8 @@ public class ApplicationTests {
 
         this.mockMvc.perform(get("/planes").param("limit", limit))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content", IsCollectionWithSize.hasSize((int) found)));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", IsCollectionWithSize.hasSize((int) found)));
     }
 
 }

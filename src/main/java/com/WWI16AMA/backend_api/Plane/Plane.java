@@ -2,12 +2,7 @@ package com.WWI16AMA.backend_api.Plane;
 
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -27,7 +22,8 @@ public class Plane {
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
 
-    Plane() {}
+    Plane() {
+    }
 
     public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position) {
 
@@ -42,7 +38,9 @@ public class Plane {
         return id;
     }
 
-    public void setId(Integer id) { this.id = id; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getNumber() {
         return number;
