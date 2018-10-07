@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -27,7 +28,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Status status;
     @NotBlank
+    @Email
     private String email;
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
     @NotBlank
@@ -36,10 +39,10 @@ public class Member {
     private boolean admissioned;
     private String memberBankingAccount;
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
-    private List<Office> offices = new ArrayList<>(); //TODO: Using a list might be useful since its possible to have more then one office
+    @ManyToMany
+    private List<Office> offices = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL})
+    @OneToMany(orphanRemoval = true, cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
 
@@ -50,7 +53,8 @@ public class Member {
     /**
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
      */
-    public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status, String email, Address address, String bankingAccount, boolean admissioned) {
+    public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status,
+                  String email, Address address, String bankingAccount, boolean admissioned) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;

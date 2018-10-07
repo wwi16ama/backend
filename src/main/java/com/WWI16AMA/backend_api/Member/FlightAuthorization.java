@@ -42,7 +42,6 @@ public class FlightAuthorization {
     }
 
     public void setAuthorization(String authorization) throws IllegalArgumentException {
-
         this.authorization = Authorization.valueOf(authorization.replace("-", "").toUpperCase());
     }
 
