@@ -78,6 +78,15 @@ public class MemberController {
 
         if (memberRepository.existsById(id)) {
             mem.setId(id);
+            List<Office> offices = mem.getOffices()
+                    .stream()
+                    .map(Office::getTitle)
+                    .map(officeRepository::findByTitle)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(toList());
+
+            mem.setOffices(offices);
             memberRepository.save(mem);
         } else {
             throw new NoSuchElementException("Member with the id " + id + " does not exist");
