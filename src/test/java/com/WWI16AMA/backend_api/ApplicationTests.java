@@ -1,8 +1,8 @@
 package com.WWI16AMA.backend_api;
 
+import com.WWI16AMA.backend_api.Member.*;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
-import com.WWI16AMA.backend_api.Member.*;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,20 +32,17 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ApplicationTests {
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    PlaneRepository planeRepository;
     /*
     Sadly a little ugly. The mockMvc is not configured to use the @ControllerAdvice,
     so there is the failMvc, but that one has no possibility of persisting.
      */
     @Autowired
     private MockMvc mockMvc;
-
     private MockMvc failMvc;
-
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    PlaneRepository planeRepository;
 
     @Before
     public void beforeTest() {
@@ -194,19 +191,16 @@ public class ApplicationTests {
     }
 
 
-
-
-
     @Test
     public void testRepositoryPlane() {
 
         long found = planeRepository.count();
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
-        Plane plane = new Plane("D-ERFI","Diamond DA-40 TDI", auth,"Halle1");
+        Plane plane = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle1");
         planeRepository.save(plane);
 
-        assertThat(planeRepository.count()).isEqualTo(found +1);
+        assertThat(planeRepository.count()).isEqualTo(found + 1);
 
     }
 
@@ -222,4 +216,97 @@ public class ApplicationTests {
                 .andExpect(jsonPath("$", IsCollectionWithSize.hasSize((int) found)));
     }
 
+    @Test
+    public void testPostPlaneController() throws Exception {
+
+        long found = planeRepository.count();
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        Plane plane = new Plane(" D-EJEK", "DR 400 Remorqueur", auth, "Halle1");
+
+        this.mockMvc.perform(post("/planes").contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(plane))).andExpect(status().isOk());
+
+        assertThat(planeRepository.count()).isEqualTo(found + 1);
+
+    }
+
+    @Test
+    public void testPutPlaneController() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2");
+        planeRepository.save(plane);
+
+        Plane newPlaneInfos = new Plane(" D-EJEK", "DR 500 Adler", auth, "Halle1");
+        this.mockMvc.perform(put("/planes/" + plane.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(plane)))
+                .andExpect(status().isNoContent());
+
+        assertThat(plane.getName()).isEqualToIgnoringCase(planeRepository.findById(plane.getId())
+                .orElseThrow(() -> new NoSuchElementException("[TEST]: member not found")).getName()
+        );
+    }
+
+    @Test
+    public void testPutPlaneControllerMalformedInput() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2");
+
+        this.failMvc.perform(put("/planes/" + TestUtil.getUnusedId(memberRepository))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(plane)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testPutPlaneControllerViolatingConstraints() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2");
+        planeRepository.save(plane);
+
+        plane.setNumber(null);
+        try {
+            // this should throw an exception, because the validation of the member
+            // should fail. If there is no exception, the status won't be "Bad Request"
+            this.mockMvc.perform(put("/planes/" + plane.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtil.marshal(plane)))
+                    .andExpect(status().isBadRequest());
+        } catch (org.springframework.web.util.NestedServletException e) {
+            // It's expected behavior to have a specific exception, which should
+            // fit these criteria.
+            if (!(e.getCause() instanceof TransactionSystemException &&
+                    e.getCause().getCause() instanceof RollbackException)) {
+                throw new Exception("Es wurden andere verursachende Exceptions erwartet.\r\n" +
+                        "Damit ist nicht der erwartete Fall eingetreten.");
+            }
+        }
+    }
+
+    @Test
+    public void testDeletePlaneController() throws Exception {
+
+        long found = planeRepository.count();
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2");
+        Integer id = planeRepository.save(plane).getId();
+
+        this.mockMvc.perform(delete("/planes/" + id))
+                .andExpect(status().isNoContent());
+
+        assertThat(found).isEqualTo(planeRepository.count());
+
+    }
+
+    @Test
+    public void testDeleteNonexistingPlane() throws Exception {
+
+        this.failMvc.perform(delete("/planes/" + TestUtil.getUnusedId(planeRepository)))
+                .andExpect(status().isNotFound());
+
+    }
 }
