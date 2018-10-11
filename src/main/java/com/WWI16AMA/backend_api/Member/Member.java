@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class Member {
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
-    @NotBlank
+    @Pattern(regexp = "DE[0-9]{20}")
     private String bankingAccount;
     @NotNull
     private boolean admissioned;

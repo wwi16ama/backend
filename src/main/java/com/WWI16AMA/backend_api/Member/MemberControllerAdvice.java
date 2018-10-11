@@ -26,13 +26,6 @@ public class MemberControllerAdvice {
         return new ResponseEntity<>(new ErrorInfo(req, ex), HttpStatus.BAD_REQUEST);
     }
 
-    // TODO eventuell überflüssig
-//    @ExceptionHandler(TransactionSystemException.class)
-//    protected ResponseEntity<ErrorInfo> handleConstraintViolation(HttpServletRequest req, Exception ex) {
-//        return new ResponseEntity<>(new ErrorInfo(req, ex.getCause().getCause()), HttpStatus.BAD_REQUEST);
-//    }
-
-
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<ErrorInfo> handleNoEntryFound(HttpServletRequest req, Exception ex) {
         return new ResponseEntity<>(new ErrorInfo(req, ex), HttpStatus.NOT_FOUND);

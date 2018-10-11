@@ -41,8 +41,8 @@ public class FlightAuthorization {
         return authorization.toString();
     }
 
-    public void setAuthorization(String authorization) throws IllegalArgumentException {
-        this.authorization = Authorization.valueOf(authorization.replace("-", "").toUpperCase());
+    public void setAuthorization(Authorization authorization) {
+        this.authorization = authorization;
     }
 
     public LocalDate getDateOfIssue() {
