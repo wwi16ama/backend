@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -58,7 +59,7 @@ public class Application extends SpringBootServletInitializer {
                 LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
 
-        mem.setOffices(offices);
+        mem.setOffices(new HashSet<>(offices));
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
 

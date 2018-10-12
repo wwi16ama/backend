@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -67,7 +68,7 @@ public class MemberController {
                 .map(Optional::get)
                 .collect(toList());
 
-        mem.setOffices(offices);
+        mem.setOffices(new HashSet<>(offices));
         memberRepository.save(mem);
         return mem;
     }
@@ -86,7 +87,7 @@ public class MemberController {
                     .map(Optional::get)
                     .collect(toList());
 
-            mem.setOffices(offices);
+            mem.setOffices(new HashSet<>(offices));
             memberRepository.save(mem);
         } else {
             throw new NoSuchElementException("Member with the id " + id + " does not exist");
