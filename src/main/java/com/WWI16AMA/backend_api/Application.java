@@ -1,5 +1,6 @@
 package com.WWI16AMA.backend_api;
 
+import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Member.*;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
@@ -83,8 +84,9 @@ public class Application extends SpringBootServletInitializer {
         planeRepository.saveAll(Arrays.asList(planes));
     }
 
+
     @Bean
-    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository) {
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository, AccountRepository accountRepository) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();

@@ -1,5 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
+import com.WWI16AMA.backend_api.Account.Account;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -45,6 +47,9 @@ public class Member {
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    private Account account = new Account();
 
 
     public Member() {
