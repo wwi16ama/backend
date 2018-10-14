@@ -40,16 +40,15 @@ public class Member {
     private String bankingAccount;
     @NotNull
     private boolean admissioned;
-    private String memberBankingAccount;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Account memberBankingAccount = new Account();
 
     @ManyToMany
     private List<Office> offices = new ArrayList<>();
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
-
-    @OneToOne(cascade = {CascadeType.ALL})
-    private Account account = new Account();
 
 
     public Member() {
@@ -153,11 +152,11 @@ public class Member {
         this.admissioned = admissioned;
     }
 
-    public String getMemberBankingAccount() {
+    public Account getMemberBankingAccount() {
         return memberBankingAccount;
     }
 
-    public void setMemberBankingAccount(String memberBankingAccount) {
+    public void setMemberBankingAccount(Account memberBankingAccount) {
         this.memberBankingAccount = memberBankingAccount;
     }
 
