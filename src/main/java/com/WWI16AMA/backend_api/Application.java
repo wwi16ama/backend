@@ -10,12 +10,10 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 
 @SpringBootApplication
@@ -30,7 +28,7 @@ public class Application extends SpringBootServletInitializer {
         SpringApplication.run(Application.class, args);
     }
 
-    private static List<Office> initOfficeTable() {
+    private static Collection<Office> initOfficeTable() {
 
         Office office = new Office(Office.Title.FLUGWART);
         Office office1 = new Office(Office.Title.IMBETRIEBSKONTROLLTURMARBEITEND);
@@ -39,10 +37,10 @@ public class Application extends SpringBootServletInitializer {
         Office office4 = new Office(Office.Title.VORSTANDSVORSITZENDER);
 
         Office[] offices = {office, office1, office2, office3, office4};
-        return Arrays.asList(offices);
+        return new HashSet<>(Arrays.asList(offices));
     }
 
-    private static void generateSomeMembers(MemberRepository memberRepository, List<Office> offices) {
+    private static void generateSomeMembers(MemberRepository memberRepository, Collection<Office> offices) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -59,7 +57,7 @@ public class Application extends SpringBootServletInitializer {
                 LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
 
-        mem.setOffices(new HashSet<>(offices));
+        mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
 
@@ -88,7 +86,7 @@ public class Application extends SpringBootServletInitializer {
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository) {
         return (args) -> {
 
-            List<Office> offices = initOfficeTable();
+            Collection<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
             generateSomeMembers(memberRepository, offices);

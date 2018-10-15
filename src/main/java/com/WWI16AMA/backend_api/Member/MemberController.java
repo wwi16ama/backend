@@ -7,10 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -60,15 +58,16 @@ public class MemberController {
             throw new IllegalArgumentException("Id has to be null if you want to save a new Member");
         }
 
-        List<Office> offices = mem.getOffices()
+        Set<Office> offices = mem.getOffices()
                 .stream()
                 .map(Office::getTitle)
                 .map(officeRepository::findByTitle)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(toList());
+                .collect(Collectors.toSet());
 
-        mem.setOffices(new HashSet<>(offices));
+
+        mem.setOffices(offices);
         memberRepository.save(mem);
         return mem;
     }
@@ -79,15 +78,15 @@ public class MemberController {
 
         if (memberRepository.existsById(id)) {
             mem.setId(id);
-            List<Office> offices = mem.getOffices()
+            Set<Office> offices = mem.getOffices()
                     .stream()
                     .map(Office::getTitle)
                     .map(officeRepository::findByTitle)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .collect(toList());
+                    .collect(Collectors.toSet());
 
-            mem.setOffices(new HashSet<>(offices));
+            mem.setOffices(offices);
             memberRepository.save(mem);
         } else {
             throw new NoSuchElementException("Member with the id " + id + " does not exist");

@@ -6,10 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Member {
@@ -162,8 +159,8 @@ public class Member {
         return offices;
     }
 
-    public void setOffices(Set<Office> offices) {
-        this.offices = offices;
+    public void setOffices(Collection<Office> offices) {
+        this.offices = new HashSet<Office>(offices);
     }
 
     public List<FlightAuthorization> getFlightAuthorization() {
