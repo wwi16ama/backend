@@ -16,7 +16,10 @@ import org.springframework.transaction.TransactionSystemException;
 import javax.persistence.RollbackException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,18 +32,19 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ApplicationTests {
+public class MemberTests {
+
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    OfficeRepository officeRepository;
     /*
     Sadly a little ugly. The mockMvc is not configured to use the @ControllerAdvice,
     so there is the failMvc, but that one has no possibility of persisting.
      */
     @Autowired
     private MockMvc mockMvc;
-
     private MockMvc failMvc;
-
-    @Autowired
-    MemberRepository memberRepository;
 
     @Before
     public void beforeTest() {
@@ -54,11 +58,7 @@ public class ApplicationTests {
 
         long found = memberRepository.count();
 
-        Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
-        Member mem = new Member("Karl", "Hansen",
-                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "123456789", false);
-        memberRepository.save(mem);
+        saveAndGetMember();
 
         assertThat(memberRepository.count()).isEqualTo(found + 1);
     }
@@ -83,7 +83,7 @@ public class ApplicationTests {
         Address adr = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "123456789", false);
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
 
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
         mem.setOffices(asList(off));
@@ -98,12 +98,7 @@ public class ApplicationTests {
     @Test
     public void testPutMemberController() throws Exception {
 
-        Address adr = new Address(54231, "Krefeld", "Bühnenstraße 5");
-        Member mem = new Member("Kurt", "Prödel",
-                LocalDate.of(1975, Month.MAY, 10), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr,
-                "123456789", false);
-        memberRepository.save(mem);
+        Member mem = saveAndGetMember();
 
         Address newAddr = new Address(12345, "Neustadt", "Neustraße 5");
         mem.setAddress(newAddr);
@@ -120,11 +115,7 @@ public class ApplicationTests {
     @Test
     public void testPutMemberControllerMalformedInput() throws Exception {
 
-        Address adr = new Address(54231, "Krefeld", "Bühnenstraße 5");
-        Member mem = new Member("Kurt", "Prödel",
-                LocalDate.of(1975, Month.MAY, 10), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr,
-                "123456789", false);
+        Member mem = saveAndGetMember();
 
         this.failMvc.perform(put("/members/" + TestUtil.getUnusedId(memberRepository))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -139,12 +130,7 @@ public class ApplicationTests {
     @Test
     public void testPutMemberControllerViolatingConstraints() throws Exception {
 
-        Address adr = new Address(54231, "Krefeld", "Bühnenstraße 5");
-        Member mem = new Member("Kurt", "Prödel",
-                LocalDate.of(1975, Month.MAY, 10), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr,
-                "123456789", false);
-        memberRepository.save(mem);
+        Member mem = saveAndGetMember();
 
         mem.setAddress(null);
         try {
@@ -169,14 +155,8 @@ public class ApplicationTests {
     public void testDeleteMemberController() throws Exception {
 
         long found = memberRepository.count();
-
-        Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
-        Member mem = new Member("Hauke", "Haien",
-                LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "123456789", false);
-        Integer id = memberRepository.save(mem).getId();
-
-        this.mockMvc.perform(delete("/members/" + id))
+        Member mem = saveAndGetMember();
+        this.mockMvc.perform(delete("/members/" + mem.getId()))
                 .andExpect(status().isNoContent());
 
         assertThat(found).isEqualTo(memberRepository.count());
@@ -189,4 +169,17 @@ public class ApplicationTests {
     }
 
 
+    private Member saveAndGetMember() {
+        Address adr = new Address(68167, "Mannheim", "Hambachstraße 3");
+        Member mem = new Member("Hauke", "Haien",
+                LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
+
+        List<Office> off = StreamSupport.stream(officeRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+        mem.setOffices(off);
+
+        memberRepository.save(mem);
+        return mem;
+    }
 }

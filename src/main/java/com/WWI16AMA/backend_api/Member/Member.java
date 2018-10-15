@@ -4,9 +4,12 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Member {
@@ -33,14 +36,14 @@ public class Member {
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
-    @NotBlank
+    @Pattern(regexp = "DE[0-9]{20}")
     private String bankingAccount;
     @NotNull
     private boolean admissioned;
     private String memberBankingAccount;
 
     @ManyToMany
-    private List<Office> offices = new ArrayList<>();
+    private Set<Office> offices = new HashSet<>();
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
@@ -155,11 +158,11 @@ public class Member {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public List<Office> getOffices() {
+    public Set<Office> getOffices() {
         return offices;
     }
 
-    public void setOffices(List<Office> offices) {
+    public void setOffices(Set<Office> offices) {
         this.offices = offices;
     }
 

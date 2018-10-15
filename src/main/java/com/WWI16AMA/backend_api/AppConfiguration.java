@@ -13,7 +13,8 @@ public class AppConfiguration {
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
 
-            String[] origins = {"http://localhost", "http://localhost:4200"};
+            String[] origins = {"http://localhost", "http://localhost:4200",
+                    "https://localhost", "https://localhost:4200"};
             String[] methods = {"GET", "POST", "PUT", "DELETE"};
 
             @Override
