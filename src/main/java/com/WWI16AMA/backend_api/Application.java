@@ -28,7 +28,7 @@ public class Application extends SpringBootServletInitializer {
         SpringApplication.run(Application.class, args);
     }
 
-    private static Collection<Office> initOfficeTable() {
+    private static List<Office> initOfficeTable() {
 
         Office office = new Office(Office.Title.FLUGWART);
         Office office1 = new Office(Office.Title.IMBETRIEBSKONTROLLTURMARBEITEND);
@@ -37,10 +37,10 @@ public class Application extends SpringBootServletInitializer {
         Office office4 = new Office(Office.Title.VORSTANDSVORSITZENDER);
 
         Office[] offices = {office, office1, office2, office3, office4};
-        return new HashSet<>(Arrays.asList(offices));
+        return Arrays.asList(offices);
     }
 
-    private static void generateSomeMembers(MemberRepository memberRepository, Collection<Office> offices) {
+    private static void generateSomeMembers(MemberRepository memberRepository, List<Office> offices) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -86,7 +86,7 @@ public class Application extends SpringBootServletInitializer {
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository) {
         return (args) -> {
 
-            Collection<Office> offices = initOfficeTable();
+            List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
             generateSomeMembers(memberRepository, offices);

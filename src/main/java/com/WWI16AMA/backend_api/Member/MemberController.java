@@ -58,13 +58,13 @@ public class MemberController {
             throw new IllegalArgumentException("Id has to be null if you want to save a new Member");
         }
 
-        Set<Office> offices = mem.getOffices()
+        List<Office> offices = mem.getOffices()
                 .stream()
                 .map(Office::getTitle)
                 .map(officeRepository::findByTitle)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
 
         mem.setOffices(offices);
@@ -78,13 +78,13 @@ public class MemberController {
 
         if (memberRepository.existsById(id)) {
             mem.setId(id);
-            Set<Office> offices = mem.getOffices()
+            List<Office> offices = mem.getOffices()
                     .stream()
                     .map(Office::getTitle)
                     .map(officeRepository::findByTitle)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
 
             mem.setOffices(offices);
             memberRepository.save(mem);

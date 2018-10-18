@@ -159,7 +159,7 @@ public class Member {
         return offices;
     }
 
-    public void setOffices(Collection<Office> offices) {
+    public void setOffices(List<Office> offices) {
         this.offices = new HashSet<Office>(offices);
     }
 
