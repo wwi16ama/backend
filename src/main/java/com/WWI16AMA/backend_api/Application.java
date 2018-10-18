@@ -1,5 +1,7 @@
 package com.WWI16AMA.backend_api;
 
+import com.WWI16AMA.backend_api.Fee.Fee;
+import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
@@ -10,19 +12,15 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -82,8 +80,23 @@ public class Application extends SpringBootServletInitializer {
         planeRepository.saveAll(Arrays.asList(planes));
     }
 
+    private static void generateSomeFees(FeeRepository feeRepository) {
+
+        Fee fee1 = new Fee(Fee.Status.ACTIVE, 220);
+        Fee fee2 = new Fee(Fee.Status.U20ACTIVE, 150);
+        Fee fee3 = new Fee(Fee.Status.PASSIVE, 80);
+        Fee fee4 = new Fee(Fee.Status.SPECIAL, 0);
+        Fee fees[] = {fee1, fee2, fee3, fee4};
+        feeRepository.saveAll(Arrays.asList(fees));
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
+    }
+
     @Bean
-    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository) {
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository, FeeRepository feeRepository) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
@@ -92,6 +105,8 @@ public class Application extends SpringBootServletInitializer {
             generateSomeMembers(memberRepository, offices);
 
             generateSomePlanes(planeRepository);
+
+            generateSomeFees(feeRepository);
         };
     }
 }
