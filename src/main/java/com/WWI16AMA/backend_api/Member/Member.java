@@ -1,6 +1,8 @@
 package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.Account;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -41,7 +43,7 @@ public class Member {
     @NotNull
     private boolean admissioned;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)  @JsonIgnoreProperties({"balance", "transactions" })
     private Account memberBankingAccount = new Account();
 
     @ManyToMany
