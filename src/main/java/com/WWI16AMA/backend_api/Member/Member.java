@@ -49,7 +49,7 @@ public class Member {
     @ManyToMany
     private List<Office> offices = new ArrayList<>();
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
 

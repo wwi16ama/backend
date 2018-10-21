@@ -21,7 +21,7 @@ public class Account {
     @NotNull
     private double balance;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Transaction> transactions = new ArrayList<>();
 
     public Account() {
@@ -48,7 +48,6 @@ public class Account {
         this.balance = this.balance + amount;
     }
 
-    @JsonIgnore
     public List<Transaction> getTransactions() {
         return transactions;
     }

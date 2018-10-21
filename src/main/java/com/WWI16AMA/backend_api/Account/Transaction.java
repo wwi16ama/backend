@@ -1,12 +1,10 @@
 package com.WWI16AMA.backend_api.Account;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 public class Transaction {
@@ -14,23 +12,35 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-
-    private LocalDateTime timestamp;
-
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private FeeType type;
+    @DateTimeFormat(pattern = "yyyy-MM-dd:mm:ss")
+    private LocalDate timestamp;
     @NotNull
     private double amount;
+    public Transaction() {
+        this.timestamp = LocalDate.now();
+    }
 
-    @NotNull
-    Transaction.Fee type;
-
-    public Transaction(){}
-
-    public Transaction(@NotNull double amount, @NotNull Transaction.Fee type) {
-        this.timestamp = LocalDateTime.now();
+    public Transaction(double amount, FeeType feeType) {
+        this.timestamp = LocalDate.now();
         this.amount = amount;
+        this.type = feeType;
+    }
+
+    public LocalDate getTimestamp() {
+        return timestamp;
+    }
+
+    public FeeType getType() {
+        return type;
+    }
+
+    public void setType(FeeType type) {
         this.type = type;
     }
+
 
     public long getId() {
         return id;
@@ -48,7 +58,7 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public enum Fee {
+    public enum FeeType {
         GEBÜHR,
         AUFWANDSENTSCHÄDIGUNG,
         ZAHLUNG

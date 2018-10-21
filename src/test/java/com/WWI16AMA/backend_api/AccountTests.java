@@ -4,6 +4,7 @@ import com.WWI16AMA.backend_api.Account.Account;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Member.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.time.Month;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,6 +35,14 @@ public class AccountTests {
 
     @Autowired
     private MockMvc mockMvc;
+    private MockMvc failMvc;
+
+    @Before
+    public void beforeTest() {
+        this.failMvc = standaloneSetup()
+                .setControllerAdvice(new MemberControllerAdvice())
+                .build();
+    }
 
     @Test
     public void testRepository() {
@@ -49,15 +59,16 @@ public class AccountTests {
         int memberId = memberRepository.findAll().iterator().next().getId();
         Account memAcc = memberRepository.findById(memberId).get().getMemberBankingAccount();
 
-        long found = memAcc.getTransactions().size();
+        long found = memAcc.getTransactions().size(); System.out.println("AccId: "+memAcc.getId());
 
-        Transaction transaction = new Transaction(500, Transaction.Fee.GEBÜHR);
+        Transaction transaction = new Transaction(500, Transaction.FeeType.ZAHLUNG);
 
-        this.mockMvc.perform(post("/accounts/" + memAcc.getId() + "/transactions")
+        this.mockMvc.perform(post("/accounts/{id}/transactions", memAcc.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(transaction))).andExpect(status().isOk());
 
-        assertThat(memAcc.getTransactions()).isEqualTo(found + 1);
+
+        assertThat(((long) accountRepository.findById(memAcc.getId()).get().getTransactions().size())).isEqualTo(found + 1);
     }
 
 
