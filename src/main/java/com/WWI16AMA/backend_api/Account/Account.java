@@ -1,5 +1,8 @@
 package com.WWI16AMA.backend_api.Account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,7 +16,7 @@ public class Account {
     @Id
     @GenericGenerator(name = "5-digit-Id", strategy = "com.WWI16AMA.backend_api.Account.CustomGenerator.AccountIdGenerator")
     @GeneratedValue(generator = "5-digit-Id")
-    private Integer id;
+    private int id;
 
     @NotNull
     private double balance;
@@ -45,6 +48,7 @@ public class Account {
         this.balance = this.balance + amount;
     }
 
+    @JsonIgnore
     public List<Transaction> getTransactions() {
         return transactions;
     }
