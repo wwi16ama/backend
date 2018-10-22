@@ -46,7 +46,7 @@ public class PlaneController {
     public ResponseEntity<Plane> detail(@PathVariable int id) {
 
         return new ResponseEntity<>(planeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist")), HttpStatus.OK);
+                .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist")), HttpStatus.OK);
     }
 
     @PostMapping(path = "")
@@ -54,7 +54,7 @@ public class PlaneController {
 
         if (reqPlane.getId() != null) {
             throw new IllegalArgumentException("Plane has the ID: " + reqPlane.getId() +
-                    ". Id has to be null when a new member shall be created");
+                    ". Id has to be null when a new plane shall be created");
         }
 
         planeRepository.save(reqPlane);
@@ -69,7 +69,7 @@ public class PlaneController {
             putPlane.setId(id);
             planeRepository.save(putPlane);
         } else {
-            throw new NoSuchElementException("Member with id " + id + " does not exist.");
+            throw new NoSuchElementException("Plane with id " + id + " does not exist.");
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -78,7 +78,7 @@ public class PlaneController {
     public ResponseEntity<Plane> delete(@PathVariable int id) {
 
         Plane plane = planeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist"));
+                .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist"));
         planeRepository.delete(plane);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
