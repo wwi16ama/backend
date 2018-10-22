@@ -1,6 +1,8 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
+import com.WWI16AMA.backend_api.Fee.Fee;
+import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
@@ -84,9 +86,18 @@ public class Application extends SpringBootServletInitializer {
         planeRepository.saveAll(Arrays.asList(planes));
     }
 
+    private static void generateSomeFees(FeeRepository feeRepository) {
+
+        Fee fee1 = new Fee(Fee.Status.ACTIVE, 220);
+        Fee fee2 = new Fee(Fee.Status.U20ACTIVE, 150);
+        Fee fee3 = new Fee(Fee.Status.PASSIVE, 80);
+        Fee fee4 = new Fee(Fee.Status.HONORARYMEMBER, 0);
+        Fee fees[] = {fee1, fee2, fee3, fee4};
+        feeRepository.saveAll(Arrays.asList(fees));
+    }
 
     @Bean
-    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository, AccountRepository accountRepository) {
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository, AccountRepository accountRepository, FeeRepository feeRepository) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
@@ -95,6 +106,8 @@ public class Application extends SpringBootServletInitializer {
             generateSomeMembers(memberRepository, offices);
 
             generateSomePlanes(planeRepository);
+
+            generateSomeFees(feeRepository);
         };
     }
 }

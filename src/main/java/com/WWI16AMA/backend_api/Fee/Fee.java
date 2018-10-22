@@ -39,7 +39,7 @@ public class Fee {
         ACTIVE,
         U20ACTIVE,
         PASSIVE,
-        SPECIAL
+        HONORARYMEMBER
     }
 
 
