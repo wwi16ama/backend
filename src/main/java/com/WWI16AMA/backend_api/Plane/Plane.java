@@ -21,16 +21,22 @@ public class Plane {
     @NotNull
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
+    @NotBlank
+    private double pricePerBookedHour;
+    @NotBlank
+    private double pricePerFlightHour;
 
     Plane() {
     }
 
-    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position) {
+    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position, double pricePerBookedHour, double pricePerFlightHour) {
 
         this.number = number;
         this.name = name;
         this.position = position;
         this.neededAuthorization = neededAuthorization;
+        this.pricePerBookedHour = pricePerBookedHour;
+        this.pricePerFlightHour = pricePerFlightHour;
 
     }
 
@@ -72,5 +78,21 @@ public class Plane {
 
     public void setNeededAuthorization(String neededAuthorization) throws IllegalArgumentException {
         this.neededAuthorization = FlightAuthorization.Authorization.valueOf(neededAuthorization.replace("-", "").toUpperCase());
+    }
+
+    public double getpricePerBookedHour() {
+        return pricePerBookedHour;
+    }
+
+    public void setpricePerBookedHour(double pricePerBookedHour) {
+        this.pricePerBookedHour = pricePerBookedHour;
+    }
+
+    public double getpricePerFlightHour() {
+        return pricePerFlightHour;
+    }
+
+    public void setpricePerFlightHour(double pricePerFlightHour) {
+        this.pricePerFlightHour = pricePerFlightHour;
     }
 }
