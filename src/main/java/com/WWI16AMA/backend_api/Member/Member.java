@@ -1,5 +1,9 @@
 package com.WWI16AMA.backend_api.Member;
 
+import com.WWI16AMA.backend_api.Account.Account;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -7,9 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Member {
@@ -40,12 +42,14 @@ public class Member {
     private String bankingAccount;
     @NotNull
     private boolean admissioned;
-    private String memberBankingAccount;
+
+    @OneToOne(cascade = CascadeType.ALL)  @JsonIgnoreProperties({"balance", "transactions" })
+    final private Account memberBankingAccount = new Account();
 
     @ManyToMany
-    private Set<Office> offices = new HashSet<>();
+    private List<Office> offices = new ArrayList<>();
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
 
@@ -150,19 +154,15 @@ public class Member {
         this.admissioned = admissioned;
     }
 
-    public String getMemberBankingAccount() {
+    public Account getMemberBankingAccount() {
         return memberBankingAccount;
     }
 
-    public void setMemberBankingAccount(String memberBankingAccount) {
-        this.memberBankingAccount = memberBankingAccount;
-    }
-
-    public Set<Office> getOffices() {
+    public List<Office> getOffices() {
         return offices;
     }
 
-    public void setOffices(Set<Office> offices) {
+    public void setOffices(List<Office> offices) {
         this.offices = offices;
     }
 
