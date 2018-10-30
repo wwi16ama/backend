@@ -4,7 +4,6 @@ import com.WWI16AMA.backend_api.Account.Account;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Member.*;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import java.time.Month;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -35,14 +33,6 @@ public class AccountTests {
 
     @Autowired
     private MockMvc mockMvc;
-    private MockMvc failMvc;
-
-    @Before
-    public void beforeTest() {
-        this.failMvc = standaloneSetup()
-                .setControllerAdvice(new ControllerAdvice())
-                .build();
-    }
 
     @Test
     public void testRepository() {
@@ -53,7 +43,7 @@ public class AccountTests {
     }
 
     @Test
-    public void testPosAccountController() throws Exception {
+    public void testPostAccountController() throws Exception {
 
         generateMember();
         int memberId = memberRepository.findAll().iterator().next().getId();
