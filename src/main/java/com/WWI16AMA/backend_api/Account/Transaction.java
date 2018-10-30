@@ -1,10 +1,8 @@
 package com.WWI16AMA.backend_api.Account;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Transaction {
@@ -15,23 +13,27 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @NotNull
     private FeeType type;
-    @DateTimeFormat(pattern = "yyyy-MM-dd:mm:ss")
-    private final LocalDate timestamp;
+    private final LocalDateTime timestamp;
     @NotNull
     private double amount;
 
     public Transaction() {
-        this.timestamp = LocalDate.now();
+        this.timestamp = LocalDateTime.now();
     }
-
     public Transaction(double amount, FeeType feeType) {
-        this.timestamp = LocalDate.now();
+        this.timestamp = LocalDateTime.now();
         this.amount = amount;
         this.type = feeType;
     }
 
-    public LocalDate getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public enum FeeType {
+        GEBÜHR,
+        AUFWANDSENTSCHÄDIGUNG,
+        ZAHLUNG
     }
 
     public FeeType getType() {
@@ -59,9 +61,4 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public enum FeeType {
-        GEBÜHR,
-        AUFWANDSENTSCHÄDIGUNG,
-        ZAHLUNG
-    }
 }
