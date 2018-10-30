@@ -25,7 +25,9 @@ public class AccountController {
             @RequestParam(defaultValue = "asc") String direction,
             @RequestParam(defaultValue = "id") String orderBy) {
         Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
-        return accountRepository.findAll(PageRequest.of(start, limit, sort)).stream().map(AccountView::new)
+        return accountRepository.findAll(PageRequest.of(start, limit, sort))
+                .stream()
+                .map(AccountView::new)
                 .collect(toList());
 
     }

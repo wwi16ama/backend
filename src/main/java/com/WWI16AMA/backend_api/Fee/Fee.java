@@ -7,7 +7,7 @@ public class Fee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Enumerated(EnumType.STRING)
     private Fee.Status category;
@@ -27,9 +27,11 @@ public class Fee {
 
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
+
+    public Integer getFee() { return fee; }
 
     public Status getCategory() {
         return category;
