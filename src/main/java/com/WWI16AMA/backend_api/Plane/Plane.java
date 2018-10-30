@@ -24,19 +24,19 @@ public class Plane {
     @NotBlank
     private double pricePerBookedHour;
     @NotBlank
-    private double pricePerFlightHour;
+    private double pricePerFlightMinute;
 
     Plane() {
     }
 
-    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position, double pricePerBookedHour, double pricePerFlightHour) {
+    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position, double pricePerBookedHour, double pricePerFlightMinute) {
 
         this.number = number;
         this.name = name;
         this.position = position;
         this.neededAuthorization = neededAuthorization;
         this.pricePerBookedHour = pricePerBookedHour;
-        this.pricePerFlightHour = pricePerFlightHour;
+        this.pricePerFlightMinute = pricePerFlightMinute;
 
     }
 
@@ -88,11 +88,11 @@ public class Plane {
         this.pricePerBookedHour = pricePerBookedHour;
     }
 
-    public double getPricePerFlightHour() {
-        return pricePerFlightHour;
+    public double getPricePerFlightMinute() {
+        return pricePerFlightMinute;
     }
 
-    public void setPricePerFlightHour(double pricePerFlightHour) {
-        this.pricePerFlightHour = pricePerFlightHour;
+    public void setPricePerFlightMinute(double pricePerFlightMinute) {
+        this.pricePerFlightMinute = pricePerFlightMinute;
     }
 }
