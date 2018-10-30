@@ -80,19 +80,19 @@ public class Plane {
         this.neededAuthorization = FlightAuthorization.Authorization.valueOf(neededAuthorization.replace("-", "").toUpperCase());
     }
 
-    public double getpricePerBookedHour() {
+    public double getPricePerBookedHour() {
         return pricePerBookedHour;
     }
 
-    public void setpricePerBookedHour(double pricePerBookedHour) {
+    public void setPricePerBookedHour(double pricePerBookedHour) {
         this.pricePerBookedHour = pricePerBookedHour;
     }
 
-    public double getpricePerFlightHour() {
+    public double getPricePerFlightHour() {
         return pricePerFlightHour;
     }
 
-    public void setpricePerFlightHour(double pricePerFlightHour) {
+    public void setPricePerFlightHour(double pricePerFlightHour) {
         this.pricePerFlightHour = pricePerFlightHour;
     }
 }
