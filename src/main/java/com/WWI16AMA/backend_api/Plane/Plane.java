@@ -30,13 +30,14 @@ public class Plane {
     Plane() {
     }
 
-    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position, double pricePerBookedHour, double pricePerFlightHour) {
+    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position, double pricePerBookedHour, double pricePerFlightMinute) {
+
         this.number = number;
         this.name = name;
         this.position = position;
         this.neededAuthorization = neededAuthorization;
         this.pricePerBookedHour = pricePerBookedHour;
-        this.pricePerFlightMinute = pricePerFlightHour;
+        this.pricePerFlightMinute = pricePerFlightMinute;
 
     }
 
