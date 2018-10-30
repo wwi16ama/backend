@@ -77,6 +77,10 @@ public class MemberController {
             throws NoSuchElementException {
 
         if (memberRepository.existsById(id)) {
+            Member foundMember = memberRepository.findById(id)
+                    .orElseThrow(() ->
+                            new NoSuchElementException("Member with the id " + " does not exist"));
+            mem.setMemberBankingAccount(foundMember.getMemberBankingAccount());
             mem.setId(id);
             List<Office> offices = mem.getOffices()
                     .stream()
