@@ -44,7 +44,7 @@ public class Member {
     private boolean admissioned;
 
     @OneToOne(cascade = CascadeType.ALL)  @JsonIgnoreProperties({"balance", "transactions" })
-    final private Account memberBankingAccount = new Account();
+    private Account memberBankingAccount = new Account();
 
     @ManyToMany
     private List<Office> offices = new ArrayList<>();
@@ -157,6 +157,8 @@ public class Member {
     public Account getMemberBankingAccount() {
         return memberBankingAccount;
     }
+
+    public void setMemberBankingAccount(Account memberBankingAccount) { this.memberBankingAccount = memberBankingAccount; }
 
     public List<Office> getOffices() {
         return offices;
