@@ -31,8 +31,24 @@ public class Fee {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Status getCategory() {
         return category;
+    }
+
+    public void setCategory(Status category) {
+        this.category = category;
+    }
+
+    public int getFee() {
+        return fee;
+    }
+
+    public void setFee(int fee) {
+        this.fee = fee;
     }
 
     public enum Status {
