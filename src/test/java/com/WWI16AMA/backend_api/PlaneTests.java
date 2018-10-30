@@ -1,7 +1,6 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
-import com.WWI16AMA.backend_api.Member.MemberControllerAdvice;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import org.hamcrest.collection.IsCollectionWithSize;
@@ -44,7 +43,7 @@ public class PlaneTests {
     @Before
     public void beforeTest() {
         this.failMvc = standaloneSetup()
-                .setControllerAdvice(new MemberControllerAdvice())
+                .setControllerAdvice(new ControllerAdvice())
                 .build();
     }
 
@@ -55,8 +54,7 @@ public class PlaneTests {
         long found = planeRepository.count();
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
-        Plane plane = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle1");
-        planeRepository.save(plane);
+        saveAndGetPlane();
 
         assertThat(planeRepository.count()).isEqualTo(found + 1);
 
@@ -80,7 +78,7 @@ public class PlaneTests {
         long found = planeRepository.count();
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Remorqueur", auth, "Halle1");
+        Plane plane = new Plane(" D-EJEK", "DR 400 Remorqueur", auth, "Halle1", 1, 2);
 
         this.mockMvc.perform(post("/planes").contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(plane))).andExpect(status().isOk());
@@ -93,17 +91,16 @@ public class PlaneTests {
     public void testPutPlaneController() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2");
-        planeRepository.save(plane);
+        Plane plane = saveAndGetPlane();
 
-        Plane newPlaneInfos = new Plane(" D-EJEK", "DR 500 Adler", auth, "Halle1");
+        Plane newPlaneInfos = new Plane(" D-EJEK", "DR 500 Adler", auth, "Halle1", 1, 2);
         this.mockMvc.perform(put("/planes/" + plane.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(plane)))
                 .andExpect(status().isNoContent());
 
         assertThat(plane.getName()).isEqualToIgnoringCase(planeRepository.findById(plane.getId())
-                .orElseThrow(() -> new NoSuchElementException("[TEST]: member not found")).getName()
+                .orElseThrow(() -> new NoSuchElementException("[TEST]: plane not found")).getName()
         );
     }
 
@@ -111,7 +108,7 @@ public class PlaneTests {
     public void testPutPlaneControllerMalformedInput() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2");
+        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2", 0.1, 0.2);
 
         this.failMvc.perform(put("/planes/" + TestUtil.getUnusedId(planeRepository))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -123,8 +120,7 @@ public class PlaneTests {
     public void testPutPlaneControllerViolatingConstraints() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2");
-        planeRepository.save(plane);
+        Plane plane = saveAndGetPlane();
 
         plane.setNumber(null);
         try {
@@ -150,7 +146,7 @@ public class PlaneTests {
 
         long found = planeRepository.count();
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2");
+        Plane plane = saveAndGetPlane();
         Integer id = planeRepository.save(plane).getId();
 
         this.mockMvc.perform(delete("/planes/" + id))
@@ -166,5 +162,10 @@ public class PlaneTests {
         this.failMvc.perform(delete("/planes/" + TestUtil.getUnusedId(planeRepository)))
                 .andExpect(status().isNotFound());
 
+    }
+
+    private Plane saveAndGetPlane() {
+        Plane plane = new Plane("D-EJEK", "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1", 5.2, 0.8);
+        return planeRepository.save(plane);
     }
 }

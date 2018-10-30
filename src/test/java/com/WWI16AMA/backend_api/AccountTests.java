@@ -31,7 +31,7 @@ public class AccountTests {
     AccountRepository accountRepository;
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +40,7 @@ public class AccountTests {
     @Before
     public void beforeTest() {
         this.failMvc = standaloneSetup()
-                .setControllerAdvice(new MemberControllerAdvice())
+                .setControllerAdvice(new ControllerAdvice())
                 .build();
     }
 

@@ -1,6 +1,5 @@
-package com.WWI16AMA.backend_api.Member;
+package com.WWI16AMA.backend_api;
 
-import com.WWI16AMA.backend_api.ErrorInfo;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
-public class MemberControllerAdvice {
+public class ControllerAdvice {
 
     @ExceptionHandler({
             ConstraintViolationException.class,

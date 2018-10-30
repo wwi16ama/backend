@@ -13,10 +13,10 @@ public class AppConfiguration {
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
 
-            String[] origins = {"http://localhost", "http://localhost:4200",
+            final String[] origins = {"http://localhost", "http://localhost:4200",
                     "https://localhost", "https://localhost:4200",
                     "http://wwi16ama.feste-ip.net", "https://wwi16ama.feste-ip.net"};
-            String[] methods = {"GET", "POST", "PUT", "DELETE"};
+            final String[] methods = {"GET", "POST", "PUT", "DELETE"};
 
             @Override
             public void addCorsMappings(CorsRegistry registry) {

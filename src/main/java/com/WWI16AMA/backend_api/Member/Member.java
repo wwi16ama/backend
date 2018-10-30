@@ -1,7 +1,6 @@
 package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.Account;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;

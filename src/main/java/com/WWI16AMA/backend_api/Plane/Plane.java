@@ -5,6 +5,7 @@ import com.WWI16AMA.backend_api.Member.FlightAuthorization;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 public class Plane {
@@ -21,22 +22,21 @@ public class Plane {
     @NotNull
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
-    @NotBlank
+    @PositiveOrZero
     private double pricePerBookedHour;
-    @NotBlank
-    private double pricePerFlightHour;
+    @PositiveOrZero
+    private double pricePerFlightMinute;
 
     Plane() {
     }
 
     public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position, double pricePerBookedHour, double pricePerFlightHour) {
-
         this.number = number;
         this.name = name;
         this.position = position;
         this.neededAuthorization = neededAuthorization;
         this.pricePerBookedHour = pricePerBookedHour;
-        this.pricePerFlightHour = pricePerFlightHour;
+        this.pricePerFlightMinute = pricePerFlightHour;
 
     }
 
@@ -88,11 +88,11 @@ public class Plane {
         this.pricePerBookedHour = pricePerBookedHour;
     }
 
-    public double getPricePerFlightHour() {
-        return pricePerFlightHour;
+    public double getPricePerFlightMinute() {
+        return pricePerFlightMinute;
     }
 
-    public void setPricePerFlightHour(double pricePerFlightHour) {
-        this.pricePerFlightHour = pricePerFlightHour;
+    public void setPricePerFlightMinute(double pricePerFlightMinute) {
+        this.pricePerFlightMinute = pricePerFlightMinute;
     }
 }

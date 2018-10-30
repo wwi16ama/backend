@@ -49,7 +49,7 @@ public class MemberTests {
     @Before
     public void beforeTest() {
         this.failMvc = standaloneSetup()
-                .setControllerAdvice(new MemberControllerAdvice())
+                .setControllerAdvice(new ControllerAdvice())
                 .build();
     }
 

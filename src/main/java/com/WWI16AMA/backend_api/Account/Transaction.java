@@ -16,9 +16,10 @@ public class Transaction {
     @NotNull
     private FeeType type;
     @DateTimeFormat(pattern = "yyyy-MM-dd:mm:ss")
-    private LocalDate timestamp;
+    private final LocalDate timestamp;
     @NotNull
     private double amount;
+
     public Transaction() {
         this.timestamp = LocalDate.now();
     }

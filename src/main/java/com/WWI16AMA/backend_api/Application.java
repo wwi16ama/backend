@@ -78,10 +78,10 @@ public class Application extends SpringBootServletInitializer {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
         FlightAuthorization.Authorization auth1 = FlightAuthorization.Authorization.PPLB;
-        Plane plane1 = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle1");
-        Plane plane2 = new Plane("D-EJEK", "DR 400 Remorqueur", auth, "Halle1");
-        Plane plane3 = new Plane("D-KNIF", "SF25C Falke", auth1, "Halle2");
-        Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Diamona", auth1, "Halle2");
+        Plane plane1 = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle 1", 2.40, 0.65);
+        Plane plane2 = new Plane("D-EJEK", "DR 400 Remorqueur", auth, "Halle 1", 6.0, 1.8);
+        Plane plane3 = new Plane("D-KNIF", "SF25C Falke", auth1, "Halle 2", 3.6, 0.85);
+        Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2", 4.6, 1.6);
         Plane[] planes = {plane1, plane2, plane3, plane4};
         planeRepository.saveAll(Arrays.asList(planes));
     }
