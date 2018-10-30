@@ -21,9 +21,9 @@ public class Plane {
     @NotNull
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
-    @NotBlank
+    @NotNull
     private double pricePerBookedHour;
-    @NotBlank
+    @NotNull
     private double pricePerFlightMinute;
 
     Plane() {
