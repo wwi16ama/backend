@@ -30,7 +30,8 @@ public class Plane {
     Plane() {
     }
 
-    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position, double pricePerBookedHour, double pricePerFlightMinute) {
+    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position,
+                 double pricePerBookedHour, double pricePerFlightMinute) {
 
         this.number = number;
         this.name = name;
@@ -78,7 +79,8 @@ public class Plane {
     }
 
     public void setNeededAuthorization(String neededAuthorization) throws IllegalArgumentException {
-        this.neededAuthorization = FlightAuthorization.Authorization.valueOf(neededAuthorization.replace("-", "").toUpperCase());
+        this.neededAuthorization = FlightAuthorization.Authorization.valueOf(
+                neededAuthorization.replace("-", "").toUpperCase());
     }
 
     public double getPricePerBookedHour() {

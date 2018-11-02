@@ -42,7 +42,8 @@ public class Member {
     @NotNull
     private boolean admissioned;
 
-    @OneToOne(cascade = CascadeType.ALL)  @JsonIgnoreProperties({"balance", "transactions" })
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"balance", "transactions"})
     private Account memberBankingAccount = new Account();
 
     @ManyToMany
