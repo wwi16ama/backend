@@ -32,7 +32,7 @@ public class MemberView {
         return lastName;
     }
 
-    public Integer getMemberBankingAccount() {
+    public Integer getMemberBankingAccountId() {
         return memberBankingAccountId;
     }
 }
