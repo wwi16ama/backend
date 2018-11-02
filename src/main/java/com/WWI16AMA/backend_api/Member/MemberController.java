@@ -1,14 +1,15 @@
 package com.WWI16AMA.backend_api.Member;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 
@@ -24,22 +25,25 @@ public class MemberController {
     /**
      * Get Request which delivers all Users.
      *
-     * @param limit     Defines the amount of objects to receive
-     * @param start     Defines the page to view
-     * @param direction Defines the sorting order
-     * @param orderBy   Defines the field by which the sort is to be performed
-     * @return Returns an Iterable of Members paged and sorted by given parameters
+     //     * @param limit     Defines the amount of objects to receive
+     //     * @param start     Defines the page to view
+     //     * @param direction Defines the sorting order
+     //     * @param orderBy   Defines the field by which the sort is to be performed
+     //     * @return Returns an Iterable of Members paged and sorted by given parameters
      */
     @GetMapping(value = "")
     public Iterable<MemberView> getAllUsersPaged(
-            @RequestParam(defaultValue = "20") int limit,
-            @RequestParam(defaultValue = "0") int start,
-            @RequestParam(defaultValue = "asc") String direction,
-            @RequestParam(defaultValue = "lastName") String orderBy
+//            @RequestParam(defaultValue = "20") int limit,
+//            @RequestParam(defaultValue = "0") int start,
+//            @RequestParam(defaultValue = "asc") String direction,
+//            @RequestParam(defaultValue = "lastName") String orderBy
     ) {
 
-        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
-        return memberRepository.findAll(PageRequest.of(start, limit, sort)).stream()
+//        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
+//        int page = (int)Math.ceil((double)start/(double)limit);
+//        return memberRepository.findAll(PageRequest.of(page, limit, sort)).stream()
+        Iterable<Member> mem = memberRepository.findAll();
+        return StreamSupport.stream(mem.spliterator(), false)
                 .map(MemberView::new)
                 .collect(toList());
     }

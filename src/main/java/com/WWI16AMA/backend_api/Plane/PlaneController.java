@@ -1,15 +1,11 @@
 package com.WWI16AMA.backend_api.Plane;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
-
-import static java.util.stream.Collectors.toList;
 
 
 @RestController
@@ -22,24 +18,25 @@ public class PlaneController {
     /**
      * Get Request which delivers all Users.
      *
-     * @param limit     Defines the amount of objects to receive
-     * @param start     Defines the page to view
-     * @param direction Defines the sorting order
-     * @param orderBy   Defines the field by which the sort is to be performed
-     * @return Returns an Iterable of Airplanes paged and sorted by given parameters
+     //     * @param limit     Defines the amount of objects to receive
+     //     * @param start     Defines the page to view
+     //     * @param direction Defines the sorting order
+     //     * @param orderBy   Defines the field by which the sort is to be performed
+     //     * @return Returns an Iterable of Airplanes paged and sorted by given parameters
      */
     @GetMapping(value = "")
     public Iterable<Plane> getAllPlanesPaged(
-            @RequestParam(defaultValue = "20") int limit,
-            @RequestParam(defaultValue = "0") int start,
-            @RequestParam(defaultValue = "asc") String direction,
-            @RequestParam(defaultValue = "name") String orderBy
+//            @RequestParam(defaultValue = "20") int limit,
+//            @RequestParam(defaultValue = "0") int start,
+//            @RequestParam(defaultValue = "asc") String direction,
+//            @RequestParam(defaultValue = "name") String orderBy
     ) throws IllegalArgumentException {
 
-        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
+//        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
 
-        return planeRepository.findAll(PageRequest.of(start, limit, sort)).stream()
-                .collect(toList());
+//        return planeRepository.findAll(PageRequest.of(start, limit, sort)).stream()
+//                .collect(toList());
+        return planeRepository.findAll();
     }
 
     @GetMapping(path = "/{id}")
