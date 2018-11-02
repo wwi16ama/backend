@@ -1,11 +1,15 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
+import com.WWI16AMA.backend_api.Credit.Credit;
+import com.WWI16AMA.backend_api.Credit.CreditRepository;
+import com.WWI16AMA.backend_api.Credit.Period;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
+import com.WWI16AMA.backend_api.Service.ServiceName;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -92,22 +96,36 @@ public class Application extends SpringBootServletInitializer {
         Fee fee2 = new Fee(Fee.Status.U20ACTIVE, 150);
         Fee fee3 = new Fee(Fee.Status.PASSIVE, 80);
         Fee fee4 = new Fee(Fee.Status.HONORARYMEMBER, 0);
-        Fee fees[] = {fee1, fee2, fee3, fee4};
+        Fee[] fees = {fee1, fee2, fee3, fee4};
         feeRepository.saveAll(Arrays.asList(fees));
     }
 
+    private static void generateSomeCredits(CreditRepository creditRepository) {
+
+        Credit c1 = new Credit(ServiceName.VORSTANDSMITGLIED, 200.0, Period.YEAR);
+        Credit c2 = new Credit(ServiceName.FLUGLEHRER, 200.0, Period.YEAR);
+        Credit c3 = new Credit(ServiceName.FLUGWART, 100.0, Period.YEAR);
+
+        Credit c4 = new Credit(ServiceName.TAGESEINSATZ, 40.0, Period.DAY);
+        Credit c5 = new Credit(ServiceName.PILOT, 40.0, Period.DAY);
+        Credit[] credits = {c1, c2, c3, c4, c5};
+        creditRepository.saveAll(Arrays.asList(credits));
+    }
+
     @Bean
-    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository, PlaneRepository planeRepository, AccountRepository accountRepository, FeeRepository feeRepository) {
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
+                                  PlaneRepository planeRepository, AccountRepository accountRepository,
+                                  FeeRepository feeRepository, CreditRepository creditRepository) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
             generateSomeMembers(memberRepository, offices);
-
             generateSomePlanes(planeRepository);
-
             generateSomeFees(feeRepository);
+            generateSomeCredits(creditRepository);
+
         };
     }
 }
