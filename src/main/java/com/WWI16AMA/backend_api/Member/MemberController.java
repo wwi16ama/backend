@@ -17,6 +17,7 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping(path = "members")
 public class MemberController {
 
+    throw error;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
