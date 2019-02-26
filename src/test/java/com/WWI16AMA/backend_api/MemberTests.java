@@ -18,11 +18,13 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hibernate.validator.internal.util.CollectionHelper.asSet;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -86,7 +88,7 @@ public class MemberTests {
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
 
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
-        mem.setOffices(asList(off));
+        mem.setOffices(asSet(off));
 
         this.mockMvc.perform(post("/members")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -175,8 +177,8 @@ public class MemberTests {
                 LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
 
-        List<Office> off = StreamSupport.stream(officeRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+        Set<Office> off = StreamSupport.stream(officeRepository.findAll().spliterator(), false)
+                .collect(Collectors.toSet());
         mem.setOffices(off);
 
         memberRepository.save(mem);
