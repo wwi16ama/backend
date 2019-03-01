@@ -24,12 +24,12 @@ public class MemberController {
 
     /**
      * Get Request which delivers all Users.
-     *
-     //     * @param limit     Defines the amount of objects to receive
-     //     * @param start     Defines the page to view
-     //     * @param direction Defines the sorting order
-     //     * @param orderBy   Defines the field by which the sort is to be performed
-     //     * @return Returns an Iterable of Members paged and sorted by given parameters
+     * <p>
+     * //     * @param limit     Defines the amount of objects to receive
+     * //     * @param start     Defines the page to view
+     * //     * @param direction Defines the sorting order
+     * //     * @param orderBy   Defines the field by which the sort is to be performed
+     * //     * @return Returns an Iterable of Members paged and sorted by given parameters
      */
     @GetMapping(value = "")
     public Iterable<MemberView> getAllUsersPaged(

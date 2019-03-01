@@ -158,7 +158,9 @@ public class Member {
         return memberBankingAccount;
     }
 
-    public void setMemberBankingAccount(Account memberBankingAccount) { this.memberBankingAccount = memberBankingAccount; }
+    public void setMemberBankingAccount(Account memberBankingAccount) {
+        this.memberBankingAccount = memberBankingAccount;
+    }
 
     public List<Office> getOffices() {
         return offices;

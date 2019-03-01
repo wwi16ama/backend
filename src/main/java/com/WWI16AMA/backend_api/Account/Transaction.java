@@ -20,6 +20,7 @@ public class Transaction {
     public Transaction() {
         this.timestamp = LocalDateTime.now();
     }
+
     public Transaction(double amount, FeeType feeType) {
         this.timestamp = LocalDateTime.now();
         this.amount = amount;
