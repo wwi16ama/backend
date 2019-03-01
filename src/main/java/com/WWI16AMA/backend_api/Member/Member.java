@@ -34,6 +34,9 @@ public class Member {
     @NotBlank
     @Email
     private String email;
+    @NotBlank
+    private String password = "{noop}123";
+
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
@@ -71,6 +74,23 @@ public class Member {
         this.address = address;
         this.bankingAccount = bankingAccount;
         this.admissioned = admissioned;
+    }
+
+    public Member(Member member) {
+        this.id = member.getId();
+        this.firstName = member.getFirstName();
+        this.lastName = member.getLastName();
+        this.dateOfBirth = member.getDateOfBirth();
+        this.gender = member.getGender();
+        this.status = member.getStatus();
+        this.email = member.getEmail();
+        this.password = member.getPassword();
+        this.address = member.getAddress();
+        this.bankingAccount = member.getBankingAccount();
+        this.admissioned = member.isAdmissioned();
+        this.offices = member.getOffices();
+        this.memberBankingAccount = member.getMemberBankingAccount();
+        this.flightAuthorization = member.getFlightAuthorization();
     }
 
 
@@ -128,6 +148,14 @@ public class Member {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Address getAddress() {

@@ -72,7 +72,7 @@ public class Application extends SpringBootServletInitializer {
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
+                "kurt.krömer@mail.com", adr, "DE12345678901234567890", false);
         mem1.setAddress(adr1);
 
         memberRepository.save(mem1);
