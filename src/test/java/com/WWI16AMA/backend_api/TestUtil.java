@@ -1,10 +1,16 @@
 package com.WWI16AMA.backend_api;
 
+import com.WWI16AMA.backend_api.Member.*;
 import com.WWI16AMA.backend_api.SerializationHelp.CustomObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.data.repository.CrudRepository;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 class TestUtil {
 
@@ -24,5 +30,19 @@ class TestUtil {
     static String marshal(Object o) throws com.fasterxml.jackson.core.JsonProcessingException {
         ObjectWriter ow = new CustomObjectMapper().writer();
         return ow.writeValueAsString(o);
+    }
+
+    static Member saveAndGetMember(MemberRepository memberRepository, OfficeRepository officeRepository) {
+        Address adr = new Address(68167, "Mannheim", "Hambachstraße 3");
+        Member mem = new Member("Hauke", "Haien",
+                LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
+
+        List<Office> off = StreamSupport.stream(officeRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+        mem.setOffices(off);
+
+        memberRepository.save(mem);
+        return mem;
     }
 }

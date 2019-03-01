@@ -13,21 +13,20 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.RollbackException;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
+import static com.WWI16AMA.backend_api.TestUtil.saveAndGetMember;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
 @RunWith(SpringRunner.class)
@@ -40,27 +39,24 @@ public class MemberTests {
     MemberRepository memberRepository;
     @Autowired
     OfficeRepository officeRepository;
-    /*
-    Sadly a little ugly. The mockMvc is not configured to use the @ControllerAdvice,
-    so there is the failMvc, but that one has no possibility of persisting.
-     */
+
     @Autowired
+    private WebApplicationContext wac;
+
     private MockMvc mockMvc;
-    private MockMvc failMvc;
 
     @Before
     public void beforeTest() {
-        this.failMvc = standaloneSetup()
-                .setControllerAdvice(new ControllerAdvice())
-                .build();
+        mockMvc = webAppContextSetup(wac).build();
     }
+
 
     @Test
     public void testRepository() {
 
         long found = memberRepository.count();
 
-        saveAndGetMember();
+        saveAndGetMember(memberRepository, officeRepository);
 
         assertThat(memberRepository.count()).isEqualTo(found + 1);
     }
@@ -100,7 +96,7 @@ public class MemberTests {
     @Test
     public void testPutMemberController() throws Exception {
 
-        Member mem = saveAndGetMember();
+        Member mem = saveAndGetMember(memberRepository, officeRepository);
 
         Address newAddr = new Address(12345, "Neustadt", "Neustraße 5");
         mem.setAddress(newAddr);
@@ -114,16 +110,6 @@ public class MemberTests {
                         .getAddress(), "id");
     }
 
-    @Test
-    public void testPutMemberControllerMalformedInput() throws Exception {
-
-        Member mem = saveAndGetMember();
-
-        this.failMvc.perform(put("/members/" + TestUtil.getUnusedId(memberRepository))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtil.marshal(mem)))
-                .andExpect(status().isNotFound());
-    }
 
     /**
      * Here ugly because we watch a cornercase. We need the mockMvc because we need Database-validation
@@ -132,7 +118,7 @@ public class MemberTests {
     @Test
     public void testPutMemberControllerViolatingConstraints() throws Exception {
 
-        Member mem = saveAndGetMember();
+        Member mem = saveAndGetMember(memberRepository, officeRepository);
 
         mem.setAddress(null);
         try {
@@ -157,31 +143,12 @@ public class MemberTests {
     public void testDeleteMemberController() throws Exception {
 
         long found = memberRepository.count();
-        Member mem = saveAndGetMember();
+        Member mem = saveAndGetMember(memberRepository, officeRepository);
         this.mockMvc.perform(delete("/members/" + mem.getId()))
                 .andExpect(status().isNoContent());
 
         assertThat(found).isEqualTo(memberRepository.count());
     }
 
-    @Test
-    public void testDeleteNonexistingMember() throws Exception {
-        this.failMvc.perform(delete("/members/" + TestUtil.getUnusedId(memberRepository)))
-                .andExpect(status().isNotFound());
-    }
 
-
-    private Member saveAndGetMember() {
-        Address adr = new Address(68167, "Mannheim", "Hambachstraße 3");
-        Member mem = new Member("Hauke", "Haien",
-                LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
-
-        List<Office> off = StreamSupport.stream(officeRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
-        mem.setOffices(off);
-
-        memberRepository.save(mem);
-        return mem;
-    }
 }

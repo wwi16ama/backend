@@ -3,7 +3,9 @@ package com.WWI16AMA.backend_api;
 import com.WWI16AMA.backend_api.Account.Account;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
-import com.WWI16AMA.backend_api.Member.*;
+import com.WWI16AMA.backend_api.Member.MemberRepository;
+import com.WWI16AMA.backend_api.Member.OfficeRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDate;
-import java.time.Month;
-
+import static com.WWI16AMA.backend_api.TestUtil.saveAndGetMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -32,14 +34,23 @@ public class AccountTests {
 
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
+    private OfficeRepository officeRepository;
+    @Autowired
+    private WebApplicationContext wac;
+
     private MockMvc mockMvc;
+
+    @Before
+    public void beforeTest() {
+        mockMvc = webAppContextSetup(wac).build();
+    }
+
 
     @Test
     public void testRepository() {
 
-        generateMember();
+        saveAndGetMember(memberRepository, officeRepository);
 
         assertThat(memberRepository.count()).isEqualTo(accountRepository.count());
     }
@@ -47,11 +58,12 @@ public class AccountTests {
     @Test
     public void testPostAccountController() throws Exception {
 
-        generateMember();
+        saveAndGetMember(memberRepository, officeRepository);
         int memberId = memberRepository.findAll().iterator().next().getId();
         Account memAcc = memberRepository.findById(memberId).get().getMemberBankingAccount();
 
-        long found = memAcc.getTransactions().size(); System.out.println("AccId: "+memAcc.getId());
+        long found = memAcc.getTransactions().size();
+        System.out.println("AccId: " + memAcc.getId());
 
         Transaction transaction = new Transaction(500, Transaction.FeeType.ZAHLUNG);
 
@@ -64,14 +76,4 @@ public class AccountTests {
     }
 
 
-    private void generateMember() {
-
-        Address adr = new Address(68167, "Mannheim", "Hambachstraße 3");
-        Member mem = new Member("Hauke", "Haien",
-                LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
-
-        memberRepository.save(mem);
-
-    }
 }

@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
@@ -41,7 +40,6 @@ public class PlaneTests {
     so there is the failMvc, but that one has no possibility of persisting.
      */
     private MockMvc mockMvc;
-    private MockMvc failMvc;
 
     @Autowired
     WebApplicationContext wac;
@@ -49,12 +47,6 @@ public class PlaneTests {
 
     @Before
     public void beforeTest() {
-        this.failMvc = standaloneSetup()
-                .setControllerAdvice(new ControllerAdvice())
-//                .apply(springSecurity())
-//                .addFilters(new SecurityContextPersistenceFilter())
-                .build();
-
         mockMvc = webAppContextSetup(wac).build();
     }
 
@@ -116,18 +108,6 @@ public class PlaneTests {
     }
 
     @Test
-    public void testPutPlaneControllerMalformedInput() throws Exception {
-
-        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2", 0.1, 0.2);
-
-        this.failMvc.perform(put("/planes/" + TestUtil.getUnusedId(planeRepository))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtil.marshal(plane)))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     public void testPutPlaneControllerViolatingConstraints() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
@@ -164,14 +144,6 @@ public class PlaneTests {
                 .andExpect(status().isNoContent());
 
         assertThat(found).isEqualTo(planeRepository.count());
-
-    }
-
-    @Test
-    public void testDeleteNonexistingPlane() throws Exception {
-
-        this.failMvc.perform(delete("/planes/" + TestUtil.getUnusedId(planeRepository)))
-                .andExpect(status().isNotFound());
 
     }
 
