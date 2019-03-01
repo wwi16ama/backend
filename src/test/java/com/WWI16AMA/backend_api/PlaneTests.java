@@ -15,6 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.RollbackException;
 import java.util.NoSuchElementException;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,9 +40,12 @@ public class PlaneTests {
     Sadly a little ugly. The mockMvc is not configured to use the @ControllerAdvice,
     so there is the failMvc, but that one has no possibility of persisting.
      */
-    @Autowired
     private MockMvc mockMvc;
     private MockMvc failMvc;
+
+    @Autowired
+    WebApplicationContext wac;
+
 
     @Before
     public void beforeTest() {
@@ -49,6 +54,8 @@ public class PlaneTests {
 //                .apply(springSecurity())
 //                .addFilters(new SecurityContextPersistenceFilter())
                 .build();
+
+        mockMvc = webAppContextSetup(wac).build();
     }
 
 
