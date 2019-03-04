@@ -16,6 +16,7 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.RollbackException;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -53,6 +54,7 @@ public class MemberTests {
 
 
     @Test
+    @Transactional
     public void testGetOffices() {
         saveAndGetMember(memberRepository, officeRepository);
         List<Office> of = memberRepository.findAll().iterator().next().getOffices();
