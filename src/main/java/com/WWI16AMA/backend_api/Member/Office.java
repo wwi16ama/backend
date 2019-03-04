@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -12,6 +13,9 @@ public class Office {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToMany(mappedBy = "offices")
+    List<Member> members;
 
     Office() {
 

@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.persistence.RollbackException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.WWI16AMA.backend_api.TestUtil.saveAndGetMember;
@@ -50,6 +51,13 @@ public class MemberTests {
         mockMvc = webAppContextSetup(wac).build();
     }
 
+
+    @Test
+    public void testGetOffices() {
+        saveAndGetMember(memberRepository, officeRepository);
+        List<Office> of = memberRepository.findAll().iterator().next().getOffices();
+        System.out.println(of.size());
+    }
 
     @Test
     public void testRepository() {

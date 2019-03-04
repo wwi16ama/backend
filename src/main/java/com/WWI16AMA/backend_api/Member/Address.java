@@ -14,7 +14,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Min(1000)
+    @Min(1000) //TODO ist PLZ immer >1000?
     @Max(99999)
     private int postalCode;
     @NotBlank

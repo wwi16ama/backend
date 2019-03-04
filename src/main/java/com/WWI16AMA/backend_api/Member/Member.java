@@ -50,7 +50,7 @@ public class Member {
     private Account memberBankingAccount = new Account();
 
     @ManyToMany
-    private List<Office> offices = new ArrayList<>();
+    private List<Office> offices;
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
