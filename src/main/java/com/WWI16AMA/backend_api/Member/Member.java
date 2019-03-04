@@ -35,7 +35,7 @@ public class Member {
     @Email
     private String email;
     @NotBlank
-    private String password = "{noop}123";
+    private String password = "{bcrypt}$2y$12$E7xkkbPYS3lwOFs//ziVEuj.Z5ZLJ2XGrkYqtk2H7.s6G7CvdPqfi";
 
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
