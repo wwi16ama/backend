@@ -92,6 +92,7 @@ public class MemberTests {
         Member mem = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
+        mem.setMemberBankingAccount(null);
 
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
         mem.setOffices(asList(off));

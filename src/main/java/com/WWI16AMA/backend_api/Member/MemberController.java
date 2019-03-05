@@ -1,5 +1,6 @@
 package com.WWI16AMA.backend_api.Member;
 
+import com.WWI16AMA.backend_api.Account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,8 +62,13 @@ public class MemberController {
     public Member create(@RequestBody Member mem) {
 
         if (mem.getId() != null) {
-            throw new IllegalArgumentException("Id has to be null if you want to save a new Member");
+            throw new IllegalArgumentException("Id shall not be send if you want to create a new Member");
         }
+
+        if (mem.getMemberBankingAccount() != null) {
+            throw new IllegalArgumentException("Account shall not be send to create a new member");
+        }
+        mem.setMemberBankingAccount(new Account());
 
         List<Office> offices = mem.getOffices()
                 .stream()
