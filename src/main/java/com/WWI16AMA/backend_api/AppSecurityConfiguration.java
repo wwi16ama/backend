@@ -33,8 +33,8 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin().permitAll();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 }
