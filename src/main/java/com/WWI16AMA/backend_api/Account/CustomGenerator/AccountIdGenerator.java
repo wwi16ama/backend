@@ -27,7 +27,7 @@ public class AccountIdGenerator implements IdentifierGenerator {
             int randomId;
             Random random = new Random();
             do {
-                randomId = random.nextInt(100000);
+                randomId = 10000 + random.nextInt(90000);
                 statement.setInt(1, randomId);
                 r = statement.executeQuery();
             } while (r.next());
