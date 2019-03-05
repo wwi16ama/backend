@@ -37,5 +37,10 @@ public class Office {
         VORSTANDSVORSITZENDER
     }
 
+    @Override
+    public String toString() {
+        return getTitle().toString();
+    }
+
 }
 
