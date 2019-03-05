@@ -2,6 +2,7 @@ package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.Account;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -16,7 +17,8 @@ import java.util.List;
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "5-digit-Id", strategy = "com.WWI16AMA.backend_api.Member.MemberIdGenerator")
+    @GeneratedValue(generator = "5-digit-Id")
     private Integer id;
 
     @NotBlank
