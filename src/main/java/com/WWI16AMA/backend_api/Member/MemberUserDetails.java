@@ -4,7 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -14,12 +13,9 @@ public class MemberUserDetails extends Member implements UserDetails {
 
     public MemberUserDetails(final Member member) {
         super(member);
-        thisMem = member;
     }
 
-
     @Override
-    @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         return getOffices()

@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 @Service
 public class MemberUserDetailService implements UserDetailsService {
@@ -22,6 +22,11 @@ public class MemberUserDetailService implements UserDetailsService {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
+        /*
+        Die folgende Zeile ist notwendig, um die `offices` zu initialisieren, sonst
+        kommt der lazy-fehler
+         */
+        member.getOffices().size();
         return new MemberUserDetails(member);
     }
 }
