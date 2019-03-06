@@ -1,7 +1,9 @@
 package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.Account;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -37,8 +39,11 @@ public class Member {
     @Email
     private String email;
     @NotBlank
-    private String password = "{noop}123";
+    private String password;
 
+
+    @Transient
+    private String newPassword;
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
@@ -66,7 +71,7 @@ public class Member {
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
      */
     public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status,
-                  String email, Address address, String bankingAccount, boolean admissioned) {
+                  String email, Address address, String bankingAccount, boolean admissioned, String hashedPassword) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -76,6 +81,7 @@ public class Member {
         this.address = address;
         this.bankingAccount = bankingAccount;
         this.admissioned = admissioned;
+        this.password = hashedPassword;
     }
 
     public Member(Member member) {
@@ -152,12 +158,27 @@ public class Member {
         this.email = email;
     }
 
+    // So wird das PW nicht bei GET / POST _gesendet_.. (1/2)
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    // ..kann aber bei POST / PUT _entgegengenommen_ werden (2/2)
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    // Dito hier
+    @JsonIgnore
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    @JsonProperty
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     public Address getAddress() {
