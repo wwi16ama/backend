@@ -14,7 +14,6 @@ import java.util.Random;
 public class AccountIdGenerator implements IdentifierGenerator {
 
 
-
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
 
