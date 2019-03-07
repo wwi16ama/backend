@@ -31,7 +31,7 @@ public class MemberUserDetails extends Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return getEmail();
+        return getId().toString();
     }
 
     @Override

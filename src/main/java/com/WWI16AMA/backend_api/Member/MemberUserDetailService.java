@@ -18,8 +18,17 @@ public class MemberUserDetailService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        //TODO roles setzen
-        Member member = memberRepository.findByEmail(username)
+        // definitiv ungültige ID
+        int id = -1;
+
+        // Hier wird die Exception die fliegt _getauscht_
+        try {
+            id = Integer.parseInt(username);
+        } catch (NumberFormatException e) {
+            throw new UsernameNotFoundException("Ungültiger Username");
+        }
+
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
         /*

@@ -69,10 +69,10 @@ public class Application extends SpringBootServletInitializer {
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
 
-
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
+        System.out.println("MemberID: " + mem.getId());
 
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
@@ -82,6 +82,7 @@ public class Application extends SpringBootServletInitializer {
         mem1.setAddress(adr1);
 
         memberRepository.save(mem1);
+        System.out.println("MemberID: " + mem1.getId());
     }
 
     private static void generateSomePlanes(PlaneRepository planeRepository) {
