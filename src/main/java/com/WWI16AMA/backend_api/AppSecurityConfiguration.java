@@ -15,10 +15,13 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MemberUserDetailService memberUserDetailService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(memberUserDetailService);
+        auth.userDetailsService(memberUserDetailService)
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -33,8 +36,8 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin().permitAll();
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

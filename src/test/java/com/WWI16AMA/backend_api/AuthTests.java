@@ -24,4 +24,5 @@ public class AuthTests {
         this.mockMvc.perform(get("/members"))
                 .andExpect(status().isUnauthorized());
     }
+
 }

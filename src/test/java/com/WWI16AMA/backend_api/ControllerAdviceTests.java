@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,6 +35,8 @@ public class ControllerAdviceTests {
     MemberRepository memberRepository;
     @Autowired
     OfficeRepository officeRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     /*
     Sadly a little ugly. The mockMvc is not configured to use the @ControllerAdvice,
@@ -47,7 +50,6 @@ public class ControllerAdviceTests {
         this.failMvc = standaloneSetup()
                 .setControllerAdvice(new ControllerAdvice())
                 .build();
-
     }
 
     @Test
@@ -65,7 +67,7 @@ public class ControllerAdviceTests {
     @Test
     public void testPutMemberControllerMalformedInput() throws Exception {
 
-        Member mem = saveAndGetMember(memberRepository, officeRepository);
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
 
         this.failMvc.perform(put("/members/" + TestUtil.getUnusedId(memberRepository))
                 .contentType(MediaType.APPLICATION_JSON)

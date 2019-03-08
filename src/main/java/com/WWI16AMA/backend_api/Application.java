@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -48,7 +49,9 @@ public class Application extends SpringBootServletInitializer {
         return Arrays.asList(offices);
     }
 
-    private static void generateSomeMembers(MemberRepository memberRepository, List<Office> offices) {
+    private static void generateSomeMembers(MemberRepository memberRepository,
+                                            List<Office> offices,
+                                            PasswordEncoder enc) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -63,19 +66,23 @@ public class Application extends SpringBootServletInitializer {
         Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
                 LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
+                enc.encode("koala"));
 
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
+        System.out.println("MemberID: " + mem.getId());
 
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
-                "kurt.krömer@mail.com", adr, "DE12345678901234567890", false);
+                "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
+                enc.encode("koala"));
         mem1.setAddress(adr1);
 
         memberRepository.save(mem1);
+        System.out.println("MemberID: " + mem1.getId());
     }
 
     private static void generateSomePlanes(PlaneRepository planeRepository) {
@@ -115,13 +122,13 @@ public class Application extends SpringBootServletInitializer {
     @Bean
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
                                   PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository) {
+                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
-            generateSomeMembers(memberRepository, offices);
+            generateSomeMembers(memberRepository, offices, passwordEncoder);
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
