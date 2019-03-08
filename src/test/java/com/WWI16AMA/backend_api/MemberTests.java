@@ -102,6 +102,9 @@ public class MemberTests {
         String klartextPw = "testPasswort123";
         mem.setPassword(klartextPw);
 
+        mem.setMemberBankingAccount(null);
+
+  
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
         mem.setOffices(asList(off));
 
