@@ -54,7 +54,7 @@ public class Member {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnoreProperties({"balance", "transactions"})
-    private Account memberBankingAccount = new Account();
+    private Account memberBankingAccount;
 
     @ManyToMany
     private List<Office> offices;
@@ -82,6 +82,7 @@ public class Member {
         this.bankingAccount = bankingAccount;
         this.admissioned = admissioned;
         this.password = hashedPassword;
+        this.memberBankingAccount = new Account();
     }
 
     public Member(Member member) {
