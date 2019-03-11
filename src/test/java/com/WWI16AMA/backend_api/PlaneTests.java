@@ -18,6 +18,7 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.RollbackException;
+import java.net.URL;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,7 +53,7 @@ public class PlaneTests {
 
 
     @Test
-    public void testRepositoryPlane() {
+    public void testRepositoryPlane() throws java.net.MalformedURLException {
 
         long found = planeRepository.count();
 
@@ -81,7 +82,9 @@ public class PlaneTests {
         long found = planeRepository.count();
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Remorqueur", auth, "Halle1", 1, 2);
+        Plane plane = new Plane(" D-EJEK", "DR 400 Remorqueur", auth, "Halle1",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                1, 2);
 
         this.mockMvc.perform(post("/planes").contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(plane))).andExpect(status().isOk());
@@ -96,7 +99,9 @@ public class PlaneTests {
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
         Plane plane = saveAndGetPlane();
 
-        Plane newPlaneInfos = new Plane(" D-EJEK", "DR 500 Adler", auth, "Halle1", 1, 2);
+        Plane newPlaneInfos = new Plane(" D-EJEK", "DR 500 Adler", auth, "Halle1",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                1, 2);
         this.mockMvc.perform(put("/planes/" + plane.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(plane)))
@@ -147,8 +152,10 @@ public class PlaneTests {
 
     }
 
-    private Plane saveAndGetPlane() {
-        Plane plane = new Plane("D-EJEK", "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1", 5.2, 0.8);
+    private Plane saveAndGetPlane() throws java.net.MalformedURLException {
+        Plane plane = new Plane("D-EJEK", "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                5.2, 0.8);
         return planeRepository.save(plane);
     }
 }

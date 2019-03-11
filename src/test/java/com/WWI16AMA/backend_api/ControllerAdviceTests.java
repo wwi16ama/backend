@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.net.URL;
+
 import static com.WWI16AMA.backend_api.TestUtil.saveAndGetMember;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -56,7 +58,9 @@ public class ControllerAdviceTests {
     public void testPutPlaneControllerMalformedInput() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2", 0.1, 0.2);
+        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                0.1, 0.2);
 
         this.failMvc.perform(put("/planes/" + TestUtil.getUnusedId(planeRepository))
                 .contentType(MediaType.APPLICATION_JSON)
