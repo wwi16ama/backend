@@ -113,7 +113,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // TODO überlegen, ob PUT nur zu überschreibende Werte enthalten soll oder alle
+    // TODO Passwort-Logik nach `updatePassword` auslagern
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> updateMember(@RequestBody Member mem, @PathVariable int id)
             throws NoSuchElementException {
@@ -155,4 +155,10 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    // TODO erst noch tests schreiben
+    @PutMapping(value = "/{id}/updatePassword")
+    public ResponseEntity<Void> updatePassword(){
+
+        return null;
+    }
 }
