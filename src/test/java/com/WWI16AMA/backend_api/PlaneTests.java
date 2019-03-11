@@ -53,7 +53,7 @@ public class PlaneTests {
 
 
     @Test
-    public void testRepositoryPlane() throws java.net.MalformedURLException {
+    public void testRepositoryPlane() throws Exception {
 
         long found = planeRepository.count();
 
@@ -152,7 +152,7 @@ public class PlaneTests {
 
     }
 
-    private Plane saveAndGetPlane() throws java.net.MalformedURLException {
+    private Plane saveAndGetPlane() throws Exception {
         Plane plane = new Plane("D-EJEK", "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 5.2, 0.8);
