@@ -19,6 +19,7 @@ public class Account {
     private double balance;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_id")
     private List<Transaction> transactions = new ArrayList<>();
 
     public Account() {
