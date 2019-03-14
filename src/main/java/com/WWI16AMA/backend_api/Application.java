@@ -9,6 +9,7 @@ import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
+import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
 import com.WWI16AMA.backend_api.Service.ServiceName;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,6 +104,7 @@ public class Application extends SpringBootServletInitializer {
         Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 3.60, 0.85);
+        generateSomePlaneLogs(plane1);
         Plane[] planes = {plane1, plane2, plane3, plane4};
         planeRepository.saveAll(Arrays.asList(planes));
     }
@@ -126,6 +129,23 @@ public class Application extends SpringBootServletInitializer {
         Credit c5 = new Credit(ServiceName.PILOT, 40.0, Period.DAY);
         Credit[] credits = {c1, c2, c3, c4, c5};
         creditRepository.saveAll(Arrays.asList(credits));
+    }
+
+    private static void generateSomePlaneLogs(Plane plane) {
+
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 69, 88, 5);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 88, 97, 50);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 97, 150, 500);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 150, 896, 5000);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 896, 1000, 5000);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 1000, 1001, 50000);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 1001, 2000, 500000);
+        PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
+
+        for (PlaneLogEntry entry : entries) {
+            plane.getPlaneLog().addPlaneLogEntry(entry);
+        }
+
     }
 
     @Bean

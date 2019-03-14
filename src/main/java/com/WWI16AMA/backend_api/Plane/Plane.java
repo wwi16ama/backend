@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Plane;
 
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
+import com.WWI16AMA.backend_api.PlaneLog.PlaneLog;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -30,6 +31,10 @@ public class Plane {
     @PositiveOrZero
     private double pricePerFlightMinute;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    //@JsonIgnoreProperties({"entrys"})
+    private PlaneLog planeLog;
+
     Plane() {
     }
 
@@ -43,6 +48,7 @@ public class Plane {
         this.neededAuthorization = neededAuthorization;
         this.pricePerBookedHour = pricePerBookedHour;
         this.pricePerFlightMinute = pricePerFlightMinute;
+        this.planeLog = new PlaneLog();
 
     }
 
@@ -110,4 +116,10 @@ public class Plane {
     public void setPricePerFlightMinute(double pricePerFlightMinute) {
         this.pricePerFlightMinute = pricePerFlightMinute;
     }
+
+    public PlaneLog getPlaneLog() {
+        return planeLog;
+    }
+
+
 }

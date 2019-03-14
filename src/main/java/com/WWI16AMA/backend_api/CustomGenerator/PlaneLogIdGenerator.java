@@ -1,4 +1,4 @@
-package com.WWI16AMA.backend_api.Member;
+package com.WWI16AMA.backend_api.CustomGenerator;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -11,7 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 
-public class MemberIdGenerator implements IdentifierGenerator {
+public class PlaneLogIdGenerator implements IdentifierGenerator {
+
 
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
@@ -20,12 +21,12 @@ public class MemberIdGenerator implements IdentifierGenerator {
         PreparedStatement statement = null;
         ResultSet r = null;
         try {
-            statement = connection.prepareStatement("SELECT id FROM member where id = ?");
+            statement = connection.prepareStatement("SELECT id FROM plane_log where id = ?");
 
             int randomId;
             Random random = new Random();
             do {
-                randomId = 1000 + random.nextInt(9000);
+                randomId = 10000 + random.nextInt(90000);
                 statement.setInt(1, randomId);
                 r = statement.executeQuery();
             } while (r.next());

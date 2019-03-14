@@ -19,7 +19,7 @@ import java.util.List;
 public class Member {
 
     @Id
-    @GenericGenerator(name = "5-digit-Id", strategy = "com.WWI16AMA.backend_api.Member.MemberIdGenerator")
+    @GenericGenerator(name = "5-digit-Id", strategy = "com.WWI16AMA.backend_api.CustomGenerator.MemberIdGenerator")
     @GeneratedValue(generator = "5-digit-Id")
     private Integer id;
 
