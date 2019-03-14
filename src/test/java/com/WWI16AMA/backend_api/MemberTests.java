@@ -4,7 +4,6 @@ import com.WWI16AMA.backend_api.Member.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.hamcrest.collection.IsCollectionWithSize;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.web.context.WebApplicationContext;
 
-import javax.persistence.RollbackException;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Month;
@@ -31,10 +27,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
 @RunWith(SpringRunner.class)
+//@WebMvcTest(MemberController.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser
@@ -46,22 +43,15 @@ public class MemberTests {
     OfficeRepository officeRepository;
 
     @Autowired
-    private WebApplicationContext wac;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Before
-    public void beforeTest() {
-        mockMvc = webAppContextSetup(wac).build();
-    }
 
-
-    @Test
     @Transactional
     public void testGetOffices() {
-        saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
+        saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "password123");
         List<Office> of = memberRepository.findAll().iterator().next().getOffices();
         System.out.println(of.size());
     }
@@ -71,7 +61,7 @@ public class MemberTests {
 
         long found = memberRepository.count();
 
-        saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
+        saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "password123");
 
         assertThat(memberRepository.count()).isEqualTo(found + 1);
     }
@@ -104,7 +94,6 @@ public class MemberTests {
 
         mem.setMemberBankingAccount(null);
 
-  
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
         mem.setOffices(asList(off));
 
@@ -114,9 +103,7 @@ public class MemberTests {
         String res = this.mockMvc.perform(post("/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objNode.toString()))
-//                .content("test"))
                 .andExpect(status().isOk())
-//                .content(new Gson().toJson(mem))).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -132,10 +119,6 @@ public class MemberTests {
                         new NoSuchElementException("Kein Member im repo unter der von POST return'ten ID gefunden"))
                 .getPassword();
 
-        System.out.println("\r\n\r\n\r\nhash: " + hashPw);
-        System.out.println("klar: " + klartextPw);
-        System.out.println("has1: " + passwordEncoder.encode(klartextPw) + "\r\n\r\n\r\n");
-
         // sicherstellen, dass PW in der Datenbank und klartexPW matchen
         assertThat(passwordEncoder.matches(klartextPw, hashPw)).isTrue();
 
@@ -144,104 +127,184 @@ public class MemberTests {
     }
 
     @Test
+    public void testPostMemberControllerBadPw() throws Exception {
+
+        long found = memberRepository.count();
+
+        Address adr = new Address(12345, "Hamburg", "Hafenstraße 5");
+        Member mem = new Member("Kurt", "Krömer",
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false, "");
+
+        // mindest. 8 Zeichen, 1 Zahl, Buchstabe
+        String klartextPw = "123";
+        mem.setPassword(klartextPw);
+
+        mem.setMemberBankingAccount(null);
+
+        Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
+        mem.setOffices(asList(off));
+
+        ObjectNode objNode = mutableJson(mem);
+        objNode.put("password", klartextPw);
+
+        this.mockMvc.perform(post("/members")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objNode.toString()))
+                .andExpect(status().isBadRequest());
+
+        // sicherstellen, dass Member nicht gespeichert wurde
+        assertThat(memberRepository.count()).isEqualTo(found);
+    }
+
+    @Test
     public void testPutMemberController() throws Exception {
 
-        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
-
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123Password");
         Address newAddr = new Address(12345, "Neustadt", "Neustraße 5");
         mem.setAddress(newAddr);
 
-
-        String neuesKlartextPw = "testTost4321";
-        ObjectNode objNode = mutableJson(mem);
-        // Das bisherige Password, siehe TestUtil.saveAndGetMember()
-        objNode.put("password", "123Koala");
-        objNode.put("newPassword", neuesKlartextPw);
-
         this.mockMvc.perform(put("/members/" + mem.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objNode.toString()))
+                .content(TestUtil.marshal(mem)))
                 .andExpect(status().isNoContent());
 
         Member resMem = memberRepository.findById(mem.getId())
                 .orElseThrow(() -> new NoSuchElementException("[TEST]: member not found"));
 
         assertThat(mem.getAddress()).isEqualToIgnoringGivenFields(resMem.getAddress(), "id");
-
-        assertThat(passwordEncoder.matches(neuesKlartextPw, resMem.getPassword())).isTrue();
     }
 
 
-    /**
-     * Here ugly because we watch a cornercase. We need the mockMvc because we need Database-validation
-     * but this will result in an Exception, which would only be handled in failMvc. So we handle it by ourselves.
-     */
     @Test
     public void testPutMemberControllerViolatingConstraints() throws Exception {
 
-        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
 
+        // This shall not be allowed
         mem.setAddress(null);
-        try {
-            // this should throw an exception, because the validation of the member
-            // should fail. If there is no exception, the status won't be "Bad Request"
-            this.mockMvc.perform(put("/members/" + mem.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.marshal(mem)))
-                    .andExpect(status().isBadRequest());
-        } catch (org.springframework.web.util.NestedServletException e) {
-            // It's expected behavior to have a specific exception, which should
-            // fit these criteria.
-            if (!(e.getCause() instanceof TransactionSystemException &&
-                    e.getCause().getCause() instanceof RollbackException)) {
-                throw new Exception("Es wurden andere verursachende Exceptions erwartet.\r\n" +
-                        "Damit ist nicht der erwartete Fall eingetreten.");
-            }
-        }
+
+        this.mockMvc.perform(put("/members/" + mem.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(mem)))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    public void testChangePasswordAsUser() throws Exception {
+
+        String pw = "123password";
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
+        MemberPwChangeMessage msg = new MemberPwChangeMessage(pw, "1BuchstabeUndZahl");
+
+        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsMember")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(msg)))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    public void testPutPwChangeFail() throws Exception {
+    public void testChangePasswordAsMemberWrongPw() throws Exception {
 
-        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123richtig");
+        MemberPwChangeMessage msg = new MemberPwChangeMessage("falschesPw", "1BuchstabeUndZahl");
 
-        String neuesKlartextPw = "testTost4321";
-        ObjectNode objNode = mutableJson(mem);
-        // ein falsch gesetztes Passwort, wodurch das neusetzen fehlschlagen sollte
-        objNode.put("password", "");
-        objNode.put("newPassword", neuesKlartextPw);
+        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsMember")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(msg)))
+                .andExpect(status().isBadRequest());
+    }
 
-        //wie 1 weiter oben
-        try {
-            this.mockMvc.perform(put("/members/" + mem.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objNode.toString()))
-                    .andExpect(status().isBadRequest());
+//    @Test
+//    @WithMockUser(username = "-1")
+//    public void testChangePasswordAsMemberWrongUser() throws Exception {
+//
+//        String pw = "123WasGeht";
+//        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
+//        MemberPwChangeMessage msg = new MemberPwChangeMessage(pw, "1BuchstabeUndZahl");
+//
+//        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsMember")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(TestUtil.marshal(msg)))
+//                .andExpect(status().isUnauthorized());
+//    }
+//
+//    @Test
+//    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+//    public void testChangePasswordAsAdmin() throws Exception {
+//
+//        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
+//        AdminPwChangeMessage msg = new AdminPwChangeMessage("1BuchstabeUndZahl");
+//
+//        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsAdmin")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(TestUtil.marshal(msg)))
+//                .andExpect(status().isNoContent());
+//    }
+//
+//    @Test
+//    public void testChangePassworAsAdminNotAdmin() throws Exception {
+//
+//        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
+//        AdminPwChangeMessage msg = new AdminPwChangeMessage("1BuchstabeUndZahl");
+//
+//        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsAdmin")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(TestUtil.marshal(msg)))
+//                .andExpect(status().isUnauthorized());
+//    }
 
-            Member resMem = memberRepository.findById(mem.getId())
-                    .orElseThrow(() -> new NoSuchElementException("[TEST]: member not found"));
+    @Test
+    public void testChangePasswordAsAdminInvalidPw() throws Exception {
 
-            assertThat(passwordEncoder.matches(neuesKlartextPw, resMem.getPassword())).isFalse();
-        } catch (org.springframework.web.util.NestedServletException e) {
-            // It's expected behavior to have a specific exception, which should
-            // fit these criteria.
-            if (!(e.getCause() instanceof IllegalArgumentException)) {
-                throw new Exception("Es wurden andere verursachende Exceptions erwartet.\r\n" +
-                        "Damit ist nicht der erwartete Fall eingetreten.\r\n");
-            }
-        }
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
+        AdminPwChangeMessage msg = new AdminPwChangeMessage("123");
+
+        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsAdmin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(msg)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testDeleteMemberController() throws Exception {
 
         long found = memberRepository.count();
-        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
         this.mockMvc.perform(delete("/members/" + mem.getId()))
                 .andExpect(status().isNoContent());
 
         assertThat(found).isEqualTo(memberRepository.count());
     }
 
+    @Test
+    public void testPutMemberControllerMalformedInput() throws Exception {
 
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
+
+        this.mockMvc.perform(put("/members/" + TestUtil.getUnusedId(memberRepository))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(mem)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testDeleteNonexistingMember() throws Exception {
+        this.mockMvc.perform(delete("/members/" + TestUtil.getUnusedId(memberRepository)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testChangePassworAsAdminUserNotFound() throws Exception {
+
+        AdminPwChangeMessage msg = new AdminPwChangeMessage("1BuchstabeUndZahl");
+
+        this.mockMvc.perform(put("/members/"
+                + TestUtil.getUnusedId(memberRepository)
+                + "/changePasswordAsMember")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(msg)))
+                .andExpect(status().isNotFound());
+    }
 }

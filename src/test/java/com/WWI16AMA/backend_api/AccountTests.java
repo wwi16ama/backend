@@ -53,15 +53,16 @@ public class AccountTests {
     @Test
     public void testRepository() {
 
-        saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
+        saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
 
+        // Check that an Account was created
         assertThat(memberRepository.count()).isEqualTo(accountRepository.count());
     }
 
     @Test
     public void testPostAccountController() throws Exception {
 
-        saveAndGetMember(memberRepository, officeRepository, passwordEncoder);
+        saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123pasword");
         int memberId = memberRepository.findAll().iterator().next().getId();
         Account memAcc = memberRepository.findById(memberId).get().getMemberBankingAccount();
 

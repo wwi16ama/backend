@@ -51,12 +51,11 @@ class TestUtil {
         return or.readTree(json).deepCopy();
     }
 
-
-    static Member saveAndGetMember(MemberRepository memberRepository, OfficeRepository officeRepository, PasswordEncoder enc) {
+    static Member saveAndGetMember(MemberRepository memberRepository, OfficeRepository officeRepository, PasswordEncoder enc, String password) {
         Address adr = new Address(68167, "Mannheim", "Hambachstraße 3");
         Member mem = new Member("Hauke", "Haien",
                 LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false, enc.encode("123Koala"));
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false, enc.encode(password));
 
         List<Office> off = StreamSupport.stream(officeRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());

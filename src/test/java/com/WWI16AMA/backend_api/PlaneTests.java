@@ -152,6 +152,20 @@ public class PlaneTests {
 
     }
 
+    @Test
+    public void testPutPlaneControllerMalformedInput() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        Plane plane = new Plane(" D-EJEK", "DR 400 Adler", auth, "Halle2",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                0.1, 0.2);
+
+        this.mockMvc.perform(put("/planes/" + TestUtil.getUnusedId(planeRepository))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(plane)))
+                .andExpect(status().isNotFound());
+    }
+
     private Plane saveAndGetPlane() throws Exception {
         Plane plane = new Plane("D-EJEK", "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
