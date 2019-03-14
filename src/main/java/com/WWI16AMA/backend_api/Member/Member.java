@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.Account;
+import com.WWI16AMA.backend_api.PilotLog.PilotLog;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -49,6 +50,9 @@ public class Member {
     private Address address;
     @Pattern(regexp = "DE[0-9]{20}")
     private String bankingAccount;
+    /*@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
+    private PilotLog pilotLog;*/
     @NotNull
     private boolean admissioned;
 

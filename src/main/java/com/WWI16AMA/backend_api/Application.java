@@ -7,6 +7,9 @@ import com.WWI16AMA.backend_api.Credit.Period;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
+import com.WWI16AMA.backend_api.PilotLog.PilotLog;
+import com.WWI16AMA.backend_api.PilotLog.PilotLogEntry;
+import com.WWI16AMA.backend_api.PilotLog.PilotLogRepository;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.Service.ServiceName;
@@ -127,11 +130,11 @@ public class Application extends SpringBootServletInitializer {
         Credit[] credits = {c1, c2, c3, c4, c5};
         creditRepository.saveAll(Arrays.asList(credits));
     }
-
     @Bean
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
                                   PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
+                                  FeeRepository feeRepository, CreditRepository creditRepository,
+                                  PilotLogRepository pilotLogRepository, PasswordEncoder passwordEncoder) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
