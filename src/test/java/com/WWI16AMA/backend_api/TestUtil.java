@@ -7,10 +7,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -31,6 +34,15 @@ class TestUtil {
             randomId = random.nextInt();
         } while (repository.existsById(randomId));
         return randomId;
+    }
+
+    static HttpHeaders createBasicAuthHeader(String username, String password) {
+        return new HttpHeaders() {{
+            String auth = username + ":" + password;
+            byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+            String authHeader = "Basic " + new String(encodedAuth);
+            set("Authorization", authHeader);
+        }};
     }
 
     static String marshal(Object o) throws JsonProcessingException {

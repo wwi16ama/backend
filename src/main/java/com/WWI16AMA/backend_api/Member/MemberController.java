@@ -4,6 +4,7 @@ import com.WWI16AMA.backend_api.Account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -145,6 +146,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("#id == principal.id")
     @PutMapping(value = "{id}/changePasswordAsMember")
     public ResponseEntity<Void> updatePassword(@RequestBody MemberPwChangeMessage msg, @PathVariable int id) {
 
@@ -161,6 +163,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasRole('SYSTEMADMINISTRATOR')")
     @PutMapping(value = "{id}/changePasswordAsAdmin")
     public ResponseEntity<Void> updatePasswordAsAdmin(@RequestBody AdminPwChangeMessage msg, @PathVariable int id) {
 
