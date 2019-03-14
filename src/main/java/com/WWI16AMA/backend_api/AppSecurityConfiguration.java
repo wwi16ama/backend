@@ -35,7 +35,9 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable();
-        http.authorizeRequests()
+        http
+                .cors()
+                .and().authorizeRequests()
                 .antMatchers("/**").authenticated()
                 .and()
                 .httpBasic()
@@ -47,15 +49,15 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
             "http://wwi16ama.feste-ip.net", "https://wwi16ama.feste-ip.net"};
     final String[] methods = {"GET", "POST", "PUT", "DELETE"};
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(origins));
-        configuration.setAllowedMethods(Arrays.asList(methods));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList(origins));
+//        configuration.setAllowedMethods(Arrays.asList(methods));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
