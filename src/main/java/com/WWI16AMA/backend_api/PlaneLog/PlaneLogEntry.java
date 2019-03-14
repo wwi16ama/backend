@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,6 +15,7 @@ public class PlaneLogEntry {
     private long id;
     private LocalDateTime refuelDateTime;
     @NotNull
+    @Pattern(regexp = ".{0,35}")
     private String location;
     @NotNull
     private float startCount;
@@ -30,7 +32,54 @@ public class PlaneLogEntry {
         this.totalPrice = totalPrice;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getRefuelDateTime() {
+        return refuelDateTime;
+    }
+
+    public void setRefuelDateTime(LocalDateTime refuelDateTime) {
+        this.refuelDateTime = refuelDateTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public PlaneLogEntry() {
     }
 
+    public float getStartCount() {
+        return startCount;
+    }
+
+    public void setStartCount(float startCount) {
+        this.startCount = startCount;
+    }
+
+    public float getEndCount() {
+        return endCount;
+    }
+
+    public void setEndCount(float endCount) {
+        this.endCount = endCount;
+    }
+
+    public float getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(float totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 }

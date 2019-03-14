@@ -3,6 +3,7 @@ package com.WWI16AMA.backend_api;
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
+import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.RollbackException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -163,6 +165,18 @@ public class PlaneTests {
         this.mockMvc.perform(put("/planes/" + TestUtil.getUnusedId(planeRepository))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(plane)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testPostPlaneLog() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), "TestOrt", 69, 88, 5);
+
+        this.mockMvc.perform(put("/planeLog/1" + TestUtil.getUnusedId(planeRepository))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(planeLogEntry)))
                 .andExpect(status().isNotFound());
     }
 

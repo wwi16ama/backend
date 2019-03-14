@@ -133,13 +133,13 @@ public class Application extends SpringBootServletInitializer {
 
     private static void generateSomePlaneLogs(Plane plane) {
 
-        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 69, 88, 5);
-        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 88, 97, 50);
-        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 97, 150, 500);
-        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 150, 896, 5000);
-        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 896, 1000, 5000);
-        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 1000, 1001, 50000);
-        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 1001, 2000, 500000);
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 69, 88, 5);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 88, 97, 10);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 97, 150, 30);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 150, 896, 5000);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 896, 1000, 200);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 1000, 1001, 2);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 1001, 2000, 800);
         PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
 
         for (PlaneLogEntry entry : entries) {
