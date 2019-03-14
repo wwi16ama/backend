@@ -133,30 +133,26 @@ public class Application extends SpringBootServletInitializer {
         creditRepository.saveAll(Arrays.asList(credits));
     }
 
-    private static void generateSomePlaneLogs(PlaneRepository planeRepository, MemberRepository memberRepository) {
-        Member member = memberRepository.findAll().iterator().next();
-        Plane plane = planeRepository.findById(1).get();
+    private static void generateSomePlaneLogs(Plane plane) {
 
-        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 69, 88, 5);
-        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 88, 97, 10);
-        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 97, 150, 30);
-        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 150, 896, 5000);
-        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 896, 1000, 200);
-        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1000, 1001, 2);
-        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1001, 2000, 800);
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 69, 88, 5);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 88, 97, 50);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 97, 150, 500);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 150, 896, 5000);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 896, 1000, 5000);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 1000, 1001, 50000);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), "Zuhause", 1001, 2000, 500000);
         PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
 
         for (PlaneLogEntry entry : entries) {
-            plane.getPlaneLog().add(entry);
+            plane.getPlaneLog().addPlaneLogEntry(entry);
         }
 
-        planeRepository.save(plane);
     }
 
     @Bean
-    public CommandLineRunner generateSomeDataComLineRunner(MemberRepository memberRepository,
-                                    OfficeRepository officeRepository, PlaneRepository planeRepository,
-                                    AccountRepository accountRepository,
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
+                                  PlaneRepository planeRepository, AccountRepository accountRepository,
                                   FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
         return (args) -> {
 

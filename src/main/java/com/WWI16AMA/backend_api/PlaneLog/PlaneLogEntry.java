@@ -5,7 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+<<<<<<< HEAD
 import javax.validation.constraints.Pattern;
+=======
+>>>>>>> 3c22177... 1. Custom Generatoren wurden in den Custemgenarator Ordner zusammengefasst
 import java.time.LocalDateTime;
 
 @Entity
@@ -70,6 +73,7 @@ public class PlaneLogEntry {
     public PlaneLogEntry() {
     }
 
+<<<<<<< HEAD
     public float getStartCount() {
         return startCount;
     }
@@ -93,4 +97,6 @@ public class PlaneLogEntry {
     public void setTotalPrice(float totalPrice) {
         this.totalPrice = totalPrice;
     }
+=======
+>>>>>>> 3c22177... 1. Custom Generatoren wurden in den Custemgenarator Ordner zusammengefasst
 }
