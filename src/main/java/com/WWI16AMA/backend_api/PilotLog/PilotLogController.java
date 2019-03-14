@@ -1,7 +1,10 @@
 package com.WWI16AMA.backend_api.PilotLog;
 
 
+import com.WWI16AMA.backend_api.Member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,18 +18,13 @@ import java.util.NoSuchElementException;
 public class PilotLogController {
 
     @Autowired
-    private PilotLogRepository pilotLogRepository;
-
-    @GetMapping(path = "")
-    public Iterable<PilotLog> showAllLogs() {
-
-        return pilotLogRepository.findAll();
-    }
+    private MemberRepository memberRepository;
 
     @GetMapping(path = "/{id}")
-    public PilotLog showPilotLogDetail(@PathVariable int id) {
-        return pilotLogRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pilotlog with the id " + id + " does not exist"));
+    public ResponseEntity<PilotLog> detail(@PathVariable int id) {
+
+        return new ResponseEntity<>(memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist")).getPilotLog(), HttpStatus.OK);
     }
 
 }

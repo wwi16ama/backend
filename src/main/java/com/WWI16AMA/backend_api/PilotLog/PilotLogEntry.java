@@ -34,6 +34,9 @@ public class PilotLogEntry {
         this.flightWithGuests = flightWithGuests;
     }
 
+    public PilotLogEntry(){
+    }
+
     public long getFlightId() {
         return flightId;
     }
