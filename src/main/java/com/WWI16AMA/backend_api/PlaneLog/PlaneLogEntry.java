@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 =======
 >>>>>>> 3c22177... 1. Custom Generatoren wurden in den Custemgenarator Ordner zusammengefasst
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Entity
@@ -70,33 +71,31 @@ public class PlaneLogEntry {
         this.location = location;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getRefuelDateTime() {
+        return refuelDateTime;
+    }
+
+    public void setRefuelDateTime(LocalDateTime refuelDateTime) {
+        this.refuelDateTime = refuelDateTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public PlaneLogEntry() {
     }
 
-<<<<<<< HEAD
-    public float getStartCount() {
-        return startCount;
-    }
-
-    public void setStartCount(float startCount) {
-        this.startCount = startCount;
-    }
-
-    public float getEndCount() {
-        return endCount;
-    }
-
-    public void setEndCount(float endCount) {
-        this.endCount = endCount;
-    }
-
-    public float getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(float totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-=======
->>>>>>> 3c22177... 1. Custom Generatoren wurden in den Custemgenarator Ordner zusammengefasst
 }
