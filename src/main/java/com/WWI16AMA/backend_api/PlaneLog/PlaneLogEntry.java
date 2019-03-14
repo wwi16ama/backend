@@ -15,6 +15,8 @@ public class PlaneLogEntry {
     private long id;
     private LocalDateTime refuelDateTime;
     @NotNull
+    private Integer memberId;
+    @NotNull
     @Pattern(regexp = ".{0,35}")
     private String location;
     @NotNull
@@ -24,12 +26,13 @@ public class PlaneLogEntry {
     @NotNull
     private float totalPrice;
 
-    public PlaneLogEntry(LocalDateTime refuelDateTime, @NotNull String location, @NotNull float startCount, @NotNull float endCount, @NotNull float totalPrice) {
+    public PlaneLogEntry(LocalDateTime refuelDateTime, @NotNull Integer memberId, @NotNull String location, @NotNull float startCount, @NotNull float endCount, @NotNull float totalPrice) {
         this.refuelDateTime = refuelDateTime;
         this.location = location;
         this.startCount = startCount;
         this.endCount = endCount;
         this.totalPrice = totalPrice;
+        this.memberId = memberId;
     }
 
     public long getId() {
@@ -42,6 +45,14 @@ public class PlaneLogEntry {
 
     public LocalDateTime getRefuelDateTime() {
         return refuelDateTime;
+    }
+
+    public Integer getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
     }
 
     public void setRefuelDateTime(LocalDateTime refuelDateTime) {

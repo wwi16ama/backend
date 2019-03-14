@@ -31,6 +31,10 @@ import java.util.List;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
+    //Speichert eine MemberId aus generateSomeMembers, um diese für weitere erstellungen nutzen zu können
+    // (bsp. generateSOmePlaneLogs())
+    private static int memberId = 0;
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(Application.class);
@@ -76,6 +80,7 @@ public class Application extends SpringBootServletInitializer {
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
         System.out.println("MemberID: " + mem.getId());
+        memberId = mem.getId();
 
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
@@ -132,14 +137,13 @@ public class Application extends SpringBootServletInitializer {
     }
 
     private static void generateSomePlaneLogs(Plane plane) {
-
-        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 69, 88, 5);
-        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 88, 97, 10);
-        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 97, 150, 30);
-        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 150, 896, 5000);
-        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 896, 1000, 200);
-        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 1000, 1001, 2);
-        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), "Reilingen", 1001, 2000, 800);
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 69, 88, 5);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 88, 97, 10);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 97, 150, 30);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 150, 896, 5000);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 896, 1000, 200);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 1000, 1001, 2);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 1001, 2000, 800);
         PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
 
         for (PlaneLogEntry entry : entries) {
