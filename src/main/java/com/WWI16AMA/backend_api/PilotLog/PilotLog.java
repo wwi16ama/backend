@@ -1,6 +1,9 @@
 package com.WWI16AMA.backend_api.PilotLog;
 
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +15,8 @@ public class PilotLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "pilot_log_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<PilotLogEntry> pilotLogEntries = new ArrayList<>();
 
     public Integer getId() {
