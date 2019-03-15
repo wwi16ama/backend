@@ -199,6 +199,7 @@ public class MemberTests {
         MemberPwChangeMessage msg = new MemberPwChangeMessage(pw, "1BuchstabeUndZahl");
 
         this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsMember")
+                .headers(TestUtil.createBasicAuthHeader(mem.getId().toString(), pw))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(msg)))
                 .andExpect(status().isNoContent());
@@ -216,46 +217,49 @@ public class MemberTests {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-//    @WithMockUser(username = "-1")
-//    public void testChangePasswordAsMemberWrongUser() throws Exception {
-//
-//        String pw = "123WasGeht";
-//        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
-//        MemberPwChangeMessage msg = new MemberPwChangeMessage(pw, "1BuchstabeUndZahl");
-//
-//        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsMember")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(TestUtil.marshal(msg)))
-//                .andExpect(status().isUnauthorized());
-//    }
-//
-//    @Test
-//    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
-//    public void testChangePasswordAsAdmin() throws Exception {
-//
-//        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
-//        AdminPwChangeMessage msg = new AdminPwChangeMessage("1BuchstabeUndZahl");
-//
-//        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsAdmin")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(TestUtil.marshal(msg)))
-//                .andExpect(status().isNoContent());
-//    }
-//
-//    @Test
-//    public void testChangePassworAsAdminNotAdmin() throws Exception {
-//
-//        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
-//        AdminPwChangeMessage msg = new AdminPwChangeMessage("1BuchstabeUndZahl");
-//
-//        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsAdmin")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(TestUtil.marshal(msg)))
-//                .andExpect(status().isUnauthorized());
-//    }
+    @Test
+    public void testChangePasswordAsMemberWrongUser() throws Exception {
+
+        String pw = "123WasGeht";
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
+        MemberPwChangeMessage msg = new MemberPwChangeMessage(pw, "1BuchstabeUndZahl");
+
+        Member wrongMember = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
+
+        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsMember")
+                .headers(TestUtil.createBasicAuthHeader(wrongMember.getId().toString(), pw))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(msg)))
+                .andExpect(status().isForbidden());
+    }
 
     @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testChangePasswordAsAdmin() throws Exception {
+
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
+        AdminPwChangeMessage msg = new AdminPwChangeMessage("1BuchstabeUndZahl");
+
+        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsAdmin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(msg)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testChangePassworAsAdminNotAdmin() throws Exception {
+
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
+        AdminPwChangeMessage msg = new AdminPwChangeMessage("1BuchstabeUndZahl");
+
+        this.mockMvc.perform(put("/members/" + mem.getId() + "/changePasswordAsAdmin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(msg)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testChangePasswordAsAdminInvalidPw() throws Exception {
 
         Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
@@ -296,13 +300,14 @@ public class MemberTests {
     }
 
     @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testChangePassworAsAdminUserNotFound() throws Exception {
 
         AdminPwChangeMessage msg = new AdminPwChangeMessage("1BuchstabeUndZahl");
 
         this.mockMvc.perform(put("/members/"
                 + TestUtil.getUnusedId(memberRepository)
-                + "/changePasswordAsMember")
+                + "/changePasswordAsAdmin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(msg)))
                 .andExpect(status().isNotFound());
