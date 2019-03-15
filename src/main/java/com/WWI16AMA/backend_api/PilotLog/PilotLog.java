@@ -35,7 +35,7 @@ public class PilotLog {
         this.pilotLogEntries = pilotLogEntries;
     }
 
-    public void addPilotLogEntry(PilotLogEntry entry){
-        pilotLogEntries.add(entry);
+    public void addPilotLogEntry(PilotLogEntry pilotLogEntry){
+        this.pilotLogEntries.add(pilotLogEntry);
     }
 }

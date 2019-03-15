@@ -3,6 +3,8 @@ package com.WWI16AMA.backend_api.PilotLog;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,12 +16,14 @@ public class PilotLogEntry {
     @NotBlank
     private String planeNumber;
     @NotBlank
+    @Pattern(regexp = ".{0,35}")
     private String departureLocation;
-    @NotBlank
+    @NotNull
     private LocalDateTime departureTime;
     @NotBlank
+    @Pattern(regexp = ".{0,35}")
     private String arrivalLocation;
-    @NotBlank
+    @NotNull
     private LocalDateTime arrivalTime;
     private boolean flightWithGuests;
 

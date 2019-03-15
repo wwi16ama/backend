@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +85,7 @@ public class Application extends SpringBootServletInitializer {
                 "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem1.setAddress(adr1);
+        generateSomePilotLogEntries(mem1);
 
         memberRepository.save(mem1);
         System.out.println("MemberID: " + mem1.getId());
@@ -130,6 +132,27 @@ public class Application extends SpringBootServletInitializer {
         Credit[] credits = {c1, c2, c3, c4, c5};
         creditRepository.saveAll(Arrays.asList(credits));
     }
+
+    private static void generateSomePilotLogEntries(Member member){
+        PilotLogEntry ple1 = new PilotLogEntry("D-ERFI","Reilingen", LocalDateTime.of(2019,Month.MARCH,
+                15,10,30),"Mannheim",LocalDateTime.of(2019,Month.MARCH,
+                15,10,45),true);
+        PilotLogEntry ple2 = new PilotLogEntry("D-EJEK","Reilingen", LocalDateTime.of(2018,Month.FEBRUARY,
+                20,10,30),"Mannheim",LocalDateTime.of(2019,Month.MARCH,
+                20,10,45),true);
+        PilotLogEntry ple3 = new PilotLogEntry("D-EJEK","Reilingen", LocalDateTime.of(2019,Month.MARCH,
+                15,10,30),"Mannheim",LocalDateTime.of(2019,Month.MARCH,
+                15,10,45),true);
+        PilotLogEntry ple4 = new PilotLogEntry("D-EJEK","Reilingen", LocalDateTime.of(2019,Month.APRIL,
+                20,10,30),"Mannheim",LocalDateTime.of(2019,Month.MARCH,
+                20,10,45),true);
+
+        PilotLogEntry[] pilotLogEntries = {ple1,ple2,ple3,ple4};
+        for (PilotLogEntry entry : pilotLogEntries) {
+            member.getPilotLog().addPilotLogEntry(entry);
+        }
+    }
+
     @Bean
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
                                   PlaneRepository planeRepository, AccountRepository accountRepository,
