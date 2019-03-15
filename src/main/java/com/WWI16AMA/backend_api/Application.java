@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
+import com.WWI16AMA.backend_api.Billing.BillingTask;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
@@ -143,5 +144,11 @@ public class Application extends SpringBootServletInitializer {
             generateSomeCredits(creditRepository);
 
         };
+    }
+
+    @Bean
+    public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository) {
+
+        return new BillingTask(accountRepository, feeRepository, memberRepository);
     }
 }
