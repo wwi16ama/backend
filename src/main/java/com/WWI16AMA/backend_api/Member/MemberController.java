@@ -37,6 +37,7 @@ public class MemberController {
      * //     * @param orderBy   Defines the field by which the sort is to be performed
      * //     * @return Returns an Iterable of Members paged and sorted by given parameters
      */
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER')")
     @GetMapping(value = "")
     public Iterable<MemberView> getAllUsersPaged(
 //            @RequestParam(defaultValue = "20") int limit,
@@ -54,6 +55,7 @@ public class MemberController {
                 .collect(toList());
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER') or hasAnyRole('FLUGWART') or #id == principal.id")
     @GetMapping(value = "/{id}")
     public Member detail(@PathVariable int id) {
 
@@ -81,6 +83,7 @@ public class MemberController {
 
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
     @PostMapping(value = "")
     public Member create(@RequestBody Member mem) {
 
@@ -110,6 +113,7 @@ public class MemberController {
         return mem;
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
 
@@ -119,6 +123,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> updateMember(@RequestBody Member mem, @PathVariable int id)
             throws NoSuchElementException {

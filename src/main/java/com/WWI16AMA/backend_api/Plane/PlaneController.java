@@ -3,6 +3,7 @@ package com.WWI16AMA.backend_api.Plane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
@@ -46,6 +47,7 @@ public class PlaneController {
                 .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist")), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
     @PostMapping(path = "")
     public Plane create(@RequestBody Plane reqPlane) {
 
@@ -59,6 +61,7 @@ public class PlaneController {
         return reqPlane;
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
     @PutMapping(path = "/{id}")
     public ResponseEntity<Plane> put(@RequestBody Plane putPlane, @PathVariable int id) {
 
@@ -71,6 +74,7 @@ public class PlaneController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Plane> delete(@PathVariable int id) {
 

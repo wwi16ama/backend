@@ -2,6 +2,7 @@ package com.WWI16AMA.backend_api.Account;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER')")
     @GetMapping(path = "")
     public List<AccountView> getAllAccounts(
 //            @RequestParam(defaultValue = "20") int limit,
@@ -36,13 +38,14 @@ public class AccountController {
                 .collect(toList());
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER') or #id == principal.id")
     @GetMapping(path = "/{id}")
     public Account showAccountDetail(@PathVariable int id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Account with the id " + id + " does not exist"));
     }
 
-
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER') or #id == principal.id")
     @PostMapping(path = "/{id}/transactions")
     public Transaction addTransaction(@RequestBody Transaction transaction, @PathVariable int id) {
         Account acc = accountRepository.findById(id)
