@@ -28,6 +28,12 @@ public class PilotLogController {
 
     @PostMapping(path = "/{memberId}")
     public List addPilotLogEntry(@RequestBody PilotLogEntry pilotLogEntry, @PathVariable int memberId) {
+
+        if (pilotLogEntry.getFlightId() != 0L) {
+            throw new IllegalArgumentException("PilotLogEntry has the ID: " + pilotLogEntry.getFlightId() +
+                    ". Id has to be null when a new PilotLogEntry shall be created");
+        }
+
         Member mem = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("A Member's Pilotlog with the memberId " + memberId + " does not exist"));
 

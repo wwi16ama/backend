@@ -16,6 +16,7 @@ public class PilotLog {
     private int id;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pilot_log_id")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<PilotLogEntry> pilotLogEntries = new ArrayList<>();
 
