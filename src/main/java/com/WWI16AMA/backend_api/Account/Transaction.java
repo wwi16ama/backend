@@ -20,6 +20,7 @@ public class Transaction {
     public Transaction() {
         this.timestamp = LocalDateTime.now();
     }
+
     public Transaction(double amount, FeeType feeType) {
         this.timestamp = LocalDateTime.now();
         this.amount = amount;
@@ -31,9 +32,11 @@ public class Transaction {
     }
 
     public enum FeeType {
-        GEBÜHR,
-        AUFWANDSENTSCHÄDIGUNG,
-        ZAHLUNG
+        MITLIEGSBEITRAG,
+        GEBÜHRFLUGZEUG,
+        GUTSCHRIFTAMT,
+        GUTSCHRIFTLEISTUNG,
+        EINZAHLUNG
     }
 
     public FeeType getType() {

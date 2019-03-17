@@ -16,7 +16,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -48,7 +50,9 @@ public class Application extends SpringBootServletInitializer {
         return Arrays.asList(offices);
     }
 
-    private static void generateSomeMembers(MemberRepository memberRepository, List<Office> offices) {
+    private static void generateSomeMembers(MemberRepository memberRepository,
+                                            List<Office> offices,
+                                            PasswordEncoder enc) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -63,29 +67,41 @@ public class Application extends SpringBootServletInitializer {
         Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
                 LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
+                enc.encode("koala"));
 
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
+        System.out.println("MemberID: " + mem.getId());
 
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false);
+                "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
+                enc.encode("koala"));
         mem1.setAddress(adr1);
 
         memberRepository.save(mem1);
+        System.out.println("MemberID: " + mem1.getId());
     }
 
-    private static void generateSomePlanes(PlaneRepository planeRepository) {
+    private static void generateSomePlanes(PlaneRepository planeRepository) throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
         FlightAuthorization.Authorization auth1 = FlightAuthorization.Authorization.PPLB;
-        Plane plane1 = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle 1", 4.60, 1.60);
-        Plane plane2 = new Plane("D-EJEK", "DR 400 Remorqueur", auth, "Halle 1", 6.0, 1.8);
-        Plane plane3 = new Plane("D-KNIF", "SF25C Falke", auth1, "Halle 2", 2.40, 0.65);
-        Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2", 3.60, 0.85);
+        Plane plane1 = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle 1",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                4.60, 1.60);
+        Plane plane2 = new Plane("D-EJEK", "DR 400 Remorqueur", auth, "Halle 1",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                6.0, 1.8);
+        Plane plane3 = new Plane("D-KNIF", "SF25C Falke", auth1, "Halle 2",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                2.40, 0.65);
+        Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                3.60, 0.85);
         Plane[] planes = {plane1, plane2, plane3, plane4};
         planeRepository.saveAll(Arrays.asList(planes));
     }
@@ -113,15 +129,16 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Bean
-    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
-                                  PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository) {
+    public CommandLineRunner generateSomeDataComLineRunner(MemberRepository memberRepository,
+                                    OfficeRepository officeRepository, PlaneRepository planeRepository,
+                                    AccountRepository accountRepository,
+                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
-            generateSomeMembers(memberRepository, offices);
+            generateSomeMembers(memberRepository, offices, passwordEncoder);
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);

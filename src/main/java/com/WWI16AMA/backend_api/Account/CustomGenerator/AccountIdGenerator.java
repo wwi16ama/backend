@@ -1,39 +1,36 @@
 package com.WWI16AMA.backend_api.Account.CustomGenerator;
 
-import com.WWI16AMA.backend_api.Account.AccountRepository;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Random;
 
 public class AccountIdGenerator implements IdentifierGenerator {
 
-    final int START_NUMBER = 37459;
-    @Autowired
-    AccountRepository accountRepository;
 
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
 
         Connection connection = sharedSessionContractImplementor.connection();
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet r = null;
         try {
-            statement = connection.createStatement();
-            r = statement.executeQuery("select max(id) from account");
-            if (r.next()) {
-                if (r.getInt(1) == 0) {
-                    return START_NUMBER;
-                } else {
-                    return r.getInt(1) + 1;
-                }
-            }
+            statement = connection.prepareStatement("SELECT id FROM account where id = ?");
+
+            int randomId;
+            Random random = new Random();
+            do {
+                randomId = 10000 + random.nextInt(90000);
+                statement.setInt(1, randomId);
+                r = statement.executeQuery();
+            } while (r.next());
+            return randomId;
 
         } catch (Exception ex) {
 
