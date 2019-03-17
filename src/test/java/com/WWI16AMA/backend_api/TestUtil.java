@@ -33,6 +33,7 @@ class TestUtil {
         do {
             randomId = random.nextInt();
         } while (repository.existsById(randomId));
+        System.out.print(randomId);
         return randomId;
     }
 
