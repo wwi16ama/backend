@@ -1,7 +1,6 @@
 package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.Account;
-import com.WWI16AMA.backend_api.PilotLog.PilotLog;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,7 +45,6 @@ public class Member {
     private Address address;
     @Pattern(regexp = "DE[0-9]{20}")
     private String bankingAccount;
-
     @NotNull
     private boolean admissioned;
 
@@ -60,8 +58,6 @@ public class Member {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private PilotLog pilotLog;
 
     public Member() {
 
@@ -83,7 +79,6 @@ public class Member {
         this.admissioned = admissioned;
         this.password = hashedPassword;
         this.memberBankingAccount = new Account();
-        this.pilotLog = new PilotLog();
     }
 
     public Member(Member member) {
@@ -101,7 +96,6 @@ public class Member {
         this.offices = member.getOffices();
         this.memberBankingAccount = member.getMemberBankingAccount();
         this.flightAuthorization = member.getFlightAuthorization();
-        this.pilotLog = member.pilotLog;
     }
 
 
@@ -219,9 +213,5 @@ public class Member {
 
     public void setFlightAuthorization(List<FlightAuthorization> flightAuthorization) {
         this.flightAuthorization = flightAuthorization;
-    }
-
-    public PilotLog getPilotLog() {
-        return pilotLog;
     }
 }
