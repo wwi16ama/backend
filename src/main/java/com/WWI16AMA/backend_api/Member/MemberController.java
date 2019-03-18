@@ -4,6 +4,7 @@ import com.WWI16AMA.backend_api.Account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +64,7 @@ public class MemberController {
     static private void checkPassword(String unhashedPw) {
 
         if (unhashedPw == null) {
-            throw new IllegalArgumentException("Passwort muss beim Anlegen des Mitglieds angegeben werden");
+            throw new IllegalArgumentException("Passwort muss angegeben werden");
         }
 
         if (unhashedPw.length() < 8) {
@@ -88,7 +89,7 @@ public class MemberController {
         }
 
         if (mem.getMemberBankingAccount() != null) {
-            throw new IllegalArgumentException("Account shall not be send to create a new member");
+            throw new IllegalArgumentException("Account shall be null to create a new member");
         }
         mem.setMemberBankingAccount(new Account());
 
@@ -118,52 +119,61 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // TODO Passwort-Logik nach `updatePassword` auslagern
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> updateMember(@RequestBody Member mem, @PathVariable int id)
             throws NoSuchElementException {
 
-        if (memberRepository.existsById(id)) {
-            Member foundMember = memberRepository.findById(id).orElseThrow(() ->
-                    new NoSuchElementException("Member with the id " + " does not exist"));
+        Member foundMember = memberRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Member with the id " + " does not exist"));
 
-            mem.setMemberBankingAccount(foundMember.getMemberBankingAccount());
-            mem.setId(id);
+        mem.setMemberBankingAccount(foundMember.getMemberBankingAccount());
+        mem.setId(id);
 
-            if (mem.getNewPassword() != null) {
-                if (mem.getPassword() != null && passwordEncoder.matches(mem.getPassword(), foundMember.getPassword())) {
-                    checkPassword(mem.getNewPassword());
-                    mem.setPassword(passwordEncoder.encode(mem.getNewPassword()));
-                } else {
-                    throw new IllegalArgumentException("Das alte Passwort ist nicht korrekt oder nicht angegeben.");
-                }
-            } else {
-                mem.setPassword(foundMember.getPassword());
-            }
+        mem.setPassword(foundMember.getPassword());
 
+        List<Office> offices = mem.getOffices()
+                .stream()
+                .map(Office::getTitle)
+                .map(officeRepository::findByTitle)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
 
-            List<Office> offices = mem.getOffices()
-                    .stream()
-                    .map(Office::getTitle)
-                    .map(officeRepository::findByTitle)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
+        mem.setOffices(offices);
 
-            mem.setOffices(offices);
-
-            memberRepository.save(mem);
-        } else {
-            throw new NoSuchElementException("Member with the id " + id + " does not exist");
-        }
+        memberRepository.save(mem);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // TODO erst noch tests schreiben
-    @PutMapping(value = "/{id}/updatePassword")
-    public ResponseEntity<Void> updatePassword(){
+    @PreAuthorize("#id == principal.id")
+    @PutMapping(value = "{id}/changePasswordAsMember")
+    public ResponseEntity<Void> updatePassword(@RequestBody MemberPwChangeMessage msg, @PathVariable int id) {
 
-        return null;
+        Member mem = memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Kein Member gefunden"));
+
+        if (msg.getPassword() == null || !passwordEncoder.matches(msg.getPassword(), mem.getPassword())) {
+            throw new IllegalArgumentException("Das alte Passwort ist nicht korrekt oder nicht angegeben.");
+        }
+
+        checkPassword(msg.getNewPassword());
+        mem.setPassword(passwordEncoder.encode(msg.getNewPassword()));
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasRole('SYSTEMADMINISTRATOR')")
+    @PutMapping(value = "{id}/changePasswordAsAdmin")
+    public ResponseEntity<Void> updatePasswordAsAdmin(@RequestBody AdminPwChangeMessage msg, @PathVariable int id) {
+
+        Member mem = memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Keinen Member unter id " + id + " gefunden"));
+
+        checkPassword(msg.getNewPassword());
+
+        mem.setPassword(passwordEncoder.encode(msg.getNewPassword()));
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

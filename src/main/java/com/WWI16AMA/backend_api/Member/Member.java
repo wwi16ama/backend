@@ -41,10 +41,6 @@ public class Member {
     private String email;
     @NotBlank
     private String password;
-
-
-    @Transient
-    private String newPassword;
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
@@ -171,21 +167,10 @@ public class Member {
         return password;
     }
 
-    // ..kann aber bei POST / PUT _entgegengenommen_ werden (2/2)
+    // ..kann aber bei POST / PUT  _entgegengenommen_ werden (2/2)
     @JsonProperty
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    // Dito hier
-    @JsonIgnore
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    @JsonProperty
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
     }
 
     public Address getAddress() {

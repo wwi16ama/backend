@@ -154,10 +154,12 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Bean
-    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
-                                  PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository,
-                                  PilotLogRepository pilotLogRepository, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner generateSomeDataComLineRunner(MemberRepository memberRepository,
+                                    OfficeRepository officeRepository, PlaneRepository planeRepository,
+                                    AccountRepository accountRepository,
+                                    FeeRepository feeRepository, CreditRepository creditRepository,
+                                    PilotLogRepository pilotLogRepository,                        
+                                    PasswordEncoder passwordEncoder) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
