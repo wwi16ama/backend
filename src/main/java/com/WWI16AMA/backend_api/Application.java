@@ -31,9 +31,7 @@ import java.util.List;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
-    //Speichert eine MemberId aus generateSomeMembers, um diese für weitere erstellungen nutzen zu können
-    // (bsp. generateSOmePlaneLogs())
-    private static int memberId = 0;
+
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -80,7 +78,6 @@ public class Application extends SpringBootServletInitializer {
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
         System.out.println("MemberID: " + mem.getId());
-        memberId = mem.getId();
 
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
@@ -109,7 +106,7 @@ public class Application extends SpringBootServletInitializer {
         Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 3.60, 0.85);
-        generateSomePlaneLogs(plane1);
+        //generateSomePlaneLogs(plane1, );
         Plane[] planes = {plane1, plane2, plane3, plane4};
         planeRepository.saveAll(Arrays.asList(planes));
     }
@@ -136,18 +133,21 @@ public class Application extends SpringBootServletInitializer {
         creditRepository.saveAll(Arrays.asList(credits));
     }
 
-    private static void generateSomePlaneLogs(Plane plane) {
-        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 69, 88, 5);
-        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 88, 97, 10);
-        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 97, 150, 30);
-        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 150, 896, 5000);
-        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 896, 1000, 200);
-        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 1000, 1001, 2);
-        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), memberId, "Reilingen", 1001, 2000, 800);
+    private static void generateSomePlaneLogs(PlaneRepository planeRepository, MemberRepository memberRepository) {
+        Member member = memberRepository.findAll().iterator().next();
+        Plane plane = planeRepository.findById(1).get();
+
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 69, 88, 5);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 88, 97, 10);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 97, 150, 30);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 150, 896, 5000);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 896, 1000, 200);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1000, 1001, 2);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1001, 2000, 800);
         PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
 
         for (PlaneLogEntry entry : entries) {
-            plane.getPlaneLog().addPlaneLogEntry(entry);
+            plane.getPlaneLog().add(entry);
         }
 
     }
@@ -165,6 +165,7 @@ public class Application extends SpringBootServletInitializer {
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
+            generateSomePlaneLogs(planeRepository, memberRepository);
 
         };
     }
