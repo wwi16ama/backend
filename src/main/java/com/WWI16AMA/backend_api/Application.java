@@ -78,6 +78,7 @@ public class Application extends SpringBootServletInitializer {
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
         System.out.println("MemberID: " + mem.getId());
+        memberId = mem.getId();
 
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",

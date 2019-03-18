@@ -36,7 +36,7 @@ public class PlaneLogController {
     public ResponseEntity<List> info(@PathVariable int id) {
 
         return new ResponseEntity<>(planeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist")).getPlaneLog().getEntries(), HttpStatus.OK);
+                .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist")).getPlaneLog(), HttpStatus.OK);
     }
 
     @PostMapping(path = "/{id}")
@@ -44,12 +44,11 @@ public class PlaneLogController {
         Plane plane = planeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist"));
 
-        PlaneLog planeLog = plane.getPlaneLog();
-        planeLog.addPlaneLogEntry(entry);
+        plane.getPlaneLog().add(entry);
 
 
         planeRepository.save(plane);
-        return planeLog.getEntries();
+        return plane.getPlaneLog();
     }
 
     @PostMapping(path = "/{id}")
