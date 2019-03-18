@@ -7,6 +7,9 @@ import com.WWI16AMA.backend_api.Credit.Period;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
+import com.WWI16AMA.backend_api.PilotLog.PilotLog;
+import com.WWI16AMA.backend_api.PilotLog.PilotLogEntry;
+import com.WWI16AMA.backend_api.PilotLog.PilotLogRepository;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.Service.ServiceName;
@@ -20,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +85,7 @@ public class Application extends SpringBootServletInitializer {
                 "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem1.setAddress(adr1);
+        generateSomePilotLogEntries(mem1);
 
         memberRepository.save(mem1);
         System.out.println("MemberID: " + mem1.getId());
@@ -128,11 +133,33 @@ public class Application extends SpringBootServletInitializer {
         creditRepository.saveAll(Arrays.asList(credits));
     }
 
+    private static void generateSomePilotLogEntries(Member member){
+        PilotLogEntry ple1 = new PilotLogEntry("D-ERFI","Reilingen", LocalDateTime.of(2019,Month.MARCH,
+                15,10,30),"Mannheim",LocalDateTime.of(2019,Month.MARCH,
+                15,10,45),true);
+        PilotLogEntry ple2 = new PilotLogEntry("D-EJEK","Reilingen", LocalDateTime.of(2018,Month.FEBRUARY,
+                20,10,30),"Mannheim",LocalDateTime.of(2019,Month.MARCH,
+                20,10,45),true);
+        PilotLogEntry ple3 = new PilotLogEntry("D-EJEK","Reilingen", LocalDateTime.of(2019,Month.MARCH,
+                15,10,30),"Mannheim",LocalDateTime.of(2019,Month.MARCH,
+                15,10,45),true);
+        PilotLogEntry ple4 = new PilotLogEntry("D-EJEK","Reilingen", LocalDateTime.of(2019,Month.APRIL,
+                20,10,30),"Mannheim",LocalDateTime.of(2019,Month.MARCH,
+                20,10,45),true);
+
+        PilotLogEntry[] pilotLogEntries = {ple1,ple2,ple3,ple4};
+        for (PilotLogEntry entry : pilotLogEntries) {
+            member.getPilotLog().addPilotLogEntry(entry);
+        }
+    }
+
     @Bean
     public CommandLineRunner generateSomeDataComLineRunner(MemberRepository memberRepository,
                                     OfficeRepository officeRepository, PlaneRepository planeRepository,
                                     AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
+                                    FeeRepository feeRepository, CreditRepository creditRepository,
+                                    PilotLogRepository pilotLogRepository,                        
+                                    PasswordEncoder passwordEncoder) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
