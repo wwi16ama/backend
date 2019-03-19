@@ -30,7 +30,11 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable();
-        http.authorizeRequests()
+
+        http
+                .cors()
+                .and()
+                .authorizeRequests()
                 .antMatchers("/**").authenticated()
                 .and()
                 .httpBasic()

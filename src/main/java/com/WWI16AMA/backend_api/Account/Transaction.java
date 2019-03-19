@@ -32,9 +32,11 @@ public class Transaction {
     }
 
     public enum FeeType {
-        GEBÜHR,
-        AUFWANDSENTSCHÄDIGUNG,
-        ZAHLUNG
+        MITLIEGSBEITRAG,
+        GEBÜHRFLUGZEUG,
+        GUTSCHRIFTAMT,
+        GUTSCHRIFTLEISTUNG,
+        EINZAHLUNG
     }
 
     public FeeType getType() {
