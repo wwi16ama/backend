@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import static com.WWI16AMA.backend_api.TestUtil.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -311,5 +312,11 @@ public class MemberTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(msg)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testLogout() throws Exception {
+        mockMvc
+                .perform(logout());
     }
 }
