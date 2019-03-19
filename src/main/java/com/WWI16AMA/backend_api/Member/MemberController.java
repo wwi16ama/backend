@@ -37,7 +37,7 @@ public class MemberController {
      * //     * @param orderBy   Defines the field by which the sort is to be performed
      * //     * @return Returns an Iterable of Members paged and sorted by given parameters
      */
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER')")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER','KASSIERER')")
     @GetMapping(value = "")
     public Iterable<MemberView> getAllUsersPaged(
 //            @RequestParam(defaultValue = "20") int limit,
@@ -55,7 +55,7 @@ public class MemberController {
                 .collect(toList());
     }
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER') or hasAnyRole('FLUGWART') or #id == principal.id")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER','KASSIERER','FLUGWART') or #id == principal.id")
     @GetMapping(value = "/{id}")
     public Member detail(@PathVariable int id) {
 
@@ -63,25 +63,6 @@ public class MemberController {
                 .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist"));
     }
 
-    static private void checkPassword(String unhashedPw) {
-
-        if (unhashedPw == null) {
-            throw new IllegalArgumentException("Passwort muss angegeben werden");
-        }
-
-        if (unhashedPw.length() < 8) {
-            throw new IllegalArgumentException("Passwort muss mindestens 8 Zeichen lang sein");
-        }
-
-        if (!Pattern.matches(".*\\d.*", unhashedPw)) {
-            throw new IllegalArgumentException("Passwort muss mindestens eine Zahl enthalten");
-        }
-
-        if (!Pattern.matches(".*\\w.*", unhashedPw)) {
-            throw new IllegalArgumentException("Passwort muss mindestens einen Buchstaben enthalten");
-        }
-
-    }
 
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
     @PostMapping(value = "")
@@ -180,5 +161,25 @@ public class MemberController {
         mem.setPassword(passwordEncoder.encode(msg.getNewPassword()));
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    static private void checkPassword(String unhashedPw) {
+
+        if (unhashedPw == null) {
+            throw new IllegalArgumentException("Passwort muss angegeben werden");
+        }
+
+        if (unhashedPw.length() < 8) {
+            throw new IllegalArgumentException("Passwort muss mindestens 8 Zeichen lang sein");
+        }
+
+        if (!Pattern.matches(".*\\d.*", unhashedPw)) {
+            throw new IllegalArgumentException("Passwort muss mindestens eine Zahl enthalten");
+        }
+
+        if (!Pattern.matches(".*\\w.*", unhashedPw)) {
+            throw new IllegalArgumentException("Passwort muss mindestens einen Buchstaben enthalten");
+        }
+
     }
 }

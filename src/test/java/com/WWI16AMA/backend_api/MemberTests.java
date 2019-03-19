@@ -60,7 +60,6 @@ public class MemberTests {
     public void testRepository() {
 
         long found = memberRepository.count();
-
         saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "password123");
 
         assertThat(memberRepository.count()).isEqualTo(found + 1);

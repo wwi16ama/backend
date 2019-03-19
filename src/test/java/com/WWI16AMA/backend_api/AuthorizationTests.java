@@ -39,20 +39,16 @@ public class AuthorizationTests {
 
 
     @Test
-    public void testReceiveMemberWithID() throws Exception {
+    public void testMemberAccessingOwnAcc() throws Exception {
 
         String pw = "koala";
         Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
 
         int id = mem.getId();
 
-        mockMvc
-                .perform(
-                        get("/members/"+id).header(mem.getId().toString(), pw))
-                .andExpect(status().is2xxSuccessful());
-
-
-
+        mockMvc.perform(get("/members/"+id)
+                .header(mem.getId().toString(), pw))
+                .andExpect(status().isOk());
     }
 
 
