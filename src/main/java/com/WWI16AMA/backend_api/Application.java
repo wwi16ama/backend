@@ -154,8 +154,9 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Bean
-    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
-                                  PlaneRepository planeRepository, AccountRepository accountRepository,
+    public CommandLineRunner generateSomeDataComLineRunner(MemberRepository memberRepository,
+                                    OfficeRepository officeRepository, PlaneRepository planeRepository,
+                                    AccountRepository accountRepository,
                                   FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
         return (args) -> {
 
