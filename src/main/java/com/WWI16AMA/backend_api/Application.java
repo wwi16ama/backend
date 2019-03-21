@@ -149,6 +149,7 @@ public class Application extends SpringBootServletInitializer {
             plane.getPlaneLog().addPlaneLogEntry(entry);
         }
 
+        planeRepository.save(plane);
     }
 
     @Bean
