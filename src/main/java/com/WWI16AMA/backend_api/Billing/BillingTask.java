@@ -1,13 +1,15 @@
 package com.WWI16AMA.backend_api.Billing;
 
-import com.WWI16AMA.backend_api.Account.Account;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
+import com.WWI16AMA.backend_api.Events.TransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import com.WWI16AMA.backend_api.Member.Status;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDate;
@@ -21,11 +23,13 @@ public class BillingTask {
     private AccountRepository accountRepository;
     private FeeRepository feeRepository;
     private MemberRepository memberRepository;
+    private ApplicationEventPublisher publisher;
 
-    public BillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository) {
+    public BillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository, ApplicationEventPublisher publisher) {
         this.accountRepository = accountRepository;
         this.feeRepository = feeRepository;
         this.memberRepository = memberRepository;
+        this.publisher = publisher;
     }
 
     @Scheduled(cron = "0 0 12 1 2 ? *", zone = "Europe/Berlin")
@@ -37,10 +41,10 @@ public class BillingTask {
                 .forEach(member -> {
 
                     if (!member.getStatus().equals(Status.HONORARYMEMBER)) {
-                        Account account = member.getMemberBankingAccount();
-                        makeTransaction(account,
+                        publisher.publishEvent(new TransactionEvent(member,
                                 feeRepository.findByCategory(Fee.Status.valueOf(member.getStatus().name())).get().getFee(),
-                                Transaction.FeeType.GEBÜHR);
+                                Transaction.FeeType.GEBÜHR));
+                        publisher.publishEvent(new EmailNotificationEvent(member));
                     }
                 });
 
@@ -51,32 +55,21 @@ public class BillingTask {
                     if (!member.getStatus().equals(Status.HONORARYMEMBER)) {
 
                         if (member.getStatus().equals(Status.ACTIVE)) {
-                            Account account = member.getMemberBankingAccount();
-                            makeTransaction(account,
+                            publisher.publishEvent(new TransactionEvent(member,
                                     feeRepository.findByCategory(Fee.Status.U20ACTIVE).get().getFee(),
-                                    Transaction.FeeType.GEBÜHR);
+                                    Transaction.FeeType.GEBÜHR));
+                            publisher.publishEvent(new EmailNotificationEvent(member));
                         } else {
-                            Account account = member.getMemberBankingAccount();
-                            makeTransaction(account,
+
+                            publisher.publishEvent(new TransactionEvent(member,
                                     feeRepository.findByCategory(Fee.Status.valueOf(member.getStatus().name())).get().getFee(),
-                                    Transaction.FeeType.GEBÜHR);
+                                    Transaction.FeeType.GEBÜHR));
+                            publisher.publishEvent(new EmailNotificationEvent(member));
                         }
+
                     }
                 });
     }
 
-
-    private void makeTransaction(Account account, int amount, Transaction.FeeType type) {
-        account.addTransaction(new Transaction(amount, type));
-        if(type.equals(Transaction.FeeType.GEBÜHR)){
-            account.add2Balance(-amount);
-        } else if(type.equals(Transaction.FeeType.ZAHLUNG)){
-            account.add2Balance(amount);
-        } else {
-            account.add2Balance(amount);
-        }
-
-        accountRepository.save(account);
-    }
 
 }

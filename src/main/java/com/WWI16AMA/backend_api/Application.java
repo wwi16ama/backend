@@ -5,6 +5,7 @@ import com.WWI16AMA.backend_api.Billing.BillingTask;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
+import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
@@ -16,6 +17,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -53,7 +55,7 @@ public class Application extends SpringBootServletInitializer {
 
     private static void generateSomeMembers(MemberRepository memberRepository,
                                             List<Office> offices,
-                                            PasswordEncoder enc) {
+                                            PasswordEncoder enc, ApplicationEventPublisher publisher) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -71,6 +73,7 @@ public class Application extends SpringBootServletInitializer {
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
 
+        publisher.publishEvent(new EmailNotificationEvent(mem));
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         memberRepository.save(mem);
@@ -132,13 +135,13 @@ public class Application extends SpringBootServletInitializer {
     @Bean
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
                                   PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
+                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
-            generateSomeMembers(memberRepository, offices, passwordEncoder);
+            generateSomeMembers(memberRepository, offices, passwordEncoder, publisher);
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
@@ -147,8 +150,8 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Bean
-    public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository) {
+    public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository, ApplicationEventPublisher publisher) {
 
-        return new BillingTask(accountRepository, feeRepository, memberRepository);
+        return new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
     }
 }
