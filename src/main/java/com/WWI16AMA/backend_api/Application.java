@@ -150,6 +150,7 @@ public class Application extends SpringBootServletInitializer {
             plane.getPlaneLog().add(entry);
         }
 
+        planeRepository.save(plane);
     }
 
     @Bean

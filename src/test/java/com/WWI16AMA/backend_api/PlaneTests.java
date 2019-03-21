@@ -174,7 +174,7 @@ public class PlaneTests {
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
         PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
 
-        this.mockMvc.perform(put("/planeLog/" + TestUtil.getUnusedId(planeRepository))
+        this.mockMvc.perform(post("/planeLog/" + TestUtil.getUnusedId(planeRepository))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
                 .andExpect(status().isNotFound());
