@@ -20,7 +20,6 @@ public class Plane {
     private String name;
     @NotBlank
     private String position;
-    //@NotBlank TODO Required?
     private URL pictureUrl;
     @NotNull
     @Enumerated(EnumType.STRING)

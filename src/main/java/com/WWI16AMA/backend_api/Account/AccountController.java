@@ -21,17 +21,7 @@ public class AccountController {
 
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER')")
     @GetMapping(path = "")
-    public List<AccountView> getAllAccounts(
-//            @RequestParam(defaultValue = "20") int limit,
-//            @RequestParam(defaultValue = "0") int start,
-//            @RequestParam(defaultValue = "asc") String direction,
-//            @RequestParam(defaultValue = "id") String orderBy
-    ) {
-//        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
-//        return accountRepository.findAll(PageRequest.of(start, limit, sort))
-//                .stream()
-//                .map(AccountView::new)
-//                .collect(toList());
+    public List<AccountView> getAllAccounts() {
         Iterable<Account> accs = accountRepository.findAll();
         return StreamSupport.stream(accs.spliterator(), false)
                 .map(AccountView::new)
