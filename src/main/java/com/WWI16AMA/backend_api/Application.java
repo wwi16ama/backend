@@ -72,6 +72,7 @@ public class Application extends SpringBootServletInitializer {
 
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
+        mem.setId(9999);
         memberRepository.save(mem);
         System.out.println("MemberID: " + mem.getId());
 
