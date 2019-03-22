@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.NoSuchElementException;
 
-
 import static com.WWI16AMA.backend_api.TestUtil.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -120,7 +119,7 @@ public class MemberTests {
         mem.setMemberBankingAccount(null);
 
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
-        mem.setOffices(asSet(off));
+        mem.setOffices(asList(off));
 
         ObjectNode objNode = toMutableJson(mem);
         objNode.put("password", klartextPw);
