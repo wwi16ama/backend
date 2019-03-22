@@ -29,11 +29,6 @@ import java.util.List;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -72,6 +67,7 @@ public class Application extends SpringBootServletInitializer {
 
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
+        mem.setId(9999);
         memberRepository.save(mem);
         System.out.println("MemberID: " + mem.getId());
 
@@ -126,6 +122,11 @@ public class Application extends SpringBootServletInitializer {
         Credit c5 = new Credit(ServiceName.PILOT, 40.0, Period.DAY);
         Credit[] credits = {c1, c2, c3, c4, c5};
         creditRepository.saveAll(Arrays.asList(credits));
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
     }
 
     @Bean
