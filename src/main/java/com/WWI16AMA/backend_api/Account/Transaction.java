@@ -13,6 +13,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @NotNull
     private FeeType type;
+    @NotNull
     private final LocalDateTime timestamp;
     @NotNull
     private double amount;
