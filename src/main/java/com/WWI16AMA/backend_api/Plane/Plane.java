@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.net.URL;
 
 @Entity
 public class Plane {
@@ -19,6 +20,8 @@ public class Plane {
     private String name;
     @NotBlank
     private String position;
+    //@NotBlank TODO Required?
+    private URL pictureUrl;
     @NotNull
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
@@ -31,11 +34,12 @@ public class Plane {
     }
 
     public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position,
-                 double pricePerBookedHour, double pricePerFlightMinute) {
+                 URL pictureUrl, double pricePerBookedHour, double pricePerFlightMinute) {
 
         this.number = number;
         this.name = name;
         this.position = position;
+        this.pictureUrl = pictureUrl;
         this.neededAuthorization = neededAuthorization;
         this.pricePerBookedHour = pricePerBookedHour;
         this.pricePerFlightMinute = pricePerFlightMinute;
@@ -72,6 +76,14 @@ public class Plane {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public URL getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(URL pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 
     public FlightAuthorization.Authorization getNeededAuthorization() {
