@@ -59,7 +59,7 @@ public class Application extends SpringBootServletInitializer {
         flList.add(fl1);
         flList.add(fl2);
 
-        Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
+        Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
                 LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
@@ -71,7 +71,7 @@ public class Application extends SpringBootServletInitializer {
         memberRepository.save(mem);
         System.out.println("AdminID:\t" + mem.getId());
 
-        Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
+        Address adr1 = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
                 "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,

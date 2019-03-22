@@ -55,8 +55,7 @@ class TestUtil {
         return or.readTree(json);
     }
 
-    // TODO hässlich wie die Nacht
-    static ObjectNode mutableJson(Object o) throws IOException {
+    static ObjectNode toMutableJson(Object o) throws IOException {
         ObjectWriter ow = new CustomObjectMapper().writer();
         String json = ow.writeValueAsString(o);
         ObjectReader or = new CustomObjectMapper().reader();
@@ -64,7 +63,7 @@ class TestUtil {
     }
 
     static Member saveAndGetMember(MemberRepository memberRepository, OfficeRepository officeRepository, PasswordEncoder enc, String password) {
-        Address adr = new Address(68167, "Mannheim", "Hambachstraße 3");
+        Address adr = new Address("68167", "Mannheim", "Hambachstraße 3");
         Member mem = new Member("Hauke", "Haien",
                 LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false, enc.encode(password));

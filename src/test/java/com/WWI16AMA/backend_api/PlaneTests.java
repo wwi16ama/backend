@@ -13,9 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.TransactionSystemException;
 
-import javax.persistence.RollbackException;
 import java.net.URL;
 import java.util.NoSuchElementException;
 
@@ -52,9 +50,8 @@ public class PlaneTests {
     public void testGetPlaneController() throws Exception {
 
         long found = planeRepository.count();
-        String limit = found != 0 ? Long.toString(found) : "1337";
 
-        this.mockMvc.perform(get("/planes").param("limit", limit))
+        this.mockMvc.perform(get("/planes"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", IsCollectionWithSize.hasSize((int) found)));
@@ -116,22 +113,11 @@ public class PlaneTests {
         Plane plane = saveAndGetPlane();
 
         plane.setNumber(null);
-        try {
-            // this should throw an exception, because the validation of the member
-            // should fail. If there is no exception, the status won't be "Bad Request"
-            this.mockMvc.perform(put("/planes/" + plane.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.marshal(plane)))
-                    .andExpect(status().isBadRequest());
-        } catch (org.springframework.web.util.NestedServletException e) {
-            // It's expected behavior to have a specific exception, which should
-            // fit these criteria.
-            if (!(e.getCause() instanceof TransactionSystemException &&
-                    e.getCause().getCause() instanceof RollbackException)) {
-                throw new Exception("Es wurden andere verursachende Exceptions erwartet.\r\n" +
-                        "Damit ist nicht der erwartete Fall eingetreten.");
-            }
-        }
+
+        this.mockMvc.perform(put("/planes/" + plane.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(plane)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

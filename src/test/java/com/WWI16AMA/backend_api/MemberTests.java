@@ -107,7 +107,7 @@ public class MemberTests {
 
         long found = memberRepository.count();
 
-        Address adr = new Address(12345, "Hamburg", "Hafenstraße 5");
+        Address adr = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false, "");
@@ -121,7 +121,7 @@ public class MemberTests {
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
         mem.setOffices(asList(off));
 
-        ObjectNode objNode = mutableJson(mem);
+        ObjectNode objNode = toMutableJson(mem);
         objNode.put("password", klartextPw);
 
         String res = this.mockMvc.perform(post("/members")
@@ -156,7 +156,7 @@ public class MemberTests {
 
         long found = memberRepository.count();
 
-        Address adr = new Address(12345, "Hamburg", "Hafenstraße 5");
+        Address adr = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false, "");
@@ -170,7 +170,7 @@ public class MemberTests {
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
         mem.setOffices(asList(off));
 
-        ObjectNode objNode = mutableJson(mem);
+        ObjectNode objNode = toMutableJson(mem);
         objNode.put("password", klartextPw);
 
         this.mockMvc.perform(post("/members")
@@ -196,7 +196,7 @@ public class MemberTests {
     public void testPutMemberController() throws Exception {
 
         Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123Password");
-        Address newAddr = new Address(12345, "Neustadt", "Neustraße 5");
+        Address newAddr = new Address("12345", "Neustadt", "Neustraße 5");
         mem.setAddress(newAddr);
 
         this.mockMvc.perform(put("/members/" + mem.getId())
@@ -251,7 +251,7 @@ public class MemberTests {
         String pw = "wasgeht123";
         Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
         MemberContactDetails mcd = new MemberContactDetails("Hannes", "Hansen",
-                "internet@mail.com", new Address(24313, "Stadt", "Straße"));
+                "internet@mail.com", new Address("24313", "Stadt", "Straße"));
 
         this.mockMvc.perform(put("/members/" + mem.getId() + "/changeContactDetails")
                 .headers(createBasicAuthHeader(mem.getId().toString(), pw))
@@ -266,7 +266,7 @@ public class MemberTests {
         String pw = "wasgeht123";
         Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
         MemberContactDetails mcd = new MemberContactDetails("Hannes", "Hansen",
-                "internet@mail.com", new Address(24313, "Stadt", "Straße"));
+                "internet@mail.com", new Address("24313", "Stadt", "Straße"));
         Member wrongMem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
 
         this.mockMvc.perform(put("/members/" + wrongMem.getId() + "/changeContactDetails")
