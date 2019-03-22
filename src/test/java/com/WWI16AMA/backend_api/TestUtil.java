@@ -33,6 +33,7 @@ class TestUtil {
         do {
             randomId = random.nextInt();
         } while (repository.existsById(randomId));
+        System.out.print(randomId);
         return randomId;
     }
 
@@ -69,6 +70,22 @@ class TestUtil {
                 LocalDate.of(1796, Month.DECEMBER, 3), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false, enc.encode(password));
 
+        memberRepository.save(mem);
+        return mem;
+    }
+
+    /**
+     * Returns a Member that holds all Offices / has all authorizations
+     *
+     * @param memberRepository
+     * @param officeRepository
+     * @param enc
+     * @param password
+     * @return
+     */
+    static Member saveAndGetSuperMember(MemberRepository memberRepository, OfficeRepository officeRepository, PasswordEncoder enc, String password) {
+
+        Member mem = saveAndGetMember(memberRepository, officeRepository, enc, password);
         List<Office> off = StreamSupport.stream(officeRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
         mem.setOffices(off);

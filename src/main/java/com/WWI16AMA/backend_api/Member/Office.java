@@ -9,13 +9,12 @@ public class Office {
 
     @Enumerated(EnumType.STRING)
     private Title title;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToMany(mappedBy = "offices")
-    List<Member> members;
+    private List<Member> members;
 
     Office() {
 
@@ -29,17 +28,17 @@ public class Office {
         return title;
     }
 
+    @Override
+    public String toString() {
+        return getTitle().toString();
+    }
+
     public enum Title {
         FLUGWART,
         IMBETRIEBSKONTROLLTURMARBEITEND,
         KASSIERER,
         SYSTEMADMINISTRATOR,
         VORSTANDSVORSITZENDER
-    }
-
-    @Override
-    public String toString() {
-        return getTitle().toString();
     }
 
 }

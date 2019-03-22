@@ -16,6 +16,12 @@ public class MemberIdGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
 
+        Member mem = (Member) o;
+
+        if (mem.getId() != null) {
+            return mem.getId();
+        }
+
         Connection connection = sharedSessionContractImplementor.connection();
         PreparedStatement statement = null;
         ResultSet r = null;

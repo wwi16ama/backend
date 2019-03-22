@@ -3,6 +3,7 @@ package com.WWI16AMA.backend_api;
 import com.WWI16AMA.backend_api.Account.Account;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import com.WWI16AMA.backend_api.Member.OfficeRepository;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.WWI16AMA.backend_api.TestUtil.createBasicAuthHeader;
 import static com.WWI16AMA.backend_api.TestUtil.saveAndGetMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser
 public class AccountTests {
 
     @Autowired
@@ -51,20 +52,40 @@ public class AccountTests {
     @Test
     public void testPostAccountController() throws Exception {
 
-        saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123pasword");
-        int memberId = memberRepository.findAll().iterator().next().getId();
-        Account memAcc = memberRepository.findById(memberId).get().getMemberBankingAccount();
+        String pw = "123pasword";
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
+        Account acc = mem.getMemberBankingAccount();
 
-        long found = memAcc.getTransactions().size();
-        System.out.println("AccId: " + memAcc.getId());
+        long found = acc.getTransactions().size();
 
-        Transaction transaction = new Transaction(500, Transaction.FeeType.values()[0]);
+        Transaction transaction = new Transaction(500, Transaction.FeeType.EINZAHLUNG);
 
-        this.mockMvc.perform(post("/accounts/{id}/transactions", memAcc.getId())
+        this.mockMvc.perform(post("/accounts/" + acc.getId() + "/transactions")
+                .headers(createBasicAuthHeader(mem.getId().toString(), pw))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(transaction))).andExpect(status().isOk());
 
-        assertThat(((long) accountRepository.findById(memAcc.getId()).get().getTransactions().size())).isEqualTo(found + 1);
+        assertThat(((long) accountRepository.findById(acc.getId()).get().getTransactions().size())).isEqualTo(found + 1);
+    }
+
+    @Test
+    @WithMockUser(roles = {"KASSIERER"})
+    public void createTransactionAsKassierer() throws Exception {
+
+        String pw = "123pasword";
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, pw);
+        Account acc = mem.getMemberBankingAccount();
+
+        long found = acc.getTransactions().size();
+        System.out.println("AccId: " + acc.getId());
+
+        Transaction transaction = new Transaction(500, Transaction.FeeType.values()[0]);
+
+        this.mockMvc.perform(post("/accounts/{id}/transactions", acc.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(transaction))).andExpect(status().isOk());
+
+        assertThat(((long) accountRepository.findById(acc.getId()).get().getTransactions().size())).isEqualTo(found + 1);
     }
 
 
