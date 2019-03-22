@@ -28,6 +28,26 @@ public class MemberController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    static private void checkPassword(String unhashedPw) {
+
+        if (unhashedPw == null) {
+            throw new IllegalArgumentException("Passwort muss angegeben werden");
+        }
+
+        if (unhashedPw.length() < 8) {
+            throw new IllegalArgumentException("Passwort muss mindestens 8 Zeichen lang sein");
+        }
+
+        if (!Pattern.matches(".*\\d.*", unhashedPw)) {
+            throw new IllegalArgumentException("Passwort muss mindestens eine Zahl enthalten");
+        }
+
+        if (!Pattern.matches(".*\\w.*", unhashedPw)) {
+            throw new IllegalArgumentException("Passwort muss mindestens einen Buchstaben enthalten");
+        }
+
+    }
+
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR', 'KASSIERER', 'FLUGWART')")
     @GetMapping(value = "")
     public Iterable<MemberView> getAllUsers() {
@@ -45,7 +65,6 @@ public class MemberController {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist"));
     }
-
 
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR')")
     @PostMapping(value = "")
@@ -167,25 +186,5 @@ public class MemberController {
         mem.setPassword(passwordEncoder.encode(msg.getNewPassword()));
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    static private void checkPassword(String unhashedPw) {
-
-        if (unhashedPw == null) {
-            throw new IllegalArgumentException("Passwort muss angegeben werden");
-        }
-
-        if (unhashedPw.length() < 8) {
-            throw new IllegalArgumentException("Passwort muss mindestens 8 Zeichen lang sein");
-        }
-
-        if (!Pattern.matches(".*\\d.*", unhashedPw)) {
-            throw new IllegalArgumentException("Passwort muss mindestens eine Zahl enthalten");
-        }
-
-        if (!Pattern.matches(".*\\w.*", unhashedPw)) {
-            throw new IllegalArgumentException("Passwort muss mindestens einen Buchstaben enthalten");
-        }
-
     }
 }
