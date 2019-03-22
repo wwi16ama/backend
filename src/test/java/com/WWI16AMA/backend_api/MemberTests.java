@@ -120,7 +120,7 @@ public class MemberTests {
         mem.setMemberBankingAccount(null);
 
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
-        mem.setOffices(asSet(off));
+        mem.setOffices(asList(off));
 
         ObjectNode objNode = toMutableJson(mem);
         objNode.put("password", klartextPw);
