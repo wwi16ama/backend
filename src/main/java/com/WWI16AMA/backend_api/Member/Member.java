@@ -1,5 +1,11 @@
 package com.WWI16AMA.backend_api.Member;
 
+import com.WWI16AMA.backend_api.Account.Account;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -7,15 +13,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "5-digit-Id", strategy = "com.WWI16AMA.backend_api.Member.MemberIdGenerator")
+    @GeneratedValue(generator = "5-digit-Id")
     private Integer id;
 
     @NotBlank
@@ -33,6 +38,8 @@ public class Member {
     @NotBlank
     @Email
     private String email;
+    @NotBlank
+    private String password;
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
@@ -40,12 +47,15 @@ public class Member {
     private String bankingAccount;
     @NotNull
     private boolean admissioned;
-    private String memberBankingAccount;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"balance", "transactions"})
+    private Account memberBankingAccount;
 
     @ManyToMany
-    private Set<Office> offices = new HashSet<>();
+    private List<Office> offices;
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
 
@@ -57,7 +67,7 @@ public class Member {
      * Constructor contains all Fields that always have to be set. ("Pflichtfelder")
      */
     public Member(String firstName, String lastName, LocalDate dateOfBirth, Gender gender, Status status,
-                  String email, Address address, String bankingAccount, boolean admissioned) {
+                  String email, Address address, String bankingAccount, boolean admissioned, String hashedPassword) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -67,6 +77,25 @@ public class Member {
         this.address = address;
         this.bankingAccount = bankingAccount;
         this.admissioned = admissioned;
+        this.password = hashedPassword;
+        this.memberBankingAccount = new Account();
+    }
+
+    public Member(Member member) {
+        this.id = member.getId();
+        this.firstName = member.getFirstName();
+        this.lastName = member.getLastName();
+        this.dateOfBirth = member.getDateOfBirth();
+        this.gender = member.getGender();
+        this.status = member.getStatus();
+        this.email = member.getEmail();
+        this.password = member.getPassword();
+        this.address = member.getAddress();
+        this.bankingAccount = member.getBankingAccount();
+        this.admissioned = member.isAdmissioned();
+        this.offices = member.getOffices();
+        this.memberBankingAccount = member.getMemberBankingAccount();
+        this.flightAuthorization = member.getFlightAuthorization();
     }
 
 
@@ -126,6 +155,18 @@ public class Member {
         this.email = email;
     }
 
+    // So wird das PW nicht bei GET / POST _gesendet_.. (1/2)
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
+
+    // ..kann aber bei POST / PUT  _entgegengenommen_ werden (2/2)
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Address getAddress() {
         return address;
     }
@@ -150,19 +191,19 @@ public class Member {
         this.admissioned = admissioned;
     }
 
-    public String getMemberBankingAccount() {
+    public Account getMemberBankingAccount() {
         return memberBankingAccount;
     }
 
-    public void setMemberBankingAccount(String memberBankingAccount) {
+    public void setMemberBankingAccount(Account memberBankingAccount) {
         this.memberBankingAccount = memberBankingAccount;
     }
 
-    public Set<Office> getOffices() {
+    public List<Office> getOffices() {
         return offices;
     }
 
-    public void setOffices(Set<Office> offices) {
+    public void setOffices(List<Office> offices) {
         this.offices = offices;
     }
 

@@ -7,24 +7,12 @@ import java.time.LocalDate;
 @Entity
 public class FlightAuthorization {
 
-    public enum Authorization {
-        PPLA,
-        PPLB,
-        BZFI,
-        BZFII,
-        LEHRBEFUGNIS
-    }
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @Enumerated(EnumType.STRING)
     private Authorization authorization;
-
     private LocalDate dateOfIssue;
-
     private LocalDate expires;
 
     public FlightAuthorization() {
@@ -59,5 +47,13 @@ public class FlightAuthorization {
 
     public void setExpires(LocalDate expires) {
         this.expires = expires;
+    }
+
+    public enum Authorization {
+        PPLA,
+        PPLB,
+        BZFI,
+        BZFII,
+        LEHRBEFUGNIS
     }
 }
