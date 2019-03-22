@@ -16,27 +16,9 @@ public class PlaneController {
     @Autowired
     private PlaneRepository planeRepository;
 
-    /**
-     * Get Request which delivers all Users.
-     * <p>
-     * //     * @param limit     Defines the amount of objects to receive
-     * //     * @param start     Defines the page to view
-     * //     * @param direction Defines the sorting order
-     * //     * @param orderBy   Defines the field by which the sort is to be performed
-     * //     * @return Returns an Iterable of Airplanes paged and sorted by given parameters
-     */
     @GetMapping(value = "")
-    public Iterable<Plane> getAllPlanesPaged(
-//            @RequestParam(defaultValue = "20") int limit,
-//            @RequestParam(defaultValue = "0") int start,
-//            @RequestParam(defaultValue = "asc") String direction,
-//            @RequestParam(defaultValue = "name") String orderBy
-    ) throws IllegalArgumentException {
+    public Iterable<Plane> getAllPlanesPaged() throws IllegalArgumentException {
 
-//        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
-
-//        return planeRepository.findAll(PageRequest.of(start, limit, sort)).stream()
-//                .collect(toList());
         return planeRepository.findAll();
     }
 
@@ -47,7 +29,7 @@ public class PlaneController {
                 .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist")), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR')")
     @PostMapping(path = "")
     public Plane create(@RequestBody Plane reqPlane) {
 
@@ -61,7 +43,7 @@ public class PlaneController {
         return reqPlane;
     }
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR')")
     @PutMapping(path = "/{id}")
     public ResponseEntity<Plane> put(@RequestBody Plane putPlane, @PathVariable int id) {
 
@@ -74,7 +56,7 @@ public class PlaneController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR')")
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Plane> delete(@PathVariable int id) {
 

@@ -19,7 +19,7 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER')")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER')")
     @GetMapping(path = "")
     public List<AccountView> getAllAccounts(
 //            @RequestParam(defaultValue = "20") int limit,
@@ -38,14 +38,14 @@ public class AccountController {
                 .collect(toList());
     }
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER') or #id == principal.id")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER') or #id == principal.id")
     @GetMapping(path = "/{id}")
     public Account showAccountDetail(@PathVariable int id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Account with the id " + id + " does not exist"));
     }
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER') or hasAnyRole('KASSIERER') or #id == principal.id")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER') or #id == principal.getMemberBankingAccount().getId()")
     @PostMapping(path = "/{id}/transactions")
     public Transaction addTransaction(@RequestBody Transaction transaction, @PathVariable int id) {
         Account acc = accountRepository.findById(id)
