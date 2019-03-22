@@ -77,7 +77,6 @@ public class AccountTests {
         Account acc = mem.getMemberBankingAccount();
 
         long found = acc.getTransactions().size();
-        System.out.println("AccId: " + acc.getId());
 
         Transaction transaction = new Transaction(500, Transaction.FeeType.values()[0]);
 

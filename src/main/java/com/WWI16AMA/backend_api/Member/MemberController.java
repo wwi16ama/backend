@@ -113,13 +113,9 @@ public class MemberController {
 
         Member foundMember = memberRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Member with the id " + " does not exist"));
-
         mem.setMemberBankingAccount(foundMember.getMemberBankingAccount());
         mem.setId(id);
-
         mem.setPassword(foundMember.getPassword());
-
-        System.out.println(mem.getOffices());
 
         if (mem.getOffices() != null) {
             List<Office> offices = mem.getOffices()
@@ -132,9 +128,6 @@ public class MemberController {
 
             mem.setOffices(offices);
         }
-
-//        this.mockMvc.perform(put("/members/" + mem.getId() + "/changeContactDetails")
-
 
         memberRepository.save(mem);
 

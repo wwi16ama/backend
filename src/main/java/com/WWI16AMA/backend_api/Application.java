@@ -69,7 +69,7 @@ public class Application extends SpringBootServletInitializer {
         mem.setFlightAuthorization(flList);
         mem.setId(9999);
         memberRepository.save(mem);
-        System.out.println("MemberID: " + mem.getId());
+        System.out.println("AdminID:\t" + mem.getId());
 
         Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
@@ -79,7 +79,7 @@ public class Application extends SpringBootServletInitializer {
         mem1.setAddress(adr1);
 
         memberRepository.save(mem1);
-        System.out.println("MemberID: " + mem1.getId());
+        System.out.println("MemberID:\t" + mem1.getId());
     }
 
     private static void generateSomePlanes(PlaneRepository planeRepository) throws Exception {

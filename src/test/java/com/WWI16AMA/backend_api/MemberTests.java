@@ -15,10 +15,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.WWI16AMA.backend_api.TestUtil.*;
@@ -46,14 +44,6 @@ public class MemberTests {
 
     @Autowired
     private MockMvc mockMvc;
-
-
-    @Transactional
-    public void testGetOffices() {
-        saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "password123");
-        List<Office> of = memberRepository.findAll().iterator().next().getOffices();
-        System.out.println(of.size());
-    }
 
     @Test
     public void testRepository() {
