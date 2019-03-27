@@ -3,7 +3,7 @@ package com.WWI16AMA.backend_api.Billing;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
-import com.WWI16AMA.backend_api.Events.TransactionEvent;
+import com.WWI16AMA.backend_api.Events.ExtTransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.Member;
@@ -41,7 +41,7 @@ public class BillingTask {
                 .forEach(member -> {
 
                     if (!member.getStatus().equals(Status.HONORARYMEMBER)) {
-                        publisher.publishEvent(new TransactionEvent(member,
+                        publisher.publishEvent(new ExtTransactionEvent(member,
                                 feeRepository.findByCategory(Fee.Status.valueOf(member.getStatus().name())).get().getFee(),
                                 Transaction.FeeType.GEBÜHR));
                         publisher.publishEvent(new EmailNotificationEvent(member));
@@ -55,13 +55,13 @@ public class BillingTask {
                     if (!member.getStatus().equals(Status.HONORARYMEMBER)) {
 
                         if (member.getStatus().equals(Status.ACTIVE)) {
-                            publisher.publishEvent(new TransactionEvent(member,
+                            publisher.publishEvent(new ExtTransactionEvent(member,
                                     feeRepository.findByCategory(Fee.Status.U20ACTIVE).get().getFee(),
                                     Transaction.FeeType.GEBÜHR));
                             publisher.publishEvent(new EmailNotificationEvent(member));
                         } else {
 
-                            publisher.publishEvent(new TransactionEvent(member,
+                            publisher.publishEvent(new ExtTransactionEvent(member,
                                     feeRepository.findByCategory(Fee.Status.valueOf(member.getStatus().name())).get().getFee(),
                                     Transaction.FeeType.GEBÜHR));
                             publisher.publishEvent(new EmailNotificationEvent(member));

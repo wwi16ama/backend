@@ -1,7 +1,9 @@
 package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.Account;
+import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +29,8 @@ public class MemberController {
     private OfficeRepository officeRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    ApplicationEventPublisher publisher;
 
     /**
      * Get Request which delivers all Users.
@@ -107,6 +111,7 @@ public class MemberController {
         mem.setOffices(offices);
 
         memberRepository.save(mem);
+        publisher.publishEvent(new EmailNotificationEvent(mem));
         return mem;
     }
 

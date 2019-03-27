@@ -4,7 +4,7 @@ import com.WWI16AMA.backend_api.Account.Account;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
-import com.WWI16AMA.backend_api.Events.TransactionEvent;
+import com.WWI16AMA.backend_api.Events.ExtTransactionEvent;
 import com.WWI16AMA.backend_api.Member.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -26,21 +26,23 @@ public class GlobalEventListener {
     @EventListener
     public void sendEmail(final EmailNotificationEvent emailNotificationEvent) {
 
-        Member member = (Member) emailNotificationEvent.getSource();
+        Member member = emailNotificationEvent.getMember();
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("him.kourouma@hotmail.com");
-        message.setSubject("Test Spring ");
+        message.setTo(member.getEmail());
+        message.setSubject("Test Spring");
         message.setText("Hallo");
+        // TODO Wie handeln wir:
+        //    MailAuthenticationException - in case of authentication failure
+        //    MailSendException - in case of failure when sending a message
         javaMailSender.send(message);
-
     }
 
     @Async
     @EventListener
-    public void makeTransaction(final TransactionEvent transactionEvent) {
+    public void makeTransaction(final ExtTransactionEvent transactionEvent) {
 
-        Member member = (Member) transactionEvent.getSource();
+        Member member = transactionEvent.getMember();
         Account account = member.getMemberBankingAccount();
         account.addTransaction(new Transaction(transactionEvent.getAmount(), transactionEvent.getType()));
 
