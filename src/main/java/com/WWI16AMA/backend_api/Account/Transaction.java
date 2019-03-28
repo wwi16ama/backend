@@ -13,6 +13,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @NotNull
     private FeeType type;
+    @NotNull
     private final LocalDateTime timestamp;
     @NotNull
     private double amount;
@@ -31,14 +32,6 @@ public class Transaction {
         return timestamp;
     }
 
-    public enum FeeType {
-        MITLIEGSBEITRAG,
-        GEBÜHRFLUGZEUG,
-        GUTSCHRIFTAMT,
-        GUTSCHRIFTLEISTUNG,
-        EINZAHLUNG
-    }
-
     public FeeType getType() {
         return type;
     }
@@ -46,7 +39,6 @@ public class Transaction {
     public void setType(FeeType type) {
         this.type = type;
     }
-
 
     public long getId() {
         return id;
@@ -62,6 +54,14 @@ public class Transaction {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public enum FeeType {
+        MITLIEGSBEITRAG,
+        GEBÜHRFLUGZEUG,
+        GUTSCHRIFTAMT,
+        GUTSCHRIFTLEISTUNG,
+        EINZAHLUNG
     }
 
 }

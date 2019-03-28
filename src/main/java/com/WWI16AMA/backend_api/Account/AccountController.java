@@ -2,6 +2,7 @@ package com.WWI16AMA.backend_api.Account;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,31 +19,23 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER')")
     @GetMapping(path = "")
-    public List<AccountView> getAllAccounts(
-//            @RequestParam(defaultValue = "20") int limit,
-//            @RequestParam(defaultValue = "0") int start,
-//            @RequestParam(defaultValue = "asc") String direction,
-//            @RequestParam(defaultValue = "id") String orderBy
-    ) {
-//        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
-//        return accountRepository.findAll(PageRequest.of(start, limit, sort))
-//                .stream()
-//                .map(AccountView::new)
-//                .collect(toList());
+    public List<AccountView> getAllAccounts() {
         Iterable<Account> accs = accountRepository.findAll();
         return StreamSupport.stream(accs.spliterator(), false)
                 .map(AccountView::new)
                 .collect(toList());
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER') or #id == principal.id")
     @GetMapping(path = "/{id}")
     public Account showAccountDetail(@PathVariable int id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Account with the id " + id + " does not exist"));
     }
 
-
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER') or #id == principal.getMemberBankingAccount().getId()")
     @PostMapping(path = "/{id}/transactions")
     public Transaction addTransaction(@RequestBody Transaction transaction, @PathVariable int id) {
         Account acc = accountRepository.findById(id)

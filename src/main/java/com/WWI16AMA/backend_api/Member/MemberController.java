@@ -28,39 +28,6 @@ public class MemberController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /**
-     * Get Request which delivers all Users.
-     * <p>
-     * //     * @param limit     Defines the amount of objects to receive
-     * //     * @param start     Defines the page to view
-     * //     * @param direction Defines the sorting order
-     * //     * @param orderBy   Defines the field by which the sort is to be performed
-     * //     * @return Returns an Iterable of Members paged and sorted by given parameters
-     */
-    @GetMapping(value = "")
-    public Iterable<MemberView> getAllUsersPaged(
-//            @RequestParam(defaultValue = "20") int limit,
-//            @RequestParam(defaultValue = "0") int start,
-//            @RequestParam(defaultValue = "asc") String direction,
-//            @RequestParam(defaultValue = "lastName") String orderBy
-    ) {
-
-//        Sort sort = new Sort(Sort.Direction.fromString(direction), orderBy);
-//        int page = (int)Math.ceil((double)start/(double)limit);
-//        return memberRepository.findAll(PageRequest.of(page, limit, sort)).stream()
-        Iterable<Member> mem = memberRepository.findAll();
-        return StreamSupport.stream(mem.spliterator(), false)
-                .map(MemberView::new)
-                .collect(toList());
-    }
-
-    @GetMapping(value = "/{id}")
-    public Member detail(@PathVariable int id) {
-
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist"));
-    }
-
     static private void checkPassword(String unhashedPw) {
 
         if (unhashedPw == null) {
@@ -81,6 +48,25 @@ public class MemberController {
 
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR', 'KASSIERER', 'FLUGWART')")
+    @GetMapping(value = "")
+    public Iterable<MemberView> getAllUsers() {
+        Iterable<Member> mem = memberRepository.findAll();
+        return StreamSupport.stream(mem.spliterator(), false)
+                .map(MemberView::new)
+                .collect(toList());
+    }
+
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR','KASSIERER','FLUGWART')" +
+            " or #id == principal.id")
+    @GetMapping(value = "/{id}")
+    public Member detail(@PathVariable int id) {
+
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Member with the id " + id + " does not exist"));
+    }
+
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR')")
     @PostMapping(value = "")
     public Member create(@RequestBody Member mem) {
 
@@ -110,6 +96,7 @@ public class MemberController {
         return mem;
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
 
@@ -119,30 +106,47 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> updateMember(@RequestBody Member mem, @PathVariable int id)
             throws NoSuchElementException {
 
         Member foundMember = memberRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Member with the id " + " does not exist"));
-
         mem.setMemberBankingAccount(foundMember.getMemberBankingAccount());
         mem.setId(id);
-
         mem.setPassword(foundMember.getPassword());
 
-        List<Office> offices = mem.getOffices()
-                .stream()
-                .map(Office::getTitle)
-                .map(officeRepository::findByTitle)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        if (mem.getOffices() != null) {
+            List<Office> offices = mem.getOffices()
+                    .stream()
+                    .map(Office::getTitle)
+                    .map(officeRepository::findByTitle)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
 
-        mem.setOffices(offices);
+            mem.setOffices(offices);
+        }
 
         memberRepository.save(mem);
 
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("#id == principal.id")
+    @PutMapping(value = "/{id}/changeContactDetails")
+    public ResponseEntity<Void> updateContactDetails(@RequestBody MemberContactDetails mcd, @PathVariable int id) {
+
+        Member mem = memberRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Member with the id " + " does not exist"));
+
+        mem.setFirstName(mcd.getFirstName());
+        mem.setLastName(mcd.getLastName());
+        mem.setEmail(mcd.getEmail());
+        mem.setAddress(mcd.getAddress());
+
+        memberRepository.save(mem);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

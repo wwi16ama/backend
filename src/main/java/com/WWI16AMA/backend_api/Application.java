@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
+import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
@@ -32,11 +33,11 @@ import java.util.List;
 public class Application extends SpringBootServletInitializer {
 
 
-
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(Application.class);
     }
+
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -68,26 +69,32 @@ public class Application extends SpringBootServletInitializer {
         flList.add(fl1);
         flList.add(fl2);
 
-        Address adr = new Address(25524, "Itzehoe", "Twietbergstraße 53");
+        Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
                 LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
 
+        mem.getMemberBankingAccount().addTransaction(new Transaction(60.0, Transaction.FeeType.EINZAHLUNG));
+        mem.getMemberBankingAccount().addTransaction(new Transaction(30.0, Transaction.FeeType.GUTSCHRIFTAMT));
+        mem.getMemberBankingAccount().addTransaction(new Transaction(-20.0, Transaction.FeeType.MITLIEGSBEITRAG));
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
+        mem.setId(9999);
         memberRepository.save(mem);
-        System.out.println("MemberID: " + mem.getId());
+        System.out.println("AdminID:\t" + mem.getId());
 
-        Address adr1 = new Address(12345, "Hamburg", "Hafenstraße 5");
+        Address adr1 = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
                 "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem1.setAddress(adr1);
 
+        mem1.getMemberBankingAccount().addTransaction(new Transaction(-123.0, Transaction.FeeType.GEBÜHRFLUGZEUG));
+        mem1.getMemberBankingAccount().addTransaction(new Transaction(420.0, Transaction.FeeType.GUTSCHRIFTLEISTUNG));
         memberRepository.save(mem1);
-        System.out.println("MemberID: " + mem1.getId());
+        System.out.println("MemberID:\t" + mem1.getId());
     }
 
     private static void generateSomePlanes(PlaneRepository planeRepository) throws Exception {
@@ -133,6 +140,7 @@ public class Application extends SpringBootServletInitializer {
         creditRepository.saveAll(Arrays.asList(credits));
     }
 
+
     private static void generateSomePlaneLogs(PlaneRepository planeRepository, MemberRepository memberRepository) {
         Member member = memberRepository.findAll().iterator().next();
         Plane plane = planeRepository.findById(1).get();
@@ -147,10 +155,11 @@ public class Application extends SpringBootServletInitializer {
         PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
 
         for (PlaneLogEntry entry : entries) {
-            plane.getPlaneLog().add(entry);
+            plane.addPlaneLogEntry(entry);
         }
 
         planeRepository.save(plane);
+
     }
 
     @Bean
