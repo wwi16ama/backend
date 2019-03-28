@@ -67,6 +67,29 @@ public class PlaneLogEntry {
         this.location = location;
     }
 
+    public float getStartCount() {
+        return startCount;
+    }
+
+    public void setStartCount(float startCount) {
+        this.startCount = startCount;
+    }
+
+    public float getEndCount() {
+        return endCount;
+    }
+
+    public void setEndCount(float endCount) {
+        this.endCount = endCount;
+    }
+
+    public float getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(float totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     public PlaneLogEntry() {
     }
