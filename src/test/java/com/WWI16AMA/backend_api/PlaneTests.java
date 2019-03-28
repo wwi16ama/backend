@@ -149,6 +149,7 @@ public class PlaneTests {
     }
 
     @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testPostPlaneLogNotFound() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
@@ -161,27 +162,29 @@ public class PlaneTests {
     }
 
     @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testPostPlaneLogOk() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
         PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
 
-        this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next())
+        this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testPostPlaneLogFutureDate() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
         PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2999, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
 
-        this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next())
+        this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
     @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testDeletePlaneController() throws Exception {
