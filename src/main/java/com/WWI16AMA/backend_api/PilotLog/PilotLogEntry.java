@@ -73,12 +73,12 @@ public class PilotLogEntry {
         this.departureTime = departureTime;
     }
 
-    public String getArrvialLocation() {
+    public String getArrivalLocation() {
         return arrivalLocation;
     }
 
-    public void setArrvialLocation(String arrvialLocation) {
-        this.arrivalLocation = arrvialLocation;
+    public void setArrivalLocation(String arrivalLocation) {
+        this.arrivalLocation = arrivalLocation;
     }
 
     public LocalDateTime getArrivalTime() {
