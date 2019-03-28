@@ -21,7 +21,6 @@ out/
 
 
 
-
 ### Java ###
 # Compiled class file
 *.class
@@ -64,4 +63,5 @@ buildNumber.properties
 src/main/resources/
 src/test/resources/
 .idea/
+.idea/compiler.xml
 backend_api.iml

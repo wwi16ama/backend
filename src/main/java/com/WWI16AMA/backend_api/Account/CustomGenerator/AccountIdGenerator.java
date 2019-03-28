@@ -35,7 +35,6 @@ public class AccountIdGenerator implements IdentifierGenerator {
         } catch (Exception ex) {
 
             /*
-
            We are not closing our sql connection because the method does not create a new connection, it reuses one
            which already exists. If you close the connection, other resources cannot retrieve information from the database
            This lead to exceptions

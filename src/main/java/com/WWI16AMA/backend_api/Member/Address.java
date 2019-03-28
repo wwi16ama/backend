@@ -4,9 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 public class Address {
@@ -14,9 +13,8 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Min(1000) //TODO ist PLZ immer >1000?
-    @Max(99999)
-    private int postalCode;
+    @Pattern(regexp = "\\d{5}")
+    private String postalCode;
     @NotBlank
     private String city;
     @NotBlank
@@ -26,17 +24,17 @@ public class Address {
 
     }
 
-    public Address(int postalCode, String city, String streetAddress) {
+    public Address(String postalCode, String city, String streetAddress) {
         this.postalCode = postalCode;
         this.city = city;
         this.streetAddress = streetAddress;
     }
 
-    public int getPostalCode() {
+    public String getPostalCode() {
         return postalCode;
     }
 
-    public void setPostalCode(int postalCode) {
+    public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
