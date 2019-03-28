@@ -10,6 +10,7 @@ import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
+import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
 import com.WWI16AMA.backend_api.Service.ServiceName;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +31,13 @@ import java.util.List;
 
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
+
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
+    }
+
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -104,6 +113,7 @@ public class Application extends SpringBootServletInitializer {
         Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 3.60, 0.85);
+        //generateSomePlaneLogs(plane1, );
         Plane[] planes = {plane1, plane2, plane3, plane4};
         planeRepository.saveAll(Arrays.asList(planes));
     }
@@ -130,15 +140,31 @@ public class Application extends SpringBootServletInitializer {
         creditRepository.saveAll(Arrays.asList(credits));
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
+
+    private static void generateSomePlaneLogs(PlaneRepository planeRepository, MemberRepository memberRepository) {
+        Member member = memberRepository.findAll().iterator().next();
+        Plane plane = planeRepository.findById(1).get();
+
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 69, 88, 5);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 88, 97, 10);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 97, 150, 30);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 150, 896, 5000);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 896, 1000, 200);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1000, 1001, 2);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1001, 2000, 800);
+        PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
+
+        for (PlaneLogEntry entry : entries) {
+            plane.addPlaneLogEntry(entry);
+        }
+
+        planeRepository.save(plane);
+
     }
 
     @Bean
-    public CommandLineRunner generateSomeDataComLineRunner(MemberRepository memberRepository,
-                                    OfficeRepository officeRepository, PlaneRepository planeRepository,
-                                    AccountRepository accountRepository,
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
+                                  PlaneRepository planeRepository, AccountRepository accountRepository,
                                   FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
         return (args) -> {
 
@@ -149,6 +175,7 @@ public class Application extends SpringBootServletInitializer {
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
+            generateSomePlaneLogs(planeRepository, memberRepository);
 
         };
     }

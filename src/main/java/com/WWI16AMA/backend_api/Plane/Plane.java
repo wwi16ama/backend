@@ -1,12 +1,16 @@
 package com.WWI16AMA.backend_api.Plane;
 
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
+import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Plane {
@@ -29,6 +33,10 @@ public class Plane {
     @PositiveOrZero
     private double pricePerFlightMinute;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<PlaneLogEntry> planeLog;
+
     Plane() {
     }
 
@@ -42,6 +50,7 @@ public class Plane {
         this.neededAuthorization = neededAuthorization;
         this.pricePerBookedHour = pricePerBookedHour;
         this.pricePerFlightMinute = pricePerFlightMinute;
+        this.planeLog = new ArrayList<>();
 
     }
 
@@ -109,4 +118,21 @@ public class Plane {
     public void setPricePerFlightMinute(double pricePerFlightMinute) {
         this.pricePerFlightMinute = pricePerFlightMinute;
     }
+
+
+    public PlaneLogEntry addPlaneLogEntry(PlaneLogEntry entry) {
+        this.planeLog.add(entry);
+        return entry;
+    }
+
+    public List<PlaneLogEntry> getPlaneLog() {
+        return planeLog;
+    }
+
+    public void setPlaneLog(List<PlaneLogEntry> entries) {
+        this.planeLog = entries;
+    }
+
+
+
 }
