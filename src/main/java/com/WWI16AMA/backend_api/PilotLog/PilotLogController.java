@@ -28,7 +28,7 @@ public class PilotLogController {
     }
 
     @PostMapping(path = "/{memberId}/pilotlogentry")
-    public List addPilotLogEntry(@RequestBody PilotLogEntry pilotLogEntry, @PathVariable int memberId) {
+    public PilotLogEntry addPilotLogEntry(@RequestBody PilotLogEntry pilotLogEntry, @PathVariable int memberId) {
 
         if (pilotLogEntry.getFlightId() != 0L) {
             throw new IllegalArgumentException("PilotLogEntry has the ID: " + pilotLogEntry.getFlightId() +
@@ -50,7 +50,7 @@ public class PilotLogController {
         pilotLog.addPilotLogEntry(pilotLogEntry);
 
         memberRepository.save(mem);
-        return pilotLog.getPilotLogEntries();
+        return pilotLogEntry;
     }
 
 }
