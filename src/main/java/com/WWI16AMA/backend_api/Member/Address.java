@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 public class Address {
@@ -11,26 +13,28 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    private int postalCode;
+    @Pattern(regexp = "\\d{5}")
+    private String postalCode;
+    @NotBlank
     private String city;
+    @NotBlank
     private String streetAddress;
 
     public Address() {
 
     }
 
-    public Address(int postalCode, String city, String streetAddress) {
+    public Address(String postalCode, String city, String streetAddress) {
         this.postalCode = postalCode;
         this.city = city;
         this.streetAddress = streetAddress;
     }
 
-    public int getPostalCode() {
+    public String getPostalCode() {
         return postalCode;
     }
 
-    public void setPostalCode(int postalCode) {
+    public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 

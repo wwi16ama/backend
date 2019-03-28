@@ -5,6 +5,8 @@ import com.WWI16AMA.backend_api.Member.FlightAuthorization;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import java.net.URL;
 
 @Entity
 public class Plane {
@@ -18,19 +20,28 @@ public class Plane {
     private String name;
     @NotBlank
     private String position;
+    private URL pictureUrl;
     @NotNull
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
+    @PositiveOrZero
+    private double pricePerBookedHour;
+    @PositiveOrZero
+    private double pricePerFlightMinute;
 
     Plane() {
     }
 
-    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position) {
+    public Plane(String number, String name, FlightAuthorization.Authorization neededAuthorization, String position,
+                 URL pictureUrl, double pricePerBookedHour, double pricePerFlightMinute) {
 
         this.number = number;
         this.name = name;
         this.position = position;
+        this.pictureUrl = pictureUrl;
         this.neededAuthorization = neededAuthorization;
+        this.pricePerBookedHour = pricePerBookedHour;
+        this.pricePerFlightMinute = pricePerFlightMinute;
 
     }
 
@@ -66,11 +77,36 @@ public class Plane {
         this.position = position;
     }
 
+    public URL getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(URL pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
     public FlightAuthorization.Authorization getNeededAuthorization() {
         return neededAuthorization;
     }
 
     public void setNeededAuthorization(String neededAuthorization) throws IllegalArgumentException {
-        this.neededAuthorization = FlightAuthorization.Authorization.valueOf(neededAuthorization.replace("-", "").toUpperCase());
+        this.neededAuthorization = FlightAuthorization.Authorization.valueOf(
+                neededAuthorization.replace("-", "").toUpperCase());
+    }
+
+    public double getPricePerBookedHour() {
+        return pricePerBookedHour;
+    }
+
+    public void setPricePerBookedHour(double pricePerBookedHour) {
+        this.pricePerBookedHour = pricePerBookedHour;
+    }
+
+    public double getPricePerFlightMinute() {
+        return pricePerFlightMinute;
+    }
+
+    public void setPricePerFlightMinute(double pricePerFlightMinute) {
+        this.pricePerFlightMinute = pricePerFlightMinute;
     }
 }
