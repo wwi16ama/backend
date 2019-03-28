@@ -11,7 +11,7 @@ import java.util.List;
 public class Account {
 
     @Id
-    @GenericGenerator(name = "5-digit-Id", strategy = "com.WWI16AMA.backend_api.CustomGenerator.AccountIdGenerator")
+    @GenericGenerator(name = "5-digit-Id", strategy = "com.WWI16AMA.backend_api.Account.CustomGenerator.AccountIdGenerator")
     @GeneratedValue(generator = "5-digit-Id")
     private int id;
 
