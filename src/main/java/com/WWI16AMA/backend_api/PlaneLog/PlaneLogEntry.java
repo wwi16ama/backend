@@ -5,10 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-<<<<<<< HEAD
-import javax.validation.constraints.Pattern;
-=======
->>>>>>> 3c22177... 1. Custom Generatoren wurden in den Custemgenarator Ordner zusammengefasst
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
@@ -71,29 +67,6 @@ public class PlaneLogEntry {
         this.location = location;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getRefuelDateTime() {
-        return refuelDateTime;
-    }
-
-    public void setRefuelDateTime(LocalDateTime refuelDateTime) {
-        this.refuelDateTime = refuelDateTime;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public PlaneLogEntry() {
     }

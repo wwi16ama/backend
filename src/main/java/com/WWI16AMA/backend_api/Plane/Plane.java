@@ -1,7 +1,6 @@
 package com.WWI16AMA.backend_api.Plane;
 
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
-import com.WWI16AMA.backend_api.PlaneLog.PlaneLog;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
