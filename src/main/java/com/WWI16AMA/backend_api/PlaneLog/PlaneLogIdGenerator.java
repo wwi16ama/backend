@@ -1,4 +1,4 @@
-package com.WWI16AMA.backend_api.CustomGenerator;
+package com.WWI16AMA.backend_api.PlaneLog;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
