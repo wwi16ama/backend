@@ -8,12 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -41,6 +36,10 @@ public class PlaneLogController {
     public List addPlaneLogEntry(@RequestBody PlaneLogEntry entry, @PathVariable int id) {
         Plane plane = planeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist"));
+
+        if (entry.getRefuelDateTime().isAfter(LocalDateTime.now())) {
+            throw new NoSuchElementException("Refuel Date cant be in future.");
+        }
 
         plane.addPlaneLogEntry(entry);
 
