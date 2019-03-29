@@ -50,7 +50,7 @@ public class PilotLogController {
         pilotLog.addPilotLogEntry(pilotLogEntry);
 
         memberRepository.save(mem);
-        return pilotLogEntry;
+        return pilotLog.getLastEntry();
     }
 
 }

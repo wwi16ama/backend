@@ -39,4 +39,8 @@ public class PilotLog {
     public void addPilotLogEntry(PilotLogEntry pilotLogEntry){
         this.pilotLogEntries.add(pilotLogEntry);
     }
+
+    public PilotLogEntry getLastEntry() {
+        return this.pilotLogEntries.get(this.pilotLogEntries.size() - 1);
+    }
 }
