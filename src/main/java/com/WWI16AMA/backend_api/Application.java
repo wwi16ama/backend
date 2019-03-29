@@ -8,6 +8,7 @@ import com.WWI16AMA.backend_api.Credit.Period;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
+import com.WWI16AMA.backend_api.PilotLog.PilotLogEntry;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
@@ -81,6 +82,7 @@ public class Application extends SpringBootServletInitializer {
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         mem.setId(9999);
+        generateSomePilotLogEntries(mem);
         memberRepository.save(mem);
         System.out.println("AdminID:\t" + mem.getId());
 
@@ -93,6 +95,7 @@ public class Application extends SpringBootServletInitializer {
 
         mem1.getMemberBankingAccount().addTransaction(new Transaction(-123.0, Transaction.FeeType.GEBÜHRFLUGZEUG));
         mem1.getMemberBankingAccount().addTransaction(new Transaction(420.0, Transaction.FeeType.GUTSCHRIFTLEISTUNG));
+        generateSomePilotLogEntries(mem1);
         memberRepository.save(mem1);
         System.out.println("MemberID:\t" + mem1.getId());
     }
@@ -160,6 +163,26 @@ public class Application extends SpringBootServletInitializer {
 
         planeRepository.save(plane);
 
+    }
+
+    private static void generateSomePilotLogEntries(Member member) {
+        PilotLogEntry ple1 = new PilotLogEntry("D-ERFI", "Reilingen", LocalDateTime.of(2019, Month.FEBRUARY,
+                15, 10, 30), "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
+                15, 10, 45), true);
+        PilotLogEntry ple2 = new PilotLogEntry("D-EJEK", "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
+                20, 10, 00), "Berlin", LocalDateTime.of(2019, Month.FEBRUARY,
+                20, 13, 45), true);
+        PilotLogEntry ple3 = new PilotLogEntry("D-EJEK", "Berlin", LocalDateTime.of(2019, Month.MARCH,
+                03, 10, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+                03, 14, 30), true);
+        PilotLogEntry ple4 = new PilotLogEntry("D-EJEK", "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+                20, 12, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+                20, 13, 00), false);
+
+        PilotLogEntry[] pilotLogEntries = {ple1, ple2, ple3, ple4};
+        for (PilotLogEntry entry : pilotLogEntries) {
+            member.getPilotLog().addPilotLogEntry(entry);
+        }
     }
 
     @Bean
