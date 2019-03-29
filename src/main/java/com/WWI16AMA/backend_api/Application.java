@@ -6,7 +6,7 @@ import com.WWI16AMA.backend_api.Billing.BillingTask;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
-import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
+import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
@@ -74,7 +74,7 @@ public class Application extends SpringBootServletInitializer {
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
 
-        publisher.publishEvent(new EmailNotificationEvent(mem));
+        // publisher.publishEvent(new EmailNotificationEvent(mem));
         mem.getMemberBankingAccount().addTransaction(new Transaction(60.0, Transaction.FeeType.EINZAHLUNG));
         mem.getMemberBankingAccount().addTransaction(new Transaction(30.0, Transaction.FeeType.GUTSCHRIFTAMT));
         mem.getMemberBankingAccount().addTransaction(new Transaction(-20.0, Transaction.FeeType.MITLIEGSBEITRAG));
@@ -94,6 +94,8 @@ public class Application extends SpringBootServletInitializer {
         mem1.getMemberBankingAccount().addTransaction(new Transaction(-123.0, Transaction.FeeType.GEBÜHRFLUGZEUG));
         mem1.getMemberBankingAccount().addTransaction(new Transaction(420.0, Transaction.FeeType.GUTSCHRIFTLEISTUNG));
         memberRepository.save(mem1);
+
+        publisher.publishEvent(new IntTransactionEvent(mem, 100.0, Transaction.FeeType.EINZAHLUNG));
         System.out.println("MemberID:\t" + mem1.getId());
     }
 

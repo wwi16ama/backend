@@ -41,7 +41,6 @@ public class AccountController {
         Account acc = accountRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Account with the id " + id + " does not exist"));
         acc.addTransaction(transaction);
-        acc.add2Balance(transaction.getAmount());
         accountRepository.save(acc);
         return transaction;
     }

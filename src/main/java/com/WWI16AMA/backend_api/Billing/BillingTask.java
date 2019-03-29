@@ -43,7 +43,7 @@ public class BillingTask {
                     if (!member.getStatus().equals(Status.HONORARYMEMBER)) {
                         publisher.publishEvent(new ExtTransactionEvent(member,
                                 feeRepository.findByCategory(Fee.Status.valueOf(member.getStatus().name())).get().getFee(),
-                                Transaction.FeeType.GEBÜHR));
+                                Transaction.FeeType.GEBÜHRFLUGZEUG));
                         publisher.publishEvent(new EmailNotificationEvent(member));
                     }
                 });
@@ -57,13 +57,13 @@ public class BillingTask {
                         if (member.getStatus().equals(Status.ACTIVE)) {
                             publisher.publishEvent(new ExtTransactionEvent(member,
                                     feeRepository.findByCategory(Fee.Status.U20ACTIVE).get().getFee(),
-                                    Transaction.FeeType.GEBÜHR));
+                                    Transaction.FeeType.GEBÜHRFLUGZEUG));
                             publisher.publishEvent(new EmailNotificationEvent(member));
                         } else {
 
                             publisher.publishEvent(new ExtTransactionEvent(member,
                                     feeRepository.findByCategory(Fee.Status.valueOf(member.getStatus().name())).get().getFee(),
-                                    Transaction.FeeType.GEBÜHR));
+                                    Transaction.FeeType.GEBÜHRFLUGZEUG));
                             publisher.publishEvent(new EmailNotificationEvent(member));
                         }
 

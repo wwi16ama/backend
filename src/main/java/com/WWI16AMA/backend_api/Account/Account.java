@@ -42,9 +42,9 @@ public class Account {
         this.balance = balance;
     }
 
-    public void add2Balance(double amount) {
-        this.balance = this.balance + amount;
-    }
+    // public void add2Balance(double amount) {
+    //     this.balance = this.balance + amount;
+    // }
 
     public List<Transaction> getTransactions() {
         return transactions;
@@ -55,6 +55,7 @@ public class Account {
     }
 
     public void addTransaction(Transaction transaction) {
+        this.balance += transaction.getAmount();
         this.transactions.add(transaction);
     }
 }

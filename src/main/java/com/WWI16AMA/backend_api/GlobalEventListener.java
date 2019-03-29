@@ -1,10 +1,9 @@
 package com.WWI16AMA.backend_api;
 
-import com.WWI16AMA.backend_api.Account.Account;
-import com.WWI16AMA.backend_api.Account.AccountRepository;
-import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Account.*;
 import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
 import com.WWI16AMA.backend_api.Events.ExtTransactionEvent;
+import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Member.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -20,6 +19,8 @@ public class GlobalEventListener {
     private JavaMailSender javaMailSender;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private VereinsKontoTransactionRepository vereinsKontoTransactionRepository;
 
 
     @Async
@@ -46,14 +47,27 @@ public class GlobalEventListener {
         Account account = member.getMemberBankingAccount();
         account.addTransaction(new Transaction(transactionEvent.getAmount(), transactionEvent.getType()));
 
-        if (transactionEvent.getType().equals(Transaction.FeeType.GEBÜHR)) {
-            account.add2Balance(-transactionEvent.getAmount());
-        } else if (transactionEvent.getType().equals(Transaction.FeeType.ZAHLUNG)) {
-            account.add2Balance(transactionEvent.getAmount());
-        } else {
-            account.add2Balance(transactionEvent.getAmount());
-        }
+        //TODO
+//         if (transactionEvent.getType().equals(Transaction.FeeType.GEBÜHR)) {
+//             account.add2Balance(-transactionEvent.getAmount());
+//         } else if (transactionEvent.getType().equals(Transaction.FeeType.ZAHLUNG)) {
+//             account.add2Balance(transactionEvent.getAmount());
+//         } else {
+//             account.add2Balance(transactionEvent.getAmount());
+//         }
 
         accountRepository.save(account);
+    }
+
+    @Async
+    @EventListener
+    public void makeInternalTransaction(IntTransactionEvent ev) {
+        Account memAcc = ev.getMember().getMemberBankingAccount();
+        Transaction tr = new Transaction(ev.getAmount(), ev.getType());
+        memAcc.addTransaction(tr);
+        VereinsKontoTransaction vtr = new VereinsKontoTransaction(tr, ev.getMember());
+
+        accountRepository.save(memAcc);
+        vereinsKontoTransactionRepository.save(vtr);
     }
 }
