@@ -66,7 +66,7 @@ public class Transaction {
      * genauso alle "Abbuchungen" zB mit "GEBÜHR_", also "GEBÜHR_MITGLIEDSBEITRAG".
      */
     public enum FeeType {
-        MITLIEGSBEITRAG,
+        MITGLIEDSBEITRAG,
         GEBÜHRFLUGZEUG,
         GUTSCHRIFTAMT,
         GUTSCHRIFTLEISTUNG,
