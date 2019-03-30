@@ -2,9 +2,11 @@ package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Billing.BillingTask;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
+import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
@@ -18,6 +20,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -32,7 +35,6 @@ import java.util.List;
 
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
-
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -58,7 +60,7 @@ public class Application extends SpringBootServletInitializer {
 
     private static void generateSomeMembers(MemberRepository memberRepository,
                                             List<Office> offices,
-                                            PasswordEncoder enc) {
+                                            PasswordEncoder enc, ApplicationEventPublisher publisher) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -72,13 +74,11 @@ public class Application extends SpringBootServletInitializer {
 
         Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
-                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
 
-        mem.getMemberBankingAccount().addTransaction(new Transaction(60.0, Transaction.FeeType.EINZAHLUNG));
-        mem.getMemberBankingAccount().addTransaction(new Transaction(30.0, Transaction.FeeType.GUTSCHRIFTAMT));
-        mem.getMemberBankingAccount().addTransaction(new Transaction(-20.0, Transaction.FeeType.MITLIEGSBEITRAG));
+        // publisher.publishEvent(new EmailNotificationEvent(mem));
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         mem.setId(9999);
@@ -88,15 +88,16 @@ public class Application extends SpringBootServletInitializer {
 
         Address adr1 = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
-                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
                 "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem1.setAddress(adr1);
 
-        mem1.getMemberBankingAccount().addTransaction(new Transaction(-123.0, Transaction.FeeType.GEBÜHRFLUGZEUG));
-        mem1.getMemberBankingAccount().addTransaction(new Transaction(420.0, Transaction.FeeType.GUTSCHRIFTLEISTUNG));
         generateSomePilotLogEntries(mem1);
         memberRepository.save(mem1);
+
+        Transaction tr = new Transaction(100.05001, Transaction.FeeType.GUTSCHRIFTAMT);
+        publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
         System.out.println("MemberID:\t" + mem1.getId());
     }
 
@@ -116,7 +117,6 @@ public class Application extends SpringBootServletInitializer {
         Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 3.60, 0.85);
-        //generateSomePlaneLogs(plane1, );
         Plane[] planes = {plane1, plane2, plane3, plane4};
         planeRepository.saveAll(Arrays.asList(planes));
     }
@@ -188,18 +188,24 @@ public class Application extends SpringBootServletInitializer {
     @Bean
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
                                   PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
+                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
-            generateSomeMembers(memberRepository, offices, passwordEncoder);
+            generateSomeMembers(memberRepository, offices, passwordEncoder, publisher);
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
             generateSomePlaneLogs(planeRepository, memberRepository);
 
         };
+    }
+
+    @Bean
+    public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository, ApplicationEventPublisher publisher) {
+
+        return new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
     }
 }

@@ -1,5 +1,8 @@
-package com.WWI16AMA.backend_api.Account;
+package com.WWI16AMA.backend_api.Account.ProtectedAccount;
 
+import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Member.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -22,6 +25,10 @@ public class Account {
     @JoinColumn(name = "account_id")
     private List<Transaction> transactions = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "memberBankingAccount")
+    @JsonIgnore
+    private Member member;
+
     public Account() {
         balance = 0;
     }
@@ -38,23 +45,28 @@ public class Account {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    void setBalance(double balance) {
         this.balance = balance;
-    }
-
-    public void add2Balance(double amount) {
-        this.balance = this.balance + amount;
     }
 
     public List<Transaction> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
+    void addToBalance(double amount) {
+        this.balance += amount;
     }
 
-    public void addTransaction(Transaction transaction) {
+    void addTransaction(Transaction transaction) {
+        addToBalance(transaction.getAmount());
         this.transactions.add(transaction);
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }
