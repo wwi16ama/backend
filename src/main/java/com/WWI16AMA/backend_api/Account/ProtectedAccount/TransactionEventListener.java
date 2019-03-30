@@ -49,7 +49,7 @@ public class TransactionEventListener {
 
         // TODO mit Holtermann absprechen
         boolean korrekteAbbuchung = tr.getAmount() < 0 &&
-                (tr.getType().equals(Transaction.FeeType.MITLIEGSBEITRAG)
+                (tr.getType().equals(Transaction.FeeType.MITGLIEDSBEITRAG)
                         || tr.getType().equals(Transaction.FeeType.GEBÜHRFLUGZEUG));
 
         boolean korrekteGutschrift = tr.getAmount() > 0 &&
