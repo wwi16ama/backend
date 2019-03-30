@@ -1,8 +1,10 @@
 package com.WWI16AMA.backend_api;
 
-import com.WWI16AMA.backend_api.Account.Account;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.VereinsAccount;
 import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import com.WWI16AMA.backend_api.Member.OfficeRepository;
@@ -11,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -36,6 +39,8 @@ public class AccountTests {
     private OfficeRepository officeRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,10 +48,11 @@ public class AccountTests {
     @Test
     public void testRepository() {
 
+        long i = accountRepository.count();
         saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
 
         // Check that an Account was created
-        assertThat(memberRepository.count()).isEqualTo(accountRepository.count());
+        assertThat(accountRepository.count() == i + 1);
     }
 
     @Test
@@ -78,13 +84,31 @@ public class AccountTests {
 
         long found = acc.getTransactions().size();
 
-        Transaction transaction = new Transaction(500, Transaction.FeeType.values()[0]);
+        Transaction transaction = new Transaction(500, Transaction.FeeType.EINZAHLUNG);
 
         this.mockMvc.perform(post("/accounts/{id}/transactions", acc.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(transaction))).andExpect(status().isOk());
 
         assertThat(((long) accountRepository.findById(acc.getId()).get().getTransactions().size())).isEqualTo(found + 1);
+    }
+
+
+    @Test
+    public void internalTransaction() {
+        Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "wasGEht123");
+
+        double oldBalanceMember = mem.getMemberBankingAccount().getBalance();
+        double oldBalanceVerein = VereinsAccount.getInstance().getBalance();
+
+        double amount = 20.0;
+
+        publisher.publishEvent(new IntTransactionEvent(
+                mem.getMemberBankingAccount(),
+                new Transaction(amount, Transaction.FeeType.GUTSCHRIFTLEISTUNG)));
+
+        assertThat(oldBalanceMember == mem.getMemberBankingAccount().getBalance() + amount);
+        assertThat(oldBalanceVerein == VereinsAccount.getInstance().getBalance() - amount);
     }
 
 

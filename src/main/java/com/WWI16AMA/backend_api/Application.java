@@ -70,14 +70,11 @@ public class Application extends SpringBootServletInitializer {
 
         Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
-                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
 
         // publisher.publishEvent(new EmailNotificationEvent(mem));
-        mem.getMemberBankingAccount().addTransaction(new Transaction(60.0, Transaction.FeeType.EINZAHLUNG));
-        mem.getMemberBankingAccount().addTransaction(new Transaction(30.0, Transaction.FeeType.GUTSCHRIFTAMT));
-        mem.getMemberBankingAccount().addTransaction(new Transaction(-20.0, Transaction.FeeType.MITLIEGSBEITRAG));
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         mem.setId(9999);
@@ -86,16 +83,15 @@ public class Application extends SpringBootServletInitializer {
 
         Address adr1 = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
-                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
                 "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem1.setAddress(adr1);
 
-        mem1.getMemberBankingAccount().addTransaction(new Transaction(-123.0, Transaction.FeeType.GEBÜHRFLUGZEUG));
-        mem1.getMemberBankingAccount().addTransaction(new Transaction(420.0, Transaction.FeeType.GUTSCHRIFTLEISTUNG));
         memberRepository.save(mem1);
 
-        publisher.publishEvent(new IntTransactionEvent(mem, 100.0, Transaction.FeeType.EINZAHLUNG));
+        Transaction tr = new Transaction(100.05001, Transaction.FeeType.GUTSCHRIFTAMT);
+        publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
         System.out.println("MemberID:\t" + mem1.getId());
     }
 

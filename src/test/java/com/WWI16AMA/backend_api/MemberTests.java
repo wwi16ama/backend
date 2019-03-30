@@ -109,7 +109,7 @@ public class MemberTests {
 
         Address adr = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem = new Member("Kurt", "Krömer",
-                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false, "");
 
         // mindest. 8 Zeichen, 1 Zahl, Buchstabe
@@ -158,7 +158,7 @@ public class MemberTests {
 
         Address adr = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem = new Member("Kurt", "Krömer",
-                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false, "");
 
         // mindest. 8 Zeichen, 1 Zahl, Buchstabe

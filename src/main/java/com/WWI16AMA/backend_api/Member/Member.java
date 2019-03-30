@@ -1,6 +1,6 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.WWI16AMA.backend_api.Account.Account;
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,8 +48,9 @@ public class Member {
     @NotNull
     private boolean admissioned;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"balance", "transactions"})
+    @JoinColumn(name = "account_id")
     private Account memberBankingAccount;
 
     @ManyToMany
@@ -213,5 +214,11 @@ public class Member {
 
     public void setFlightAuthorization(List<FlightAuthorization> flightAuthorization) {
         this.flightAuthorization = flightAuthorization;
+    }
+
+    public enum Status {
+        ACTIVE,
+        PASSIVE,
+        HONORARYMEMBER
     }
 }

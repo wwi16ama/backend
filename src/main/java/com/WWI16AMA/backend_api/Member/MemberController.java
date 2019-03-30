@@ -1,6 +1,6 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.WWI16AMA.backend_api.Account.Account;
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;

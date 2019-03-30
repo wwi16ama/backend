@@ -3,12 +3,11 @@ package com.WWI16AMA.backend_api.Billing;
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
-import com.WWI16AMA.backend_api.Events.ExtTransactionEvent;
+import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
-import com.WWI16AMA.backend_api.Member.Status;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -36,39 +35,24 @@ public class BillingTask {
     public void calculateFee() {
 
         Stream<Member> stream = StreamSupport.stream(memberRepository.findAll().spliterator(), false);
-        stream
-                .filter(member -> Period.between(member.getDateOfBirth(), LocalDate.now()).getYears() > 20)
-                .forEach(member -> {
+        stream.forEach(member -> {
 
-                    if (!member.getStatus().equals(Status.HONORARYMEMBER)) {
-                        publisher.publishEvent(new ExtTransactionEvent(member,
-                                feeRepository.findByCategory(Fee.Status.valueOf(member.getStatus().name())).get().getFee(),
-                                Transaction.FeeType.GEBÜHRFLUGZEUG));
-                        publisher.publishEvent(new EmailNotificationEvent(member));
-                    }
-                });
+            Fee.Status status;
 
-        stream
-                .filter(member -> Period.between(member.getDateOfBirth(), LocalDate.now()).getYears() <= 20)
-                .forEach(member -> {
+            if (member.getStatus().equals(Member.Status.ACTIVE)
+                    && Period.between(member.getDateOfBirth(), LocalDate.now()).getYears() <= 20) {
+                // "Jungtarif"
+                status = Fee.Status.U20ACTIVE;
+            } else {
+                // "Normalfall"
+                status = Fee.Status.valueOf(member.getStatus().name());
+            }
 
-                    if (!member.getStatus().equals(Status.HONORARYMEMBER)) {
-
-                        if (member.getStatus().equals(Status.ACTIVE)) {
-                            publisher.publishEvent(new ExtTransactionEvent(member,
-                                    feeRepository.findByCategory(Fee.Status.U20ACTIVE).get().getFee(),
-                                    Transaction.FeeType.GEBÜHRFLUGZEUG));
-                            publisher.publishEvent(new EmailNotificationEvent(member));
-                        } else {
-
-                            publisher.publishEvent(new ExtTransactionEvent(member,
-                                    feeRepository.findByCategory(Fee.Status.valueOf(member.getStatus().name())).get().getFee(),
-                                    Transaction.FeeType.GEBÜHRFLUGZEUG));
-                            publisher.publishEvent(new EmailNotificationEvent(member));
-                        }
-
-                    }
-                });
+            double fee = feeRepository.findByCategory(status).get().getFee();
+            Transaction tr = new Transaction(fee, Transaction.FeeType.GEBÜHRFLUGZEUG);
+            publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
+            publisher.publishEvent(new EmailNotificationEvent(member));
+        });
     }
 
 

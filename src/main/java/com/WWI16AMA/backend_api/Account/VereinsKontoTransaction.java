@@ -1,6 +1,6 @@
 package com.WWI16AMA.backend_api.Account;
 
-import com.WWI16AMA.backend_api.Member.Member;
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -10,11 +10,20 @@ import javax.persistence.ManyToOne;
 public class VereinsKontoTransaction extends Transaction {
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    Member member;
+    @JoinColumn(name = "memberAcc_id")
+    Account memberAccount;
 
-    public VereinsKontoTransaction(Transaction tr, Member member) {
-        super(tr.getAmount(), tr.getType());
-        this.member = member;
+    public VereinsKontoTransaction() {
+
+    }
+
+    public VereinsKontoTransaction(Transaction tr, Account memAcc) {
+
+        // MAN BEACHTE DAS NEGATIVE VORZEICHEN!!
+        super(-tr.getAmount(), tr.getType());
+        if (memAcc == null) {
+            throw new IllegalArgumentException("Member darf nicht null sein");
+        }
+        this.memberAccount = memAcc;
     }
 }
