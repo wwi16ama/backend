@@ -25,7 +25,7 @@ public class TransactionEventListener {
     public void makeExternalTransaction(final ExtTransactionEvent transactionEvent) {
 
         Transaction tr = transactionEvent.getTransaction();
-
+        System.out.println("external transaction hast happened");
         // TODO mit Holtermann absprechen
         boolean korrekteEinzahlung = tr.getType().equals(Transaction.FeeType.EINZAHLUNG) && tr.getAmount() > 0;
         boolean korrekteAuszahlung = tr.getType().equals(Transaction.FeeType.AUSZAHLUNG) && tr.getAmount() < 0;
@@ -46,7 +46,7 @@ public class TransactionEventListener {
     public void makeInternalTransaction(IntTransactionEvent ev) {
 
         Transaction tr = ev.getTransaction();
-
+        System.out.println("mein transaction fee  " + tr.getAmount());
         // TODO mit Holtermann absprechen
         boolean korrekteAbbuchung = tr.getAmount() < 0 &&
                 (tr.getType().equals(Transaction.FeeType.MITGLIEDSBEITRAG)
@@ -68,6 +68,8 @@ public class TransactionEventListener {
         VereinsAccount vAcc = VereinsAccount.getInstance();
         VereinsKontoTransaction vtr = new VereinsKontoTransaction(tr, ev.getAccount());
         vAcc.addTransaction(vtr);
+
+        System.out.println("vereinskonto: " + vAcc.getVereinskontoTransactions());
 
         accountRepository.save(memAcc);
         accountRepository.save(vAcc);

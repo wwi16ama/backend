@@ -1,6 +1,8 @@
 package com.WWI16AMA.backend_api.Account.ProtectedAccount;
 
+import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Account.VereinsKontoTransaction;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,5 +31,15 @@ public class VereinsAccount extends Account {
     public void addTransaction(VereinsKontoTransaction vtr) {
         addToBalance(vtr.getAmount());
         this.transactions.add(vtr);
+    }
+
+    public List<VereinsKontoTransaction> getVereinskontoTransactions() {
+        return this.transactions;
+    }
+
+    @JsonIgnore
+    @Override
+    public List<? extends Transaction> getTransactions() {
+        return super.getTransactions();
     }
 }
