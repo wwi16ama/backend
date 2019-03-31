@@ -6,6 +6,7 @@ import com.WWI16AMA.backend_api.Billing.BillingTask;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
+import com.WWI16AMA.backend_api.Email.EmailService;
 import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
@@ -24,6 +25,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.mail.MessagingException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +33,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 
 @SpringBootApplication
@@ -188,7 +191,7 @@ public class Application extends SpringBootServletInitializer {
     @Bean
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
                                   PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher) {
+                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher, EmailService service) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
@@ -199,8 +202,13 @@ public class Application extends SpringBootServletInitializer {
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
             generateSomePlaneLogs(planeRepository, memberRepository);
+            sendTestEmail(service);
 
         };
+    }
+
+    public void sendTestEmail(EmailService service) throws MessagingException {
+        service.sendBillingNotification(new Member(), new Locale("en"));
     }
 
     @Bean
