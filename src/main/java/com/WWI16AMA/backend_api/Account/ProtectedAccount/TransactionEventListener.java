@@ -68,10 +68,11 @@ public class TransactionEventListener {
         VereinsAccount vAcc = VereinsAccount.getInstance();
         VereinsKontoTransaction vtr = new VereinsKontoTransaction(tr, ev.getAccount());
         vAcc.addTransaction(vtr);
-
-        System.out.println("vereinskonto: " + vAcc.getVereinskontoTransactions());
+        System.out.println("size vereinskonto" + vAcc.getVereinskontoTransactions().size());
 
         accountRepository.save(memAcc);
-        accountRepository.save(vAcc);
+        VereinsAccount acc = accountRepository.save(vAcc);
+        System.out.println("size vereinskonto" + acc.getVereinskontoTransactions().size());
+
     }
 }

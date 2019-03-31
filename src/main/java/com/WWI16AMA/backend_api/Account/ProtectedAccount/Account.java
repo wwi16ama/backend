@@ -4,7 +4,6 @@ import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Member.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -50,7 +49,7 @@ public class Account {
         this.balance = balance;
     }
 
-    public List<? extends Transaction> getTransactions() {
+    public List<Transaction> getTransactions() {
         return transactions;
     }
 

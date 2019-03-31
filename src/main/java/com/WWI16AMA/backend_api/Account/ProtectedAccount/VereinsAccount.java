@@ -31,6 +31,7 @@ public class VereinsAccount extends Account {
     public void addTransaction(VereinsKontoTransaction vtr) {
         addToBalance(vtr.getAmount());
         this.transactions.add(vtr);
+        System.out.println("addTransaction is called");
     }
 
     public List<VereinsKontoTransaction> getVereinskontoTransactions() {
@@ -39,7 +40,7 @@ public class VereinsAccount extends Account {
 
     @JsonIgnore
     @Override
-    public List<? extends Transaction> getTransactions() {
+    public List<Transaction> getTransactions() {
         return super.getTransactions();
     }
 }
