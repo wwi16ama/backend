@@ -52,7 +52,7 @@ public class AccountTests {
         saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
 
         // Check that an Account was created
-        assertThat(accountRepository.count() == i + 1);
+        assertThat(accountRepository.count()).isEqualTo(i + 1);
     }
 
     @Test
@@ -107,9 +107,8 @@ public class AccountTests {
                 mem.getMemberBankingAccount(),
                 new Transaction(amount, Transaction.FeeType.GUTSCHRIFTLEISTUNG)));
 
-        assertThat(oldBalanceMember == mem.getMemberBankingAccount().getBalance() + amount);
-        assertThat(oldBalanceVerein == VereinsAccount.getInstance().getBalance() - amount);
+        assertThat(oldBalanceMember + amount).isEqualTo(mem.getMemberBankingAccount().getBalance());
+        assertThat(oldBalanceVerein - amount).isEqualTo(VereinsAccount.getInstance().getBalance());
     }
-
 
 }
