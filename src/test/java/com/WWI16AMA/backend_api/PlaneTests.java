@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
+import com.WWI16AMA.backend_api.Member.MemberRepository;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
@@ -31,6 +32,9 @@ public class PlaneTests {
 
     @Autowired
     PlaneRepository planeRepository;
+
+    @Autowired
+    MemberRepository memberRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -153,13 +157,31 @@ public class PlaneTests {
     public void testPostPlaneLogNotFound() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14,
+                55, 13), memberRepository.findAll().iterator().next().getId(), "TestOrt",
+                69, 88, 5);
 
         this.mockMvc.perform(post("/planeLog/" + TestUtil.getUnusedId(planeRepository))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testPostPlaneLogMemberNotFound() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14,
+                55, 13), TestUtil.getUnusedId(memberRepository), "TestOrt",
+                69, 88, 5);
+        this.mockMvc.perform(post("/planeLog/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(planeLogEntry)))
+                .andExpect(status().isNotFound());
+    }
+
+
 
     @Test
     @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
@@ -184,7 +206,7 @@ public class PlaneTests {
         this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
     @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testDeletePlaneController() throws Exception {
