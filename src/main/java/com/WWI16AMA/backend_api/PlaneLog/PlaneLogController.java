@@ -49,12 +49,13 @@ public class PlaneLogController {
             throw new IllegalArgumentException("Refuel Date cant be in future.");
         }
     Integer memberId = entry.getMemberId();
+        //Member member = memberRepository.findById(entry.getMemberId()).orElseThrow(() -> new NoSuchElementException("Member with the id " + entry.getMemberId() + " does not exist"));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() ->
                 new NoSuchElementException("Member with the id " + memberId + " does not exist"));
        publisher.publishEvent(new IntTransactionEvent(
                member.getMemberBankingAccount(),
-               new Transaction(entry.getTotalPrice(), Transaction.FeeType.BETANKUNGSKOSTENERSTATTUNG)));
+               new Transaction(entry.getTotalPrice(), Transaction.FeeType.BETANKUNGSKOSTEN)));
         plane.addPlaneLogEntry(entry);
 
 
