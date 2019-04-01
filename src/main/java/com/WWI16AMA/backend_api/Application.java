@@ -14,7 +14,10 @@ import com.WWI16AMA.backend_api.PilotLog.PilotLogEntry;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
+import com.WWI16AMA.backend_api.Service.DailyService;
+import com.WWI16AMA.backend_api.Service.Service;
 import com.WWI16AMA.backend_api.Service.ServiceName;
+import com.WWI16AMA.backend_api.Service.YearlyService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,6 +31,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -133,12 +137,12 @@ public class Application extends SpringBootServletInitializer {
 
     private static void generateSomeCredits(CreditRepository creditRepository) {
 
-        Credit c1 = new Credit(ServiceName.VORSTANDSMITGLIED, 200.0, Period.YEAR);
-        Credit c2 = new Credit(ServiceName.FLUGLEHRER, 200.0, Period.YEAR);
-        Credit c3 = new Credit(ServiceName.FLUGWART, 100.0, Period.YEAR);
+        Credit c1 = new Credit(ServiceName.J_VORSTANDSMITGLIED, 200.0, Period.YEAR);
+        Credit c2 = new Credit(ServiceName.J_FLUGLEHRER, 200.0, Period.YEAR);
+        Credit c3 = new Credit(ServiceName.J_FLUGWART, 100.0, Period.YEAR);
 
-        Credit c4 = new Credit(ServiceName.TAGESEINSATZ, 40.0, Period.DAY);
-        Credit c5 = new Credit(ServiceName.PILOT, 40.0, Period.DAY);
+        Credit c4 = new Credit(ServiceName.T_TAGESEINSATZ, 40.0, Period.DAY);
+        Credit c5 = new Credit(ServiceName.T_PILOT, 40.0, Period.DAY);
         Credit[] credits = {c1, c2, c3, c4, c5};
         creditRepository.saveAll(Arrays.asList(credits));
     }
@@ -185,10 +189,24 @@ public class Application extends SpringBootServletInitializer {
         }
     }
 
+    private void generateSomeServices(MemberRepository memberRepository, CreditRepository creditRepository) {
+        Member mem = memberRepository.findAll().iterator().next();
+
+        Service s0 = new DailyService(ServiceName.T_PILOT, LocalDate.of(1, 2, 3), creditRepository);
+        Service s1 = new DailyService(ServiceName.T_TAGESEINSATZ, LocalDate.of(3, 3, 3), LocalDate.of(4, 4, 4), creditRepository);
+        Service s2 = new YearlyService(ServiceName.J_FLUGLEHRER, Year.now(), creditRepository);
+
+
+        Service[] sArr = {s0, s1, s2};
+        mem.setServices(Arrays.asList(sArr));
+        memberRepository.save(mem);
+    }
+
     @Bean
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
                                   PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher) {
+                                  FeeRepository feeRepository, CreditRepository creditRepository,
+                                  PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
@@ -199,6 +217,7 @@ public class Application extends SpringBootServletInitializer {
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
             generateSomePlaneLogs(planeRepository, memberRepository);
+            generateSomeServices(memberRepository, creditRepository);
 
         };
     }
