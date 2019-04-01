@@ -1,9 +1,12 @@
 package com.WWI16AMA.backend_api.PlaneLog;
 
+import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,9 @@ public class PlaneLogController {
     @Autowired
     private PlaneRepository planeRepository;
     private MemberRepository memberRepository;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
 
 
@@ -41,6 +47,9 @@ public class PlaneLogController {
             throw new NoSuchElementException("Refuel Date cant be in future.");
         }
 
+       // publisher.publishEvent(new IntTransactionEvent(
+        //        memberRepository.findById(entry.getMemberId()).get().getMemberBankingAccount(),
+        //        new Transaction(entry.getTotalPrice(), Transaction.FeeType.BETANKUNGSKOSTEN)));
         plane.addPlaneLogEntry(entry);
 
 

@@ -72,6 +72,7 @@ public class Transaction {
         GUTSCHRIFTLEISTUNG,
         EINZAHLUNG,
         AUSZAHLUNG
+        //BETANKUNGSKOSTEN
     }
 
 }
