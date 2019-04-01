@@ -1,6 +1,8 @@
 package com.WWI16AMA.backend_api.Member;
 
-import com.WWI16AMA.backend_api.Account.Account;
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
+import com.WWI16AMA.backend_api.PilotLog.PilotLog;
+import com.WWI16AMA.backend_api.Service.Service;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,16 +50,23 @@ public class Member {
     @NotNull
     private boolean admissioned;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"balance", "transactions"})
+    @JoinColumn(name = "account_id")
     private Account memberBankingAccount;
 
     @ManyToMany
     private List<Office> offices;
 
     @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "member_id")
+    private List<Service> services = new ArrayList<>();
+
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private PilotLog pilotLog;
 
     public Member() {
 
@@ -79,6 +88,7 @@ public class Member {
         this.admissioned = admissioned;
         this.password = hashedPassword;
         this.memberBankingAccount = new Account();
+        this.pilotLog = new PilotLog();
     }
 
     public Member(Member member) {
@@ -96,6 +106,7 @@ public class Member {
         this.offices = member.getOffices();
         this.memberBankingAccount = member.getMemberBankingAccount();
         this.flightAuthorization = member.getFlightAuthorization();
+        this.pilotLog = member.getPilotLog();
     }
 
 
@@ -207,11 +218,29 @@ public class Member {
         this.offices = offices;
     }
 
+    public List<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(List<Service> services) {
+        this.services = services;
+    }
+
     public List<FlightAuthorization> getFlightAuthorization() {
         return flightAuthorization;
     }
 
     public void setFlightAuthorization(List<FlightAuthorization> flightAuthorization) {
         this.flightAuthorization = flightAuthorization;
+    }
+
+    public PilotLog getPilotLog() {
+        return pilotLog;
+    }
+
+    public enum Status {
+        ACTIVE,
+        PASSIVE,
+        HONORARYMEMBER
     }
 }

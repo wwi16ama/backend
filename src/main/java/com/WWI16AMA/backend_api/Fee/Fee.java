@@ -12,7 +12,7 @@ public class Fee {
     @Enumerated(EnumType.STRING)
     private Fee.Status category;
 
-    private int fee;
+    private double fee;
 
     public Fee(Status category, int fee) {
         this.category = category;
@@ -43,11 +43,11 @@ public class Fee {
         this.category = category;
     }
 
-    public int getFee() {
+    public double getFee() {
         return fee;
     }
 
-    public void setFee(int fee) {
+    public void setFee(double fee) {
         this.fee = fee;
     }
 

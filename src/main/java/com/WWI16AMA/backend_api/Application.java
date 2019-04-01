@@ -2,26 +2,36 @@ package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Billing.BillingTask;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
+import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
+import com.WWI16AMA.backend_api.PilotLog.PilotLogEntry;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
+import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
+import com.WWI16AMA.backend_api.Service.DailyService;
+import com.WWI16AMA.backend_api.Service.Service;
 import com.WWI16AMA.backend_api.Service.ServiceName;
+import com.WWI16AMA.backend_api.Service.YearlyService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +39,12 @@ import java.util.List;
 
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
+    }
+
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -48,7 +64,7 @@ public class Application extends SpringBootServletInitializer {
 
     private static void generateSomeMembers(MemberRepository memberRepository,
                                             List<Office> offices,
-                                            PasswordEncoder enc) {
+                                            PasswordEncoder enc, ApplicationEventPublisher publisher) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -62,29 +78,30 @@ public class Application extends SpringBootServletInitializer {
 
         Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
-                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Status.PASSIVE,
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.PASSIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
 
-        mem.getMemberBankingAccount().addTransaction(new Transaction(60.0, Transaction.FeeType.EINZAHLUNG));
-        mem.getMemberBankingAccount().addTransaction(new Transaction(30.0, Transaction.FeeType.GUTSCHRIFTAMT));
-        mem.getMemberBankingAccount().addTransaction(new Transaction(-20.0, Transaction.FeeType.MITLIEGSBEITRAG));
+        // publisher.publishEvent(new EmailNotificationEvent(mem));
         mem.setOffices(offices);
         mem.setFlightAuthorization(flList);
         mem.setId(9999);
+        generateSomePilotLogEntries(mem);
         memberRepository.save(mem);
         System.out.println("AdminID:\t" + mem.getId());
 
         Address adr1 = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem1 = new Member("Kurt", "Krömer",
-                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Status.PASSIVE,
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
                 "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem1.setAddress(adr1);
 
-        mem1.getMemberBankingAccount().addTransaction(new Transaction(-123.0, Transaction.FeeType.GEBÜHRFLUGZEUG));
-        mem1.getMemberBankingAccount().addTransaction(new Transaction(420.0, Transaction.FeeType.GUTSCHRIFTLEISTUNG));
+        generateSomePilotLogEntries(mem1);
         memberRepository.save(mem1);
+
+        Transaction tr = new Transaction(100.05001, Transaction.FeeType.GUTSCHRIFTAMT);
+        publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
         System.out.println("MemberID:\t" + mem1.getId());
     }
 
@@ -120,36 +137,94 @@ public class Application extends SpringBootServletInitializer {
 
     private static void generateSomeCredits(CreditRepository creditRepository) {
 
-        Credit c1 = new Credit(ServiceName.VORSTANDSMITGLIED, 200.0, Period.YEAR);
-        Credit c2 = new Credit(ServiceName.FLUGLEHRER, 200.0, Period.YEAR);
-        Credit c3 = new Credit(ServiceName.FLUGWART, 100.0, Period.YEAR);
+        Credit c1 = new Credit(ServiceName.J_VORSTANDSMITGLIED, 200.0, Period.YEAR);
+        Credit c2 = new Credit(ServiceName.J_FLUGLEHRER, 200.0, Period.YEAR);
+        Credit c3 = new Credit(ServiceName.J_FLUGWART, 100.0, Period.YEAR);
 
-        Credit c4 = new Credit(ServiceName.TAGESEINSATZ, 40.0, Period.DAY);
-        Credit c5 = new Credit(ServiceName.PILOT, 40.0, Period.DAY);
+        Credit c4 = new Credit(ServiceName.T_TAGESEINSATZ, 40.0, Period.DAY);
+        Credit c5 = new Credit(ServiceName.T_PILOT, 40.0, Period.DAY);
         Credit[] credits = {c1, c2, c3, c4, c5};
         creditRepository.saveAll(Arrays.asList(credits));
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
+
+    private static void generateSomePlaneLogs(PlaneRepository planeRepository, MemberRepository memberRepository) {
+        Member member = memberRepository.findAll().iterator().next();
+        Plane plane = planeRepository.findById(1).get();
+
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 69, 88, 5);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 88, 97, 10);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 97, 150, 30);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 150, 896, 5000);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 896, 1000, 200);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1000, 1001, 2);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1001, 2000, 800);
+        PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
+
+        for (PlaneLogEntry entry : entries) {
+            plane.addPlaneLogEntry(entry);
+        }
+
+        planeRepository.save(plane);
+
+    }
+
+    private static void generateSomePilotLogEntries(Member member) {
+        PilotLogEntry ple1 = new PilotLogEntry("D-ERFI", "Reilingen", LocalDateTime.of(2019, Month.FEBRUARY,
+                15, 10, 30), "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
+                15, 10, 45), true);
+        PilotLogEntry ple2 = new PilotLogEntry("D-EJEK", "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
+                20, 10, 00), "Berlin", LocalDateTime.of(2019, Month.FEBRUARY,
+                20, 13, 45), true);
+        PilotLogEntry ple3 = new PilotLogEntry("D-EJEK", "Berlin", LocalDateTime.of(2019, Month.MARCH,
+                03, 10, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+                03, 14, 30), true);
+        PilotLogEntry ple4 = new PilotLogEntry("D-EJEK", "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+                20, 12, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+                20, 13, 00), false);
+
+        PilotLogEntry[] pilotLogEntries = {ple1, ple2, ple3, ple4};
+        for (PilotLogEntry entry : pilotLogEntries) {
+            member.getPilotLog().addPilotLogEntry(entry);
+        }
+    }
+
+    private void generateSomeServices(MemberRepository memberRepository, CreditRepository creditRepository) {
+        Member mem = memberRepository.findAll().iterator().next();
+
+        Service s0 = new DailyService(ServiceName.T_PILOT, LocalDate.of(1, 2, 3), creditRepository);
+        Service s1 = new DailyService(ServiceName.T_TAGESEINSATZ, LocalDate.of(3, 3, 3), LocalDate.of(4, 4, 4), creditRepository);
+        Service s2 = new YearlyService(ServiceName.J_FLUGLEHRER, Year.now(), creditRepository);
+
+
+        Service[] sArr = {s0, s1, s2};
+        mem.setServices(Arrays.asList(sArr));
+        memberRepository.save(mem);
     }
 
     @Bean
-    public CommandLineRunner generateSomeDataComLineRunner(MemberRepository memberRepository,
-                                    OfficeRepository officeRepository, PlaneRepository planeRepository,
-                                    AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
+                                  PlaneRepository planeRepository, AccountRepository accountRepository,
+                                  FeeRepository feeRepository, CreditRepository creditRepository,
+                                  PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
-            generateSomeMembers(memberRepository, offices, passwordEncoder);
+            generateSomeMembers(memberRepository, offices, passwordEncoder, publisher);
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
+            generateSomePlaneLogs(planeRepository, memberRepository);
+            generateSomeServices(memberRepository, creditRepository);
 
         };
+    }
+
+    @Bean
+    public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository, ApplicationEventPublisher publisher) {
+
+        return new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
     }
 }

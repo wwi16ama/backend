@@ -1,7 +1,11 @@
 package com.WWI16AMA.backend_api.Account;
 
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.VereinsAccount;
+import com.WWI16AMA.backend_api.Events.ExtTransactionEvent;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +22,8 @@ public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER')")
     @GetMapping(path = "")
@@ -40,10 +46,15 @@ public class AccountController {
     public Transaction addTransaction(@RequestBody Transaction transaction, @PathVariable int id) {
         Account acc = accountRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Account with the id " + id + " does not exist"));
-        acc.addTransaction(transaction);
-        acc.add2Balance(transaction.getAmount());
-        accountRepository.save(acc);
+        publisher.publishEvent(new ExtTransactionEvent(acc, transaction));
         return transaction;
+    }
+
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER', 'SYSTEMADMINISTRATOR')")
+    @GetMapping(path = "/vereinskonto")
+    public VereinsAccount getVereinsAccount() {
+        return (VereinsAccount) accountRepository.findById(VereinsAccount.getInstance().getId())
+                .orElseThrow(() -> new IllegalStateException("Das Vereinskonto  ist verlorgen gegangen"));
     }
 
     @JsonPropertyOrder({"id", "balance"})

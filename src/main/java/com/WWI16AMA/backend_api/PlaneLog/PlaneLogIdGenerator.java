@@ -1,4 +1,4 @@
-package com.WWI16AMA.backend_api.Account.CustomGenerator;
+package com.WWI16AMA.backend_api.PlaneLog;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 
-public class AccountIdGenerator implements IdentifierGenerator {
+public class PlaneLogIdGenerator implements IdentifierGenerator {
 
 
     @Override
@@ -21,7 +21,7 @@ public class AccountIdGenerator implements IdentifierGenerator {
         PreparedStatement statement = null;
         ResultSet r = null;
         try {
-            statement = connection.prepareStatement("SELECT id FROM account where id = ?");
+            statement = connection.prepareStatement("SELECT id FROM plane_log where id = ?");
 
             int randomId;
             Random random = new Random();

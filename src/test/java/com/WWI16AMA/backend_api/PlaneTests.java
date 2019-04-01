@@ -3,6 +3,7 @@ package com.WWI16AMA.backend_api;
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
+import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -148,6 +150,43 @@ public class PlaneTests {
 
     @Test
     @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testPostPlaneLogNotFound() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+
+        this.mockMvc.perform(post("/planeLog/" + TestUtil.getUnusedId(planeRepository))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(planeLogEntry)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testPostPlaneLogOk() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+
+        this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(planeLogEntry)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testPostPlaneLogFutureDate() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2999, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+
+        this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(planeLogEntry)))
+                .andExpect(status().isNotFound());
+    }
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testDeletePlaneController() throws Exception {
 
         long found = planeRepository.count();
@@ -159,6 +198,7 @@ public class PlaneTests {
                 .andExpect(status().isNoContent());
 
         assertThat(found).isEqualTo(planeRepository.count());
+
 
     }
 
