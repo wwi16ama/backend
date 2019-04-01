@@ -16,7 +16,7 @@ public class VereinsAccount extends Account {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
-    private List<VereinsKontoTransaction> transactions = new ArrayList<>();
+    private List<VereinsKontoTransaction> vereinsTransactions = new ArrayList<>();
 
     public static VereinsAccount getInstance() {
         if (instance == null) {
@@ -26,8 +26,12 @@ public class VereinsAccount extends Account {
         return instance;
     }
 
-    public void addTransaction(VereinsKontoTransaction vtr) {
-        addToBalance(vtr.getAmount());
-        this.transactions.add(vtr);
-    }
+//     public void addTransaction(VereinsKontoTransaction vtr) {
+//         addToBalance(vtr.getAmount());
+//         this.vereinsTransactions.add(vtr);
+//     }
+//
+//     public List<VereinsKontoTransaction> getVereinsTransactions() {
+//         return this.vereinsTransactions;
+//     }
 }

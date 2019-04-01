@@ -63,7 +63,6 @@ public class Member {
     private List<Service> services = new ArrayList<>();
 
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "member_id")
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
