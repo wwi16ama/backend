@@ -1,6 +1,8 @@
 package com.WWI16AMA.backend_api;
 
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.VereinsAccount;
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
+import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
@@ -188,7 +190,9 @@ public class PlaneTests {
     public void testPostPlaneLogOk() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14,
+                55, 13), memberRepository.findAll().iterator().next().getId(), "TestOrt",
+                69, 88, 5);
 
         this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -201,13 +205,41 @@ public class PlaneTests {
     public void testPostPlaneLogFutureDate() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2999, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2999, 3, 12, 14,
+                55, 13), memberRepository.findAll().iterator().next().getId(), "TestOrt",
+                69, 88, 5);
 
         this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testPostPlaneLogTransactionCreate() throws Exception {
+        Member member = memberRepository.findAll().iterator().next();
+        int oldMemberTransactionSize = member.getMemberBankingAccount().getTransactions().size();
+        int oldVereinTransactionSize = VereinsAccount.getInstance().getTransactions().size();
+        double oldBalanceMember = member.getMemberBankingAccount().getBalance();
+        double oldBalanceVerein = VereinsAccount.getInstance().getBalance();
+        float amount = 56.78f;
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14,
+                55, 13), member.getId(), "TestOrt",
+                69, 88, amount);
+
+        this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(planeLogEntry)))
+                .andExpect(status().isOk());
+
+        assertThat( oldMemberTransactionSize++ == member.getMemberBankingAccount().getTransactions().size() );
+        assertThat( oldVereinTransactionSize++ == VereinsAccount.getInstance().getTransactions().size() );
+        assertThat(oldBalanceMember == member.getMemberBankingAccount().getBalance() + amount);
+        assertThat(oldBalanceVerein == VereinsAccount.getInstance().getBalance() - amount);
+    }
+
     @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testDeletePlaneController() throws Exception {
 
