@@ -71,8 +71,8 @@ public class Transaction {
         GUTSCHRIFTAMT,
         GUTSCHRIFTLEISTUNG,
         EINZAHLUNG,
-        AUSZAHLUNG
-        //BETANKUNGSKOSTEN
+        AUSZAHLUNG,
+        BETANKUNGSKOSTENERSTATTUNG
     }
 
 }
