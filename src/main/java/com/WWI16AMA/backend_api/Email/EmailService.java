@@ -1,5 +1,6 @@
 package com.WWI16AMA.backend_api.Email;
 
+import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Member.Member;
 import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.jni.Local;
@@ -24,6 +25,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Locale;
 
 @Service
@@ -37,14 +40,24 @@ public class EmailService {
 
 
     public void sendBillingNotification(
-            final Member member, Locale locale)
+            final Member member, Locale locale, String subjectBody, String contact, Transaction transaction)
             throws MessagingException {
 
         final MultipartFile multipartFile = getLogo();
         Context billingCtx = prepareBasicData(locale);
-        billingCtx.setVariable("subject", "Aufwandszahlung");
+        billingCtx.setVariable("subjectBody", subjectBody);
+        billingCtx.setVariable("contact", contact);
+        billingCtx.setVariable("name", member.getFirstName()+" " +member.getLastName());
+        billingCtx.setVariable("amount", -transaction.getAmount());
+        billingCtx.setVariable("bankingAccount", member.getBankingAccount());
+        billingCtx.setVariable("memberID", member.getId());
+        billingCtx.setVariable("date", LocalDate.now());
+        billingCtx.setVariable("bankName", "leer");
+        billingCtx.setVariable("bic", "leer");
+        billingCtx.setVariable("jobNumber", "leer");
 
         billingCtx.setVariable("imageResourceName", multipartFile.getName());
+
 
         final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
         final MimeMessageHelper message =
@@ -93,9 +106,7 @@ public class EmailService {
 
     private Context prepareBasicData(Locale locale){
         final Context ctx = new Context(locale);
-        ctx.setVariable("sender", "Flugsportverein Reilingen");
-        ctx.setVariable("club-name", "Flugsportverein Reilingen");
-        ctx.setVariable("contact", "Ibrahima Kourouma"); // so that we can reference it from HTML
+
         return ctx;
     }
 

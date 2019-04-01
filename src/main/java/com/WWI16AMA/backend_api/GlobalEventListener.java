@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
+import com.WWI16AMA.backend_api.Email.EmailService;
 import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
 import com.WWI16AMA.backend_api.Member.Member;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
+import java.util.Locale;
+
 @Component
 public class GlobalEventListener {
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private EmailService service;
     @Autowired
     private AccountRepository accountRepository;
 
@@ -23,16 +27,21 @@ public class GlobalEventListener {
     @EventListener
     public void sendEmail(final EmailNotificationEvent emailNotificationEvent) {
 
-        Member member = emailNotificationEvent.getMember();
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(member.getEmail());
-        message.setSubject("Test Spring");
-        message.setText("Hallo");
-        // TODO Wie handeln wir:
-        //    MailAuthenticationException - in case of authentication failure
-        //    MailSendException - in case of failure when sending a message
-        javaMailSender.send(message);
+        Member member = emailNotificationEvent.getMember();
+        Locale locale = new Locale("de");
+        String contact = "Jörg Steinfeld";
+
+
+        if(emailNotificationEvent.getType().equals(EmailNotificationEvent.Type.AUFWENDUNGEN)){
+            String subjectContent = "des Mitgliedbeitrages";
+            try {
+                service.sendBillingNotification(member, locale, subjectContent, contact, emailNotificationEvent.getTransaction());
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }

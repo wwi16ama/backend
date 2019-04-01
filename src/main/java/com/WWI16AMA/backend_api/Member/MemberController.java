@@ -101,7 +101,6 @@ public class MemberController {
 
         Member newMember= memberRepository.save(mem);
         task.calculateEntranceFee(newMember);
-        //publisher.publishEvent(new EmailNotificationEvent(mem));
         return mem;
     }
 

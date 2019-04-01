@@ -23,6 +23,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.mail.MessagingException;
@@ -37,6 +38,7 @@ import java.util.Locale;
 
 
 @SpringBootApplication
+@EnableScheduling
 public class Application extends SpringBootServletInitializer {
 
     @Override
@@ -202,18 +204,23 @@ public class Application extends SpringBootServletInitializer {
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
             generateSomePlaneLogs(planeRepository, memberRepository);
-            sendTestEmail(service);
+            //sendTestEmail(service);
 
         };
     }
 
     public void sendTestEmail(EmailService service) throws MessagingException {
-        service.sendBillingNotification(new Member(), new Locale("en"));
+        Transaction dummyTr = new Transaction();
+        dummyTr.setAmount(100);
+        service.sendBillingNotification(new Member(), new Locale("en"), "Test", "Ibrahima Kurouma"
+        , dummyTr);
     }
 
+    /*
     @Bean
     public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository, ApplicationEventPublisher publisher) {
 
         return new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
     }
+    */
 }

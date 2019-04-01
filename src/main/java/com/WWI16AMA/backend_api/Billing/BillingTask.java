@@ -10,6 +10,10 @@ import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Schedules;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.Commit;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -18,7 +22,7 @@ import java.util.Date;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-
+@Component
 public class BillingTask {
 
     private AccountRepository accountRepository;
@@ -36,16 +40,18 @@ public class BillingTask {
     @Scheduled(cron = "0 0 12 1 2 ? *", zone = "Europe/Berlin")
     public void calculateAnnualyFee() {
 
+        System.out.println("cron job executes");
         Stream<Member> stream = StreamSupport.stream(memberRepository.findAll().spliterator(), false);
         stream.forEach(member -> {
 
             Fee.Status status = getStatus(member);
 
             double fee = feeRepository.findByCategory(status).get().getFee();
-            Transaction tr = new Transaction(fee, Transaction.FeeType.MITGLIEDSBEITRAG);
+            Transaction tr = new Transaction(-fee, Transaction.FeeType.MITGLIEDSBEITRAG);
             publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
-            publisher.publishEvent(new EmailNotificationEvent(member));
+            publisher.publishEvent(new EmailNotificationEvent(member, EmailNotificationEvent.Type.AUFWENDUNGEN, tr));
         });
+
     }
 
     public void calculateEntranceFee(Member member){
@@ -63,6 +69,7 @@ public class BillingTask {
 
         Transaction tr = new Transaction(-partialFee, Transaction.FeeType.MITGLIEDSBEITRAG);
         publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
+        publisher.publishEvent(new EmailNotificationEvent(member, EmailNotificationEvent.Type.AUFWENDUNGEN, tr));
 
     }
 
