@@ -169,6 +169,7 @@ public class MemberController {
         checkPassword(msg.getNewPassword());
         mem.setPassword(passwordEncoder.encode(msg.getNewPassword()));
 
+        memberRepository.save(mem);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -183,6 +184,7 @@ public class MemberController {
 
         mem.setPassword(passwordEncoder.encode(msg.getNewPassword()));
 
+        memberRepository.save(mem);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
