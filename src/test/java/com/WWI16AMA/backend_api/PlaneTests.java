@@ -45,6 +45,8 @@ public class PlaneTests {
     @Autowired
     private MockMvc mockMvc;
 
+    private static int nameSuffix;
+
     @Test
     public void testRepositoryPlane() throws Exception {
 
@@ -160,6 +162,38 @@ public class PlaneTests {
 
     @Test
     @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testDeletePlaneController() throws Exception {
+
+        long found = planeRepository.count();
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        Plane plane = saveAndGetPlane();
+        Integer id = planeRepository.save(plane).getId();
+
+        this.mockMvc.perform(delete("/planes/" + id))
+                .andExpect(status().isNoContent());
+
+        assertThat(found).isEqualTo(planeRepository.count());
+    }
+
+    @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testUniqueNumber() throws Exception {
+
+        FlightAuthorization.Authorization authorization = FlightAuthorization.Authorization.PPLA;
+        Plane plane = new Plane("D-ERFI","Mannheimer Adler", authorization, "Halle1",
+                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                4.60, 1.60);
+
+        this.mockMvc.perform(post("/planes/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(plane)))
+                .andExpect(status().isBadRequest());
+    }
+
+    //PlaneLog Tests
+
+    @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testPostPlaneLogNotFound() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
@@ -206,24 +240,8 @@ public class PlaneTests {
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
-    public void testDeletePlaneController() throws Exception {
-
-        long found = planeRepository.count();
-        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = saveAndGetPlane();
-        Integer id = planeRepository.save(plane).getId();
-
-        this.mockMvc.perform(delete("/planes/" + id))
-                .andExpect(status().isNoContent());
-
-        assertThat(found).isEqualTo(planeRepository.count());
-
-
-    }
-
     private Plane saveAndGetPlane() throws Exception {
-        Plane plane = new Plane("D-EJEK", "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
+        Plane plane = new Plane("name"+nameSuffix++, "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 5.2, 0.8);
         return planeRepository.save(plane);
