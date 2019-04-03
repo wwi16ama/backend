@@ -14,12 +14,14 @@ public class YearlyService extends Service {
     private Year year;
 
     public YearlyService(ServiceName name, Year year, CreditRepository creditRepository) {
-        if (name.toString().charAt(0) != 'J') {
+        if (name == null || name.toString().charAt(0) != 'J') {
             throw new IllegalArgumentException("Der angegebene Dienst ist kein jährlicher Dienst");
         }
         this.setName(name);
         this.year = year;
-        Credit credit = creditRepository.findCreditByServiceName(name).orElseThrow(() -> new IllegalArgumentException("Keine Gebühr zum Service gefunden"));
+        Credit credit = creditRepository
+                .findCreditByServiceName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Keine Gebühr zum Service gefunden"));
         this.setGutschrift(credit.getAmount());
     }
 
