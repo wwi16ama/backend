@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,14 +25,15 @@ public class PlaneLogEntry {
     @NotNull
     private float endCount;
     @NotNull
-    private float totalPrice;
+    @PositiveOrZero
+    private float fuelPrice;
 
-    public PlaneLogEntry(LocalDateTime refuelDateTime, @NotNull Integer memberId, @NotNull String location, @NotNull float startCount, @NotNull float endCount, @NotNull float totalPrice) {
+    public PlaneLogEntry(LocalDateTime refuelDateTime, @NotNull Integer memberId, @NotNull String location, @NotNull float startCount, @NotNull float endCount, @NotNull float fuelPrice) {
         this.refuelDateTime = refuelDateTime;
         this.location = location;
         this.startCount = startCount;
         this.endCount = endCount;
-        this.totalPrice = totalPrice;
+        this.fuelPrice = fuelPrice;
         this.memberId = memberId;
     }
 
@@ -83,12 +85,12 @@ public class PlaneLogEntry {
         this.endCount = endCount;
     }
 
-    public float getTotalPrice() {
-        return totalPrice;
+    public float getFuelPrice() {
+        return fuelPrice;
     }
 
-    public void setTotalPrice(float totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setFuelPrice(float fuelPrice) {
+        this.fuelPrice = fuelPrice;
     }
 
     public PlaneLogEntry() {
