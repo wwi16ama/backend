@@ -51,7 +51,11 @@ public class PilotLogController {
                     ". The Departure Time has to be earlier than today. ");
         }
 
-        if (pilotLogEntry.getAirfair() != 0L) {
+        if (pilotLogEntry.getDepartureTime().isAfter(pilotLogEntry.getArrivalTime())) {
+            throw new IllegalArgumentException("This PilotLogEntry has an invalid Departure Time: " + pilotLogEntry.getDepartureTime() +
+                    ". The Depature Time has to be earlier than the Arrival Time (" + pilotLogEntry.getArrivalTime()+ "). "); }
+
+        if (pilotLogEntry.getFlightPrice() != 0L) {
             throw new IllegalArgumentException(("Airfair has to be null when a new PilotLogEntry shall be created"));
         }
 
@@ -65,7 +69,7 @@ public class PilotLogController {
 
         long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(),pilotLogEntry.getArrivalTime());
 
-        pilotLogEntry.setAirfair(plane.getPricePerFlightMinute() * minutes + pilotLogEntry.getUsageTime() * plane.getPricePerBookedHour());
+        pilotLogEntry.setFlightPrice(plane.getPricePerFlightMinute() * minutes + pilotLogEntry.getUsageTime() * plane.getPricePerBookedHour());
 
         pilotLog.addPilotLogEntry(pilotLogEntry);
 
