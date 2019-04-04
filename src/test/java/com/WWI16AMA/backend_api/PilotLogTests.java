@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-
 import static com.WWI16AMA.backend_api.TestUtil.saveAndGetMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;

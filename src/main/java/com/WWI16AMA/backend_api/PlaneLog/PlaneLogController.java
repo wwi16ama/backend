@@ -22,14 +22,12 @@ public class PlaneLogController {
     private MemberRepository memberRepository;
 
 
-
     @GetMapping(path = "/{id}")
     public ResponseEntity<List> info(@PathVariable int id) {
 
         return new ResponseEntity<>(planeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist")).getPlaneLog(), HttpStatus.OK);
     }
-
 
 
     @PostMapping(path = "/{id}")

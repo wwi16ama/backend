@@ -38,7 +38,6 @@ public class MemberTests {
     MemberRepository memberRepository;
     @Autowired
     OfficeRepository officeRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 

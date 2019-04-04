@@ -106,10 +106,7 @@ public class ServiceTest {
 
         Member mem = TestUtil.saveAndGetMember(memberRepository, officeRepository, enc, "wasGeht1");
         Service ds = new Service(ServiceName.T_TAGESEINSATZ,
-                LocalDate.now(), LocalDate.now().plusDays(2), 123);
-
-        //Dadurch wird's "ungültig"
-        ds.setEndDate(LocalDate.now().minusDays(2));
+                LocalDate.now(), LocalDate.now().minusDays(2), 123);
 
         this.mockMvc.perform(post("/services/" + mem.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -144,7 +141,6 @@ public class ServiceTest {
         Service ys = new Service(ServiceName.J_FLUGLEHRER, LocalDate.of(1900, 1, 1),
                 LocalDate.of(2025, 1, 1), 123);
 
-        // TODO schlägt derzeit nicht fehl, sollte aber
         this.mockMvc.perform(post("/services/" + mem.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(ys)))

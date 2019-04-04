@@ -45,11 +45,6 @@ public class Service {
         return name;
     }
 
-    /**
-     * TODO
-     * ausprobieren, ob der hier von Jackson genutzt wird. Wenn ja:
-     * Die J_, T_-Checks ausm Konstruktor hierhin verlagern..
-     */
     public void setName(ServiceName name) {
         this.name = name;
     }
