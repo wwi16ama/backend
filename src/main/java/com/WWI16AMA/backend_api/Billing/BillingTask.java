@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.Year;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -55,5 +56,13 @@ public class BillingTask {
         });
     }
 
+    public static LocalDate getNextBillingDate() {
+        Year year = LocalDate.now().getDayOfYear() < 33 ? Year.now() : Year.now().plusYears(1);
+        return LocalDate.of(year.getValue(), 2, 1);
+    }
+
+    public static boolean isInCurrentBillingPeriod(LocalDate date) {
+        return date.isBefore(getNextBillingDate()) && getNextBillingDate().minusYears(1).minusDays(1).isBefore(date);
+    }
 
 }
