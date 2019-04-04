@@ -172,16 +172,16 @@ public class Application extends SpringBootServletInitializer {
     private static void generateSomePilotLogEntries(Member member) {
         PilotLogEntry ple1 = new PilotLogEntry("D-ERFI", "Reilingen", LocalDateTime.of(2019, Month.FEBRUARY,
                 15, 10, 30), "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
-                15, 10, 45), true);
+                15, 10, 45), true, 1);
         PilotLogEntry ple2 = new PilotLogEntry("D-EJEK", "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
                 20, 10, 00), "Berlin", LocalDateTime.of(2019, Month.FEBRUARY,
-                20, 13, 45), true);
+                20, 13, 45), true, 2);
         PilotLogEntry ple3 = new PilotLogEntry("D-EJEK", "Berlin", LocalDateTime.of(2019, Month.MARCH,
                 03, 10, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
-                03, 14, 30), true);
+                03, 14, 30), true, 3);
         PilotLogEntry ple4 = new PilotLogEntry("D-EJEK", "Reilingen", LocalDateTime.of(2019, Month.MARCH,
                 20, 12, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
-                20, 13, 00), false);
+                20, 13, 00), false, 1);
 
         PilotLogEntry[] pilotLogEntries = {ple1, ple2, ple3, ple4};
         for (PilotLogEntry entry : pilotLogEntries) {

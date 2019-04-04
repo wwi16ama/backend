@@ -3,12 +3,15 @@ package com.WWI16AMA.backend_api.PilotLog;
 
 import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
+import com.WWI16AMA.backend_api.Plane.Plane;
+import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -19,6 +22,8 @@ public class PilotLogController {
 
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private PlaneRepository planeRepository;
 
     @GetMapping(path = "/{memberId}")
     public ResponseEntity<List> info(@PathVariable int memberId) {
@@ -43,10 +48,22 @@ public class PilotLogController {
                     ". The Departure Time has to be earlier than today. ");
         }
 
+        if (pilotLogEntry.getAirfair() != 0L) {
+            throw new IllegalArgumentException(("Airfair has to be null when a new PilotLogEntry shall be created"));
+        }
+
         Member mem = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("A Member's Pilotlog with the memberId " + memberId + " does not exist"));
 
+        Plane plane = planeRepository.findByNumber(pilotLogEntry.getPlaneNumber())
+                .orElseThrow(() -> new NoSuchElementException(("A Plane with the number " + pilotLogEntry.getPlaneNumber() + " does not exist.")));
+
         PilotLog pilotLog = mem.getPilotLog();
+
+        long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(),pilotLogEntry.getArrivalTime());
+
+        pilotLogEntry.setAirfair(plane.getPricePerFlightMinute() * minutes + pilotLogEntry.getUsageTime() * plane.getPricePerBookedHour());
+
         pilotLog.addPilotLogEntry(pilotLogEntry);
 
         memberRepository.save(mem);
