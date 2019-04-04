@@ -31,7 +31,7 @@ public class PilotLogEntry {
     @PositiveOrZero
     private int usageTime;
     @NotNull
-    private double airfair;
+    private double flightPrice;
 
 
     public PilotLogEntry(String planeNumber, String departureLocation, LocalDateTime departureTime,
@@ -93,8 +93,8 @@ public class PilotLogEntry {
         return arrivalTime;
     }
 
-    public double getAirfair() {
-        return airfair;
+    public double getFlightPrice() {
+        return flightPrice;
     }
 
     public int getUsageTime() {
@@ -117,7 +117,7 @@ public class PilotLogEntry {
         this.usageTime = usageTime;
     }
 
-    public void setAirfair(double airfair) {
-        this.airfair = airfair;
+    public void setFlightPrice(double flightPrice) {
+        this.flightPrice = flightPrice;
     }
 }
