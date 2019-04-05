@@ -32,6 +32,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.WWI16AMA.backend_api.Billing.BillingTask.getNextBillingDate;
 
@@ -77,31 +78,62 @@ public class Application extends SpringBootServletInitializer {
 
         Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
         Member mem = new Member("Karl", "Hansen",
-                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.PASSIVE,
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.ACTIVE,
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
-
         // publisher.publishEvent(new EmailNotificationEvent(mem));
-        mem.setOffices(offices);
+        mem.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.VORSTANDSVORSITZENDER)).collect(Collectors.toList()));
         mem.setFlightAuthorization(flList);
         mem.setId(9999);
         generateSomePilotLogEntries(mem);
         memberRepository.save(mem);
-        System.out.println("AdminID:\t" + mem.getId());
+        System.out.println("Vorstandsvorsitzender:\t" + mem.getId());
 
-        Address adr1 = new Address("12345", "Hamburg", "Hafenstraße 5");
-        Member mem1 = new Member("Kurt", "Krömer",
-                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
-                "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
+        Address adr1 = new Address("25524", "Itzehoe", "Twietbergstraße 53");
+        Member mem1 = new Member("Karl", "Hansen",
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.ACTIVE,
+                "karl.hansen@mail.com", adr1, "DE12345678901234567890", false,
                 enc.encode("koala"));
-        mem1.setAddress(adr1);
-
+        // publisher.publishEvent(new EmailNotificationEvent(mem1));
+        mem1.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.KASSIERER)).collect(Collectors.toList()));
         generateSomePilotLogEntries(mem1);
         memberRepository.save(mem1);
+        System.out.println("Kassierer:\t\t" + mem1.getId());
 
-        Transaction tr = new Transaction(100.05001, "Dummy-Transaktion", Transaction.FeeType.GUTSCHRIFTAMT);
+        Address adr2 = new Address("25524", "Itzehoe", "Twietbergstraße 53");
+        Member mem2 = new Member("Karl", "Hansen",
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.ACTIVE,
+                "karl.hansen@mail.com", adr2, "DE12345678901234567890", false,
+                enc.encode("koala"));
+        // publisher.publishEvent(new EmailNotificationEvent(mem2));
+        mem2.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.FLUGWART)).collect(Collectors.toList()));
+        generateSomePilotLogEntries(mem2);
+        memberRepository.save(mem2);
+        System.out.println("Flugwart:\t\t" + mem2.getId());
+
+        Address adr3 = new Address("12345", "Hamburg", "Hafenstraße 5");
+        Member mem3 = new Member("Kurt", "Krömer",
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.ACTIVE,
+                "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
+                enc.encode("koala"));
+        mem3.setAddress(adr3);
+        generateSomePilotLogEntries(mem3);
+        memberRepository.save(mem3);
+        Transaction tr = new Transaction(200.05002, "Dummy-Transaktion", Transaction.FeeType.GUTSCHRIFTAMT);
         publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
-        System.out.println("MemberID:\t" + mem1.getId());
+        System.out.println("active MemberID:\t" + mem3.getId());
+
+        Address adr4 = new Address("22345", "Hamburg", "Hafenstraße 5");
+        Member mem4 = new Member("Kurt", "Krömer",
+                LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
+                "kurt.krömer@mail.com", adr, "DE22345678902234567890", false,
+                enc.encode("koala"));
+        mem4.setAddress(adr4);
+        generateSomePilotLogEntries(mem4);
+        memberRepository.save(mem4);
+        Transaction tr1 = new Transaction(200.05002, "Dummy-Transaktion", Transaction.FeeType.GUTSCHRIFTAMT);
+        publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr1));
+        System.out.println("passive MemberID:\t" + mem4.getId());
     }
 
     private static void generateSomePlanes(PlaneRepository planeRepository) throws Exception {
