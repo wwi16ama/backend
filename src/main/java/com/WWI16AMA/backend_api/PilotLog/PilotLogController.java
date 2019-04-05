@@ -6,6 +6,7 @@ import com.WWI16AMA.backend_api.Member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class PilotLogController {
     @Autowired
     private MemberRepository memberRepository;
 
+    @PreAuthorize("hasRole('ACTIVE') and #memberId == principal.id")
     @GetMapping(path = "/{memberId}")
     public ResponseEntity<List> info(@PathVariable int memberId) {
 
@@ -27,6 +29,7 @@ public class PilotLogController {
                 .orElseThrow(() -> new NoSuchElementException("A Member's Pilotlog with the memberId " + memberId + " does not exist")).getPilotLog().getPilotLogEntries(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ACTIVE') and #memberId == principal.id")
     @PostMapping(path = "/{memberId}/pilotlogentry")
     public PilotLogEntry addPilotLogEntry(@RequestBody PilotLogEntry pilotLogEntry, @PathVariable int memberId) {
 
