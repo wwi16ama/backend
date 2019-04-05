@@ -72,16 +72,24 @@ public class PilotLogController {
 
         PilotLog pilotLog = mem.getPilotLog();
 
-        long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(),pilotLogEntry.getArrivalTime());
+        if (!pilotLogEntry.isFlightWithGuests()) {
 
-        pilotLogEntry.setFlightPrice(plane.getPricePerFlightMinute() * minutes + pilotLogEntry.getUsageTime() * plane.getPricePerBookedHour());
+            long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(),pilotLogEntry.getArrivalTime());
 
-        double price = -pilotLogEntry.getFlightPrice();
+            pilotLogEntry.setFlightPrice(plane.getPricePerFlightMinute() * minutes + pilotLogEntry.getUsageTime() * plane.getPricePerBookedHour());
 
-        Transaction tr = new Transaction(price, Transaction.FeeType.GEBÜHRFLUGZEUG);
+            double price = -pilotLogEntry.getFlightPrice();
+
+            Transaction tr = new Transaction(price, Transaction.FeeType.GEBÜHRFLUGZEUG);
+            publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
+
+        } else {
+            pilotLogEntry.setFlightPrice(0);
+        }
+
+
         pilotLog.addPilotLogEntry(pilotLogEntry);
 
-        publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
 
         memberRepository.save(mem);
         return pilotLog.getLastEntry();
