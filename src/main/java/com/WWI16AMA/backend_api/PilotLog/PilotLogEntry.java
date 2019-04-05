@@ -1,7 +1,10 @@
 package com.WWI16AMA.backend_api.PilotLog;
 
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -28,8 +31,7 @@ public class PilotLogEntry {
     private boolean flightWithGuests;
 
     public PilotLogEntry(String planeNumber, String departureLocation, LocalDateTime departureTime,
-                         String arrivalLocation, LocalDateTime arrivalTime, boolean flightWithGuests)
-    {
+                         String arrivalLocation, LocalDateTime arrivalTime, boolean flightWithGuests) {
         this.planeNumber = planeNumber;
         this.departureLocation = departureLocation;
         this.departureTime = departureTime;
@@ -38,7 +40,7 @@ public class PilotLogEntry {
         this.flightWithGuests = flightWithGuests;
     }
 
-    public PilotLogEntry(){
+    public PilotLogEntry() {
     }
 
     public long getFlightId() {

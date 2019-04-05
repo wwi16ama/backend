@@ -1,7 +1,7 @@
 package com.WWI16AMA.backend_api.Service;
 
 /**
- * 'J' als Präfix für jährliche Services,
+ * 'J' als Präfix für "jährliche" Services,
  * 'T' für "tägliche"
  */
 public enum ServiceName {

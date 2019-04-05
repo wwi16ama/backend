@@ -14,10 +14,8 @@ import com.WWI16AMA.backend_api.PilotLog.PilotLogEntry;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
-import com.WWI16AMA.backend_api.Service.DailyService;
 import com.WWI16AMA.backend_api.Service.Service;
 import com.WWI16AMA.backend_api.Service.ServiceName;
-import com.WWI16AMA.backend_api.Service.YearlyService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,10 +29,11 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.WWI16AMA.backend_api.Billing.BillingTask.getNextBillingDate;
 
 
 @SpringBootApplication
@@ -192,9 +191,9 @@ public class Application extends SpringBootServletInitializer {
     private void generateSomeServices(MemberRepository memberRepository, CreditRepository creditRepository) {
         Member mem = memberRepository.findAll().iterator().next();
 
-        Service s0 = new DailyService(ServiceName.T_PILOT, LocalDate.of(1, 2, 3), creditRepository);
-        Service s1 = new DailyService(ServiceName.T_TAGESEINSATZ, LocalDate.of(3, 3, 3), LocalDate.of(4, 4, 4), creditRepository);
-        Service s2 = new YearlyService(ServiceName.J_FLUGLEHRER, Year.now(), creditRepository);
+        Service s0 = new Service(ServiceName.T_PILOT, LocalDate.of(1, 2, 3), LocalDate.of(1, 2, 3), 123);
+        Service s1 = new Service(ServiceName.T_TAGESEINSATZ, LocalDate.of(3, 3, 3), LocalDate.of(4, 4, 4), 123);
+        Service s2 = new Service(ServiceName.J_FLUGLEHRER, getNextBillingDate().minusYears(1), getNextBillingDate().minusDays(1), 123);
 
 
         Service[] sArr = {s0, s1, s2};

@@ -41,7 +41,6 @@ public class AccountTests {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ApplicationEventPublisher publisher;
-
     @Autowired
     private MockMvc mockMvc;
 
