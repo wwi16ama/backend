@@ -1,11 +1,14 @@
 package com.WWI16AMA.backend_api.PilotLog;
 
 
+import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +28,8 @@ public class PilotLogController {
     private MemberRepository memberRepository;
     @Autowired
     private PlaneRepository planeRepository;
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @PreAuthorize("hasRole('ACTIVE') and #memberId == principal.id")
     @GetMapping(path = "/{memberId}")
@@ -71,7 +76,12 @@ public class PilotLogController {
 
         pilotLogEntry.setFlightPrice(plane.getPricePerFlightMinute() * minutes + pilotLogEntry.getUsageTime() * plane.getPricePerBookedHour());
 
+        double price = -pilotLogEntry.getFlightPrice();
+
+        Transaction tr = new Transaction(price, Transaction.FeeType.GEBÜHRFLUGZEUG);
         pilotLog.addPilotLogEntry(pilotLogEntry);
+
+        publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
 
         memberRepository.save(mem);
         return pilotLog.getLastEntry();
