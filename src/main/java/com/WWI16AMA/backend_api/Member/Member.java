@@ -68,6 +68,8 @@ public class Member {
     @OneToOne(cascade = CascadeType.ALL)
     private PilotLog pilotLog;
 
+    private static boolean gibtSchonVorstandsVorsitzenden = false;
+
     public Member() {
 
     }
@@ -115,6 +117,9 @@ public class Member {
     }
 
     public void setId(Integer id) {
+        if (gibtSchonVorstandsVorsitzenden)
+            throw new IllegalStateException("Es gibt bereits einen Vorstandsvorsitzenden");
+        gibtSchonVorstandsVorsitzenden = true;
         this.id = id;
     }
 
