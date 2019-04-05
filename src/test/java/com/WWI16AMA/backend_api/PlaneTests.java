@@ -1,6 +1,9 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
+import com.WWI16AMA.backend_api.Member.Member;
+import com.WWI16AMA.backend_api.Member.MemberRepository;
+import com.WWI16AMA.backend_api.Member.OfficeRepository;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +35,12 @@ public class PlaneTests {
 
     @Autowired
     PlaneRepository planeRepository;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    OfficeRepository officeRepository;
+    @Autowired
+    PasswordEncoder enc;
 
     @Autowired
     private MockMvc mockMvc;
@@ -155,33 +165,42 @@ public class PlaneTests {
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
         PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
 
-        this.mockMvc.perform(post("/planeLog/" + TestUtil.getUnusedId(planeRepository))
+        int id = TestUtil.getUnusedId(planeRepository);
+
+        this.mockMvc.perform(post("/planeLog/" + id)
+                .headers(TestUtil.createBasicAuthHeader(id + "", "wasGeht123"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testPostPlaneLogOk() throws Exception {
 
+        String pw = "wasGeht123";
+        Member mem = TestUtil.saveAndGetMember(memberRepository, officeRepository, enc, pw);
+
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), mem.getId(), "TestOrt", 69, 88, 5);
 
         this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
+                .headers(TestUtil.createBasicAuthHeader(mem.getId().toString(), pw))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testPostPlaneLogFutureDate() throws Exception {
 
+        String pw = "wasGeht123";
+        Member mem = TestUtil.saveAndGetMember(memberRepository, officeRepository, enc, pw);
+
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2999, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2999, 3, 12, 14, 55, 13), mem.getId(), "TestOrt", 69, 88, 5);
 
         this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
+                .headers(TestUtil.createBasicAuthHeader(mem.getId().toString(), pw))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
                 .andExpect(status().isNotFound());
