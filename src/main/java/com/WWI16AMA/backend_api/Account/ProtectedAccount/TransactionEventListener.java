@@ -25,15 +25,7 @@ public class TransactionEventListener {
     public void makeExternalTransaction(final ExtTransactionEvent transactionEvent) {
 
         Transaction tr = transactionEvent.getTransaction();
-
-        // TODO mit Holtermann absprechen
-        boolean korrekteEinzahlung = tr.getType().equals(Transaction.FeeType.EINZAHLUNG) && tr.getAmount() > 0;
-        boolean korrekteAuszahlung = tr.getType().equals(Transaction.FeeType.AUSZAHLUNG) && tr.getAmount() < 0;
-
-        if (!(korrekteEinzahlung || korrekteAuszahlung)) {
-            throw new IllegalArgumentException("Die Transaktion ist weder eine korrekte Einzahlung " +
-                    "noch eine korrekte Auszahlung");
-        }
+        tr.setType(tr.getAmount() > 0 ? Transaction.FeeType.EINZAHLUNG : Transaction.FeeType.AUSZAHLUNG);
 
         Account account = transactionEvent.getAccount();
         account.addTransaction(tr);

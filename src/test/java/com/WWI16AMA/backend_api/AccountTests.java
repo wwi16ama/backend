@@ -63,7 +63,7 @@ public class AccountTests {
 
         long found = acc.getTransactions().size();
 
-        Transaction transaction = new Transaction(500, Transaction.FeeType.EINZAHLUNG);
+        Transaction transaction = new Transaction(500, "Dummy-Text", Transaction.FeeType.EINZAHLUNG);
 
         this.mockMvc.perform(post("/accounts/" + acc.getId() + "/transactions")
                 .headers(createBasicAuthHeader(mem.getId().toString(), pw))
@@ -83,7 +83,8 @@ public class AccountTests {
 
         long found = acc.getTransactions().size();
 
-        Transaction transaction = new Transaction(500, Transaction.FeeType.EINZAHLUNG);
+        // der FeeType soll bei externen Transaktionen `null` sein dürfen
+        Transaction transaction = new Transaction(500, "Dummy-Text", null);
 
         this.mockMvc.perform(post("/accounts/{id}/transactions", acc.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +105,7 @@ public class AccountTests {
 
         publisher.publishEvent(new IntTransactionEvent(
                 mem.getMemberBankingAccount(),
-                new Transaction(amount, Transaction.FeeType.GUTSCHRIFTLEISTUNG)));
+                new Transaction(amount, "Dummy-Text", Transaction.FeeType.GUTSCHRIFTLEISTUNG)));
 
         assertThat(oldBalanceMember + amount).isEqualTo(mem.getMemberBankingAccount().getBalance());
         assertThat(oldBalanceVerein - amount).isEqualTo(VereinsAccount.getInstance().getBalance());

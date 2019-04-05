@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Account;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +15,8 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @NotNull
     private FeeType type;
+    @NotBlank
+    private String text;
     @NotNull
     private final LocalDateTime timestamp;
     // TODO sollte vllt currency oder BigDecimal werden
@@ -24,14 +27,23 @@ public class Transaction {
         this.timestamp = LocalDateTime.now();
     }
 
-    public Transaction(double amount, FeeType feeType) {
+    public Transaction(double amount, String text, FeeType feeType) {
         this.timestamp = LocalDateTime.now();
         this.amount = BigDecimal.valueOf(amount).setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+        this.text = text;
         this.type = feeType;
     }
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public FeeType getType() {

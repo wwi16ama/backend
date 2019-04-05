@@ -99,7 +99,7 @@ public class Application extends SpringBootServletInitializer {
         generateSomePilotLogEntries(mem1);
         memberRepository.save(mem1);
 
-        Transaction tr = new Transaction(100.05001, Transaction.FeeType.GUTSCHRIFTAMT);
+        Transaction tr = new Transaction(100.05001, "Dummy-Transaktion", Transaction.FeeType.GUTSCHRIFTAMT);
         publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
         System.out.println("MemberID:\t" + mem1.getId());
     }

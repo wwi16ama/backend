@@ -50,7 +50,8 @@ public class BillingTask {
             }
 
             double fee = feeRepository.findByCategory(status).get().getFee();
-            Transaction tr = new Transaction(fee, Transaction.FeeType.GEBÜHRFLUGZEUG);
+            Transaction tr = new Transaction(fee, "Mitgliedsbeitrag " + member.getId() + ", " + member.getLastName(),
+                    Transaction.FeeType.MITGLIEDSBEITRAG);
             publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
             publisher.publishEvent(new EmailNotificationEvent(member));
         });
