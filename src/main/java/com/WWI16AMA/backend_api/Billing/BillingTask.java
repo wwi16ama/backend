@@ -12,7 +12,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Period;
 import java.time.Year;
 import java.util.stream.Stream;
@@ -33,7 +32,7 @@ public class BillingTask {
         this.publisher = publisher;
     }
 
-    @Scheduled(cron = "0 0 12 1 2 ? *", zone = "Europe/Berlin")
+    @Scheduled(cron = "0 0 12 1 2 *", zone = "Europe/Berlin")
     public void calculateFee() {
 
         Stream<Member> stream = StreamSupport.stream(memberRepository.findAll().spliterator(), false);
@@ -53,13 +52,16 @@ public class BillingTask {
 
         LocalDate currentDate = LocalDate.now();
         int currentYear = currentDate.getYear();
-        LocalDate billingDate = LocalDate.of(currentYear + 1, Month.FEBRUARY, 1);
+        LocalDate billingDate = getNextBillingDate();
+        /** TODO angebrochene Monate?
+         *  Bsp: Ein Mitgliegt tritt am 3.1. (oder 16.1.) dem Verein bei?
+         *  Zahlt es in { Beiden | erstem | keinem } Fall einen Monat
+         *  Beitrittsgebühr?
+         */
         int months = Period.between(currentDate, billingDate).getMonths();
 
         Fee.Status status = getStatus(member);
         double baseFee = feeRepository.findByCategory(status).get().getFee();
-        System.out.println("basefee" + baseFee);
-        System.out.println(months);
         double partialFee = ((baseFee / 12) * months);
 
         Transaction tr = new Transaction(-partialFee, "Mitgliedsbeitrag " + member.getId() + ". " + member.getLastName(),
