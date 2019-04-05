@@ -6,7 +6,6 @@ import com.WWI16AMA.backend_api.Billing.BillingTask;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
-import com.WWI16AMA.backend_api.Email.EmailService;
 import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
@@ -15,6 +14,7 @@ import com.WWI16AMA.backend_api.PilotLog.PilotLogEntry;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
+import com.WWI16AMA.backend_api.Service.Service;
 import com.WWI16AMA.backend_api.Service.ServiceName;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,10 +23,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.mail.MessagingException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,11 +32,11 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
+
+import static com.WWI16AMA.backend_api.Billing.BillingTask.getNextBillingDate;
 
 
 @SpringBootApplication
-@EnableScheduling
 public class Application extends SpringBootServletInitializer {
 
     @Override
@@ -101,7 +99,7 @@ public class Application extends SpringBootServletInitializer {
         generateSomePilotLogEntries(mem1);
         memberRepository.save(mem1);
 
-        Transaction tr = new Transaction(100.05001, Transaction.FeeType.GUTSCHRIFTAMT);
+        Transaction tr = new Transaction(100.05001, "Dummy-Transaktion", Transaction.FeeType.GUTSCHRIFTAMT);
         publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
         System.out.println("MemberID:\t" + mem1.getId());
     }
@@ -138,12 +136,12 @@ public class Application extends SpringBootServletInitializer {
 
     private static void generateSomeCredits(CreditRepository creditRepository) {
 
-        Credit c1 = new Credit(ServiceName.VORSTANDSMITGLIED, 200.0, Period.YEAR);
-        Credit c2 = new Credit(ServiceName.FLUGLEHRER, 200.0, Period.YEAR);
-        Credit c3 = new Credit(ServiceName.FLUGWART, 100.0, Period.YEAR);
+        Credit c1 = new Credit(ServiceName.J_VORSTANDSMITGLIED, 200.0, Period.YEAR);
+        Credit c2 = new Credit(ServiceName.J_FLUGLEHRER, 200.0, Period.YEAR);
+        Credit c3 = new Credit(ServiceName.J_FLUGWART, 100.0, Period.YEAR);
 
-        Credit c4 = new Credit(ServiceName.TAGESEINSATZ, 40.0, Period.DAY);
-        Credit c5 = new Credit(ServiceName.PILOT, 40.0, Period.DAY);
+        Credit c4 = new Credit(ServiceName.T_TAGESEINSATZ, 40.0, Period.DAY);
+        Credit c5 = new Credit(ServiceName.T_PILOT, 40.0, Period.DAY);
         Credit[] credits = {c1, c2, c3, c4, c5};
         creditRepository.saveAll(Arrays.asList(credits));
     }
@@ -190,10 +188,24 @@ public class Application extends SpringBootServletInitializer {
         }
     }
 
+    private void generateSomeServices(MemberRepository memberRepository, CreditRepository creditRepository) {
+        Member mem = memberRepository.findAll().iterator().next();
+
+        Service s0 = new Service(ServiceName.T_PILOT, LocalDate.of(1, 2, 3), LocalDate.of(1, 2, 3), 123);
+        Service s1 = new Service(ServiceName.T_TAGESEINSATZ, LocalDate.of(3, 3, 3), LocalDate.of(4, 4, 4), 123);
+        Service s2 = new Service(ServiceName.J_FLUGLEHRER, getNextBillingDate().minusYears(1), getNextBillingDate().minusDays(1), 123);
+
+
+        Service[] sArr = {s0, s1, s2};
+        mem.setServices(Arrays.asList(sArr));
+        memberRepository.save(mem);
+    }
+
     @Bean
     public CommandLineRunner demo(MemberRepository memberRepository, OfficeRepository officeRepository,
                                   PlaneRepository planeRepository, AccountRepository accountRepository,
-                                  FeeRepository feeRepository, CreditRepository creditRepository, PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher, EmailService service) {
+                                  FeeRepository feeRepository, CreditRepository creditRepository,
+                                  PasswordEncoder passwordEncoder, ApplicationEventPublisher publisher) {
         return (args) -> {
 
             List<Office> offices = initOfficeTable();
@@ -204,23 +216,14 @@ public class Application extends SpringBootServletInitializer {
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
             generateSomePlaneLogs(planeRepository, memberRepository);
-            //sendTestEmail(service);
+            generateSomeServices(memberRepository, creditRepository);
 
         };
     }
 
-    public void sendTestEmail(EmailService service) throws MessagingException {
-        Transaction dummyTr = new Transaction();
-        dummyTr.setAmount(100);
-        service.sendBillingNotification(new Member(), new Locale("en"), "Test", "Ibrahima Kurouma"
-        , dummyTr);
-    }
-
-    /*
     @Bean
     public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository, ApplicationEventPublisher publisher) {
 
         return new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
     }
-    */
 }

@@ -2,6 +2,7 @@ package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 import com.WWI16AMA.backend_api.PilotLog.PilotLog;
+import com.WWI16AMA.backend_api.Service.Service;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -56,6 +57,10 @@ public class Member {
 
     @ManyToMany
     private List<Office> offices;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "member_id")
+    private List<Service> services = new ArrayList<>();
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
@@ -211,6 +216,14 @@ public class Member {
 
     public void setOffices(List<Office> offices) {
         this.offices = offices;
+    }
+
+    public List<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(List<Service> services) {
+        this.services = services;
     }
 
     public List<FlightAuthorization> getFlightAuthorization() {

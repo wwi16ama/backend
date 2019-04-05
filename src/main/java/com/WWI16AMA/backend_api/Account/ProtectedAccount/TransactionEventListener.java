@@ -25,15 +25,7 @@ public class TransactionEventListener {
     public void makeExternalTransaction(final ExtTransactionEvent transactionEvent) {
 
         Transaction tr = transactionEvent.getTransaction();
-        System.out.println("external transaction hast happened");
-        // TODO mit Holtermann absprechen
-        boolean korrekteEinzahlung = tr.getType().equals(Transaction.FeeType.EINZAHLUNG) && tr.getAmount() > 0;
-        boolean korrekteAuszahlung = tr.getType().equals(Transaction.FeeType.AUSZAHLUNG) && tr.getAmount() < 0;
-
-        if (!(korrekteEinzahlung || korrekteAuszahlung)) {
-            throw new IllegalArgumentException("Die Transaktion ist weder eine korrekte Einzahlung " +
-                    "noch eine korrekte Auszahlung");
-        }
+        tr.setType(tr.getAmount() > 0 ? Transaction.FeeType.EINZAHLUNG : Transaction.FeeType.AUSZAHLUNG);
 
         Account account = transactionEvent.getAccount();
         account.addTransaction(tr);
@@ -46,7 +38,7 @@ public class TransactionEventListener {
     public void makeInternalTransaction(IntTransactionEvent ev) {
 
         Transaction tr = ev.getTransaction();
-        System.out.println("mein transaction fee  " + tr.getAmount());
+
         // TODO mit Holtermann absprechen
         boolean korrekteAbbuchung = tr.getAmount() < 0 &&
                 (tr.getType().equals(Transaction.FeeType.MITGLIEDSBEITRAG)
@@ -68,11 +60,8 @@ public class TransactionEventListener {
         VereinsAccount vAcc = VereinsAccount.getInstance();
         VereinsKontoTransaction vtr = new VereinsKontoTransaction(tr, ev.getAccount());
         vAcc.addTransaction(vtr);
-        System.out.println("size vereinskonto" + vAcc.getVereinskontoTransactions().size());
 
         accountRepository.save(memAcc);
-        VereinsAccount acc = accountRepository.save(vAcc);
-        System.out.println("size vereinskonto" + acc.getVereinskontoTransactions().size());
-
+        accountRepository.save(vAcc);
     }
 }

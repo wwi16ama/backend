@@ -53,7 +53,6 @@ public class AccountController {
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER', 'SYSTEMADMINISTRATOR')")
     @GetMapping(path = "/vereinskonto")
     public VereinsAccount getVereinsAccount() {
-        // TODO funktioniert nicht: zeigt nicht die bereits vorhandenen Transaktionen an :-(
         return (VereinsAccount) accountRepository.findById(VereinsAccount.getInstance().getId())
                 .orElseThrow(() -> new IllegalStateException("Das Vereinskonto  ist verlorgen gegangen"));
     }

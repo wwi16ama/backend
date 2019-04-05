@@ -35,6 +35,7 @@ public class Plane {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
+    @JoinColumn(name = "plane_id")
     private List<PlaneLogEntry> planeLog;
 
     Plane() {
@@ -132,7 +133,6 @@ public class Plane {
     public void setPlaneLog(List<PlaneLogEntry> entries) {
         this.planeLog = entries;
     }
-
 
 
 }

@@ -36,15 +36,14 @@ public class PilotLog {
         this.pilotLogEntries = pilotLogEntries;
     }
 
-    public void addPilotLogEntry(PilotLogEntry pilotLogEntry){
+    public void addPilotLogEntry(PilotLogEntry pilotLogEntry) {
         this.pilotLogEntries.add(pilotLogEntry);
     }
 
     public PilotLogEntry getLastEntry() {
-        if(this.pilotLogEntries.size()>0) {
+        if (this.pilotLogEntries.size() > 0) {
             return this.pilotLogEntries.get(this.pilotLogEntries.size() - 1);
-        }
-        else{
+        } else {
             return null;
         }
 

@@ -1,8 +1,6 @@
 package com.WWI16AMA.backend_api.Account.ProtectedAccount;
 
-import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Account.VereinsKontoTransaction;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ public class VereinsAccount extends Account {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
-    private List<VereinsKontoTransaction> transactions = new ArrayList<>();
+    private List<VereinsKontoTransaction> vereinsTransactions = new ArrayList<>();
 
     public static VereinsAccount getInstance() {
         if (instance == null) {
@@ -28,19 +26,12 @@ public class VereinsAccount extends Account {
         return instance;
     }
 
-    public void addTransaction(VereinsKontoTransaction vtr) {
-        addToBalance(vtr.getAmount());
-        this.transactions.add(vtr);
-        System.out.println("addTransaction is called");
-    }
-
-    public List<VereinsKontoTransaction> getVereinskontoTransactions() {
-        return this.transactions;
-    }
-
-    @JsonIgnore
-    @Override
-    public List<Transaction> getTransactions() {
-        return super.getTransactions();
-    }
+//     public void addTransaction(VereinsKontoTransaction vtr) {
+//         addToBalance(vtr.getAmount());
+//         this.vereinsTransactions.add(vtr);
+//     }
+//
+//     public List<VereinsKontoTransaction> getVereinsTransactions() {
+//         return this.vereinsTransactions;
+//     }
 }

@@ -10,19 +10,14 @@ import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.annotation.Schedules;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.test.annotation.Commit;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Period;
-import java.util.Date;
+import java.time.Year;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-@Component
+
 public class BillingTask {
 
     private AccountRepository accountRepository;
@@ -38,56 +33,37 @@ public class BillingTask {
     }
 
     @Scheduled(cron = "0 0 12 1 2 ? *", zone = "Europe/Berlin")
-    public void calculateAnnualyFee() {
+    public void calculateFee() {
 
-        System.out.println("cron job executes");
         Stream<Member> stream = StreamSupport.stream(memberRepository.findAll().spliterator(), false);
         stream.forEach(member -> {
 
-            Fee.Status status = getStatus(member);
+            Fee.Status status;
+
+            if (member.getStatus().equals(Member.Status.ACTIVE)
+                    && Period.between(member.getDateOfBirth(), LocalDate.now()).getYears() <= 20) {
+                // "Jungtarif"
+                status = Fee.Status.U20ACTIVE;
+            } else {
+                // "Normalfall"
+                status = Fee.Status.valueOf(member.getStatus().name());
+            }
 
             double fee = feeRepository.findByCategory(status).get().getFee();
-            Transaction tr = new Transaction(-fee, Transaction.FeeType.MITGLIEDSBEITRAG);
+            Transaction tr = new Transaction(fee, "Mitgliedsbeitrag " + member.getId() + ", " + member.getLastName(),
+                    Transaction.FeeType.MITGLIEDSBEITRAG);
             publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
-            publisher.publishEvent(new EmailNotificationEvent(member, EmailNotificationEvent.Type.AUFWENDUNGEN, tr));
+            publisher.publishEvent(new EmailNotificationEvent(member));
         });
-
     }
 
-    public void calculateEntranceFee(Member member){
-
-        LocalDate currentDate = LocalDate.now();
-        int currentYear = currentDate.getYear();
-        LocalDate billingDate = LocalDate.of(currentYear+1, Month.FEBRUARY, 1);
-        int months = Period.between(currentDate, billingDate).getMonths();
-
-        Fee.Status status = getStatus(member);
-        double baseFee = feeRepository.findByCategory(status).get().getFee();
-        System.out.println("basefee" + baseFee);
-        System.out.println(months);
-        double partialFee = ((baseFee/12)*months);
-
-        Transaction tr = new Transaction(-partialFee, Transaction.FeeType.MITGLIEDSBEITRAG);
-        publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
-        publisher.publishEvent(new EmailNotificationEvent(member, EmailNotificationEvent.Type.AUFWENDUNGEN, tr));
-
+    public static LocalDate getNextBillingDate() {
+        Year year = LocalDate.now().getDayOfYear() < 33 ? Year.now() : Year.now().plusYears(1);
+        return LocalDate.of(year.getValue(), 2, 1);
     }
 
-    private Fee.Status getStatus(Member member) {
-
-        Fee.Status status;
-
-        if (member.getStatus().equals(Member.Status.ACTIVE)
-                && Period.between(member.getDateOfBirth(), LocalDate.now()).getYears() <= 20) {
-            // "Jungtarif"
-            status = Fee.Status.U20ACTIVE;
-        } else {
-            // "Normalfall"
-            status = Fee.Status.valueOf(member.getStatus().name());
-        }
-
-        return status;
+    public static boolean isInCurrentBillingPeriod(LocalDate date) {
+        return date.isBefore(getNextBillingDate()) && getNextBillingDate().minusYears(1).minusDays(1).isBefore(date);
     }
-
 
 }

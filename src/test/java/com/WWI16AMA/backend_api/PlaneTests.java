@@ -186,6 +186,7 @@ public class PlaneTests {
                 .content(TestUtil.marshal(planeLogEntry)))
                 .andExpect(status().isNotFound());
     }
+
     @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
     public void testDeletePlaneController() throws Exception {
 
