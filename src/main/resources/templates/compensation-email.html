@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Aufwandsentschädigung</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body yahoo bgcolor="#f6f8f1">
+<!--[if (gte mso 9)|(IE)]>
+<table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+<![endif]-->
+<table class="size" align="center" cellpadding="0" cellspacing="0" border="0" bgcolor="white">
+    <tr>
+        <td class="header">
+            <img src="logo.png" th:src="|cid:${imageResourceName}|" align="right" width="150" height="150"> </img>
+        </td>
+    </tr>
+    <tr>
+        <td class="h1">
+            Betreff: Aufwandsentschädigung
+            <br></br>
+        </td>
+    </tr>
+    <tr>
+        <td class="h2" bgcolor="white">
+            Sehr geehrte/r <span th:text="${memberName}"/>
+            <br></br>
+        </td>
+    </tr>
+    <tr>
+        <td class="content">
+            hiermit teilt der Flugverein <span th:text="${club-name}"/> Ihnen mit,
+            dass bezüglich <span th:text="${reason}"/> eine Aufwandsentschädigung in Höhe von
+            <span th:text="${amount}"/> Euro auf Ihrem Mitgliedskonto unter der
+            Mitgliedsnummer <span th:text="${memberID}"/> gutgeschrieben wird.
+            <br></br>
+            Mit freundlichen Grüßen,
+            <br>
+            Ihr Vorstand Vorstand des Flugsportvereins Reilingen e.V.
+            <br>
+            Glück ab - Gut Land!
+        </td>
+    </tr>
+    <tr>
+        <td class="note">
+            <br/>
+            Bei eventuellen Rückfragen wenden Sie sich bitte an:
+            <br>
+            <span th:text="${contact}"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="footer" bgcolor="#0081C9">
+            <br/>
+            <br/>
+            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht drauf, da uns Ihre Nachricht auf diesem Weg nicht erreichen wird. Sollten Sie Fragen zu dem Inhalt dieser E-Mail haben, wenden Sie sich bitte driekt an den in der E-Mail erwähnten Ansprechpartner.
+        </td>
+    </tr>
+</table>
+<!--[if (gte mso 9)|(IE)]>
+</td>
+</tr>
+</table>
+<![endif]-->
+</body>
+</html>
