@@ -72,6 +72,7 @@ public class PilotLogController {
 
         PilotLog pilotLog = mem.getPilotLog();
 
+
         if (!pilotLogEntry.isFlightWithGuests()) {
 
             long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(),pilotLogEntry.getArrivalTime());
@@ -86,7 +87,6 @@ public class PilotLogController {
         } else {
             pilotLogEntry.setFlightPrice(0);
         }
-
 
         pilotLog.addPilotLogEntry(pilotLogEntry);
 
