@@ -80,7 +80,7 @@ public class PilotLogController {
 
             double price = -pilotLogEntry.getFlightPrice();
 
-            Transaction tr = new Transaction(price, Transaction.FeeType.GEBÜHRFLUGZEUG);
+            Transaction tr = new Transaction(price, "Mitgliedsnummer: " + memberId + " Flug: "+ pilotLog.getLastEntry().getFlightId()+1,Transaction.FeeType.GEBÜHRFLUGZEUG);
             publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
 
         } else {
