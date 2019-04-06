@@ -1,5 +1,6 @@
 package com.WWI16AMA.backend_api.Account.ProtectedAccount;
 
+import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Account.VereinsKontoTransaction;
 
 import javax.persistence.*;
@@ -18,12 +19,13 @@ public class VereinsAccount extends Account {
     @JoinColumn(name = "account_id")
     private List<VereinsKontoTransaction> vereinsTransactions = new ArrayList<>();
 
-    public static VereinsAccount getInstance() {
+    public static VereinsAccount getInstance(AccountRepository accountRepository) {
         if (instance == null) {
             instance = new VereinsAccount();
             instance.setBalance(25000.0);
         }
-        return instance;
+        return accountRepository.save(instance);
+        // return instance;
     }
 
 //     public void addTransaction(VereinsKontoTransaction vtr) {
