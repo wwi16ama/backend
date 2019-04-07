@@ -23,8 +23,10 @@ public class VereinsAccount extends Account {
         if (instance == null) {
             instance = new VereinsAccount();
             instance.setBalance(25000.0);
+            accountRepository.save(instance);
         }
-        return accountRepository.save(instance);
+        return (VereinsAccount) accountRepository.findById(instance.getId())
+                .orElseThrow(() -> new IllegalStateException("VereinsAccount nicht richtig gespeichert"));
         // return instance;
     }
 
