@@ -58,6 +58,12 @@ public class BillingTask {
          *  Zahlt es in { Beiden | erstem | keinem } Fall einen Monat
          *  Beitrittsgebühr?
          */
+
+        /**
+         * In keinem der Fälle. Angebrochene Monate werden in der Rechnung nicht berücksichtigt.
+         *
+         *
+         */
         int months = Period.between(currentDate, billingDate).getMonths();
 
         Fee.Status status = getStatus(member);
