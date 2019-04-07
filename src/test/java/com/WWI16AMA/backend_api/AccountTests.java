@@ -99,7 +99,7 @@ public class AccountTests {
         Member mem = saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "wasGEht123");
 
         double oldBalanceMember = mem.getMemberBankingAccount().getBalance();
-        double oldBalanceVerein = VereinsAccount.getInstance().getBalance();
+        double oldBalanceVerein = VereinsAccount.getInstance(accountRepository).getBalance();
 
         double amount = 20.0;
 
@@ -108,7 +108,7 @@ public class AccountTests {
                 new Transaction(amount, "Dummy-Text", Transaction.FeeType.GUTSCHRIFTLEISTUNG)));
 
         assertThat(oldBalanceMember + amount).isEqualTo(mem.getMemberBankingAccount().getBalance());
-        assertThat(oldBalanceVerein - amount).isEqualTo(VereinsAccount.getInstance().getBalance());
+        assertThat(oldBalanceVerein - amount).isEqualTo(VereinsAccount.getInstance(accountRepository).getBalance());
     }
 
 }

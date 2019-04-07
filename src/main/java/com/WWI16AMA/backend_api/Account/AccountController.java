@@ -2,7 +2,7 @@ package com.WWI16AMA.backend_api.Account;
 
 import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 import com.WWI16AMA.backend_api.Account.ProtectedAccount.VereinsAccount;
-import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
+import com.WWI16AMA.backend_api.Events.ExtTransactionEvent;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -47,7 +47,7 @@ public class AccountController {
     public Transaction addTransaction(@RequestBody Transaction transaction, @PathVariable int id) {
         Account acc = accountRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Account with the id " + id + " does not exist"));
-        publisher.publishEvent(new IntTransactionEvent(acc, transaction));
+        publisher.publishEvent(new ExtTransactionEvent(acc, transaction));
         return transaction;
     }
 
