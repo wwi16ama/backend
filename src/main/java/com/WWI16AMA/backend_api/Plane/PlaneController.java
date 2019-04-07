@@ -38,6 +38,12 @@ public class PlaneController {
                     ". Id has to be null when a new plane shall be created");
         }
 
+        if (planeRepository.findByNumber(reqPlane.getNumber()).isPresent()) {
+
+            throw new IllegalArgumentException("Plane with number: " + reqPlane.getNumber() + " already exists!");
+        }
+
+
         planeRepository.save(reqPlane);
 
         return reqPlane;

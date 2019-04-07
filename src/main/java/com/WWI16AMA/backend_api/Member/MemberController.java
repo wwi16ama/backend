@@ -55,7 +55,6 @@ public class MemberController {
 
     }
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR', 'KASSIERER', 'FLUGWART')")
     @GetMapping(value = "")
     public Iterable<MemberView> getAllUsers() {
         Iterable<Member> mem = memberRepository.findAll();

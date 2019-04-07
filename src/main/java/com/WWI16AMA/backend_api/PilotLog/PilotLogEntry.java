@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,16 +29,23 @@ public class PilotLogEntry {
     private String arrivalLocation;
     @NotNull
     private LocalDateTime arrivalTime;
+    @NotNull
     private boolean flightWithGuests;
+    @PositiveOrZero
+    private int usageTime;
+    @NotNull
+    private double flightPrice;
+
 
     public PilotLogEntry(String planeNumber, String departureLocation, LocalDateTime departureTime,
-                         String arrivalLocation, LocalDateTime arrivalTime, boolean flightWithGuests) {
+                         String arrivalLocation, LocalDateTime arrivalTime, boolean flightWithGuests, int usageTime) {
         this.planeNumber = planeNumber;
         this.departureLocation = departureLocation;
         this.departureTime = departureTime;
         this.arrivalLocation = arrivalLocation;
         this.arrivalTime = arrivalTime;
         this.flightWithGuests = flightWithGuests;
+        this.usageTime = usageTime;
     }
 
     public PilotLogEntry() {
@@ -87,6 +95,14 @@ public class PilotLogEntry {
         return arrivalTime;
     }
 
+    public double getFlightPrice() {
+        return flightPrice;
+    }
+
+    public int getUsageTime() {
+        return usageTime;
+    }
+
     public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
@@ -97,5 +113,13 @@ public class PilotLogEntry {
 
     public void setFlightWithGuests(boolean flightWithGuests) {
         this.flightWithGuests = flightWithGuests;
+    }
+
+    public void setUsageTime(int usageTime) {
+        this.usageTime = usageTime;
+    }
+
+    public void setFlightPrice(double flightPrice) {
+        this.flightPrice = flightPrice;
     }
 }

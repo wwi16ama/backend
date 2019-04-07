@@ -23,7 +23,8 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
-    private ApplicationEventPublisher publisher;
+    private
+    ApplicationEventPublisher publisher;
 
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER')")
     @GetMapping(path = "")
@@ -53,7 +54,7 @@ public class AccountController {
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER', 'SYSTEMADMINISTRATOR')")
     @GetMapping(path = "/vereinskonto")
     public VereinsAccount getVereinsAccount() {
-        return (VereinsAccount) accountRepository.findById(VereinsAccount.getInstance().getId())
+        return (VereinsAccount) accountRepository.findById(VereinsAccount.getInstance(accountRepository).getId())
                 .orElseThrow(() -> new IllegalStateException("Das Vereinskonto  ist verlorgen gegangen"));
     }
 

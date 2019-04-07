@@ -19,6 +19,7 @@ public class Plane {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotBlank
+    @Column(unique = true)
     private String number;
     @NotBlank
     private String name;

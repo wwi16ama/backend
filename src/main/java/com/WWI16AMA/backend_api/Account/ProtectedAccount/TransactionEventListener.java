@@ -57,7 +57,8 @@ public class TransactionEventListener {
         Account memAcc = ev.getAccount();
         memAcc.addTransaction(tr);
 
-        VereinsAccount vAcc = VereinsAccount.getInstance();
+
+        VereinsAccount vAcc = VereinsAccount.getInstance(accountRepository);
         VereinsKontoTransaction vtr = new VereinsKontoTransaction(tr, ev.getAccount());
         vAcc.addTransaction(vtr);
 
