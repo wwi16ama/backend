@@ -38,8 +38,7 @@ public class PilotLogEntry {
 
 
     public PilotLogEntry(String planeNumber, String departureLocation, LocalDateTime departureTime,
-                         String arrivalLocation, LocalDateTime arrivalTime, boolean flightWithGuests, int usageTime)
-    {
+                         String arrivalLocation, LocalDateTime arrivalTime, boolean flightWithGuests, int usageTime) {
         this.planeNumber = planeNumber;
         this.departureLocation = departureLocation;
         this.departureTime = departureTime;

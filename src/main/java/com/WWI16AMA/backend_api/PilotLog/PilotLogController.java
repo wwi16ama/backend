@@ -58,7 +58,8 @@ public class PilotLogController {
 
         if (pilotLogEntry.getDepartureTime().isAfter(pilotLogEntry.getArrivalTime())) {
             throw new IllegalArgumentException("This PilotLogEntry has an invalid Departure Time: " + pilotLogEntry.getDepartureTime() +
-                    ". The Depature Time has to be earlier than the Arrival Time (" + pilotLogEntry.getArrivalTime()+ "). "); }
+                    ". The Depature Time has to be earlier than the Arrival Time (" + pilotLogEntry.getArrivalTime() + "). ");
+        }
 
         if (pilotLogEntry.getFlightPrice() != 0L) {
             throw new IllegalArgumentException(("Airfair has to be null when a new PilotLogEntry shall be created"));
@@ -75,13 +76,13 @@ public class PilotLogController {
 
         if (!pilotLogEntry.isFlightWithGuests()) {
 
-            long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(),pilotLogEntry.getArrivalTime());
+            long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(), pilotLogEntry.getArrivalTime());
 
             pilotLogEntry.setFlightPrice(plane.getPricePerFlightMinute() * minutes + pilotLogEntry.getUsageTime() * plane.getPricePerBookedHour());
 
             double price = -pilotLogEntry.getFlightPrice();
 
-            Transaction tr = new Transaction(price, "Mitgliedsnummer: " + memberId + " Flug: "+ pilotLog.getLastEntry().getFlightId()+1,Transaction.FeeType.GEBÜHRFLUGZEUG);
+            Transaction tr = new Transaction(price, "Mitgliedsnummer: " + memberId + " Flug: " + pilotLog.getLastEntry().getFlightId() + 1, Transaction.FeeType.GEBÜHRFLUGZEUG);
             publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
 
         } else {

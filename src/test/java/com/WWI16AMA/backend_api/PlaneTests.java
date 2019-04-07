@@ -180,7 +180,7 @@ public class PlaneTests {
     public void testUniqueNumber() throws Exception {
 
         FlightAuthorization.Authorization authorization = FlightAuthorization.Authorization.PPLA;
-        Plane plane = new Plane("D-ERFI","Mannheimer Adler", authorization, "Halle1",
+        Plane plane = new Plane("D-ERFI", "Mannheimer Adler", authorization, "Halle1",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 4.60, 1.60);
 
@@ -241,7 +241,7 @@ public class PlaneTests {
     }
 
     private Plane saveAndGetPlane() throws Exception {
-        Plane plane = new Plane("name"+nameSuffix++, "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
+        Plane plane = new Plane("name" + nameSuffix++, "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 5.2, 0.8);
         return planeRepository.save(plane);

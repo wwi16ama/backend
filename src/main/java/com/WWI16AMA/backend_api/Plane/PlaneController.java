@@ -41,7 +41,7 @@ public class PlaneController {
         if (planeRepository.findByNumber(reqPlane.getNumber()).isPresent()) {
 
             throw new IllegalArgumentException("Plane with number: " + reqPlane.getNumber() + " already exists!");
-    }
+        }
 
 
         planeRepository.save(reqPlane);
