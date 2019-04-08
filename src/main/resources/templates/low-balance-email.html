@@ -5,22 +5,13 @@
     <title>Aufwandsentschädigung</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body yahoo bgcolor="#f6f8f1">
+<body>
 <!--[if (gte mso 9)|(IE)]>
-<table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
-    <tr>
-        <td>
 <![endif]-->
 <table class="size" align="center" cellpadding="0" cellspacing="0" border="0" bgcolor="white">
     <tr>
         <td class="header">
             <img src="logo.png" th:src="|cid:${imageResourceName}|" align="right" width="150" height="150"> </img>
-        </td>
-    </tr>
-    <tr>
-        <td class="h1">
-            Betreff: Aufwandsentschädigung
-            <br></br>
         </td>
     </tr>
     <tr>
@@ -31,24 +22,16 @@
     </tr>
     <tr>
         <td class="content">
-            hiermit teilt der Flugverein <span th:text="${club-name}"/> Ihnen mit,
-            dass bezüglich <span th:text="${reason}"/> eine Aufwandsentschädigung in Höhe von
-            <span th:text="${amount}"/> Euro auf Ihrem Mitgliedskonto unter der
-            Mitgliedsnummer <span th:text="${memberID}"/> gutgeschrieben wird.
-            <br></br>
+            das Guthaben Ihres Mitgliedskontos ist unter 200€ gefallen. <br/>
+            Wenn Sie auch in Zukunft Flugzeuge reservieren wollen,
+            dann sorgen Sie bitte dafür, dass Sie Ihr Konto auffüllen.
+            <span th:text="${amount}"/> Überweisen Sie dazu Geld an das Konto des Vereins
+            mit dem Betreff: "*Mitgliedsnr* + Guthaben aufstocken".
+            <br/>
             Mit freundlichen Grüßen,
-            <br>
+            <br/>
             Ihr Vorstand Vorstand des Flugsportvereins Reilingen e.V.
             <br>
-            Glück ab - Gut Land!
-        </td>
-    </tr>
-    <tr>
-        <td class="note">
-            <br/>
-            Bei eventuellen Rückfragen wenden Sie sich bitte an:
-            <br>
-            <span th:text="${contact}"/>
         </td>
     </tr>
     <tr>

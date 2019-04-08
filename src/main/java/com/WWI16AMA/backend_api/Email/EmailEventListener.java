@@ -1,4 +1,4 @@
-package com.WWI16AMA.backend_api;
+package com.WWI16AMA.backend_api.Email;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
 import com.WWI16AMA.backend_api.Email.EmailService;
@@ -15,7 +15,7 @@ import javax.mail.MessagingException;
 import java.util.Locale;
 
 @Component
-public class GlobalEventListener {
+public class EmailEventListener {
 
     @Autowired
     private EmailService service;
@@ -36,7 +36,7 @@ public class GlobalEventListener {
         if(emailNotificationEvent.getType().equals(EmailNotificationEvent.Type.AUFWENDUNGEN)){
             String subjectContent = "des Mitgliedbeitrages";
             try {
-                service.sendBillingNotification(member, locale, subjectContent, contact, emailNotificationEvent.getTransaction());
+                service.sendBillingNotification(member, locale, emailNotificationEvent.getTransaction());
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
