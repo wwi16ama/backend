@@ -32,6 +32,15 @@ public class BillingTask {
         this.publisher = publisher;
     }
 
+    public static LocalDate getNextBillingDate() {
+        Year year = LocalDate.now().getDayOfYear() < 33 ? Year.now() : Year.now().plusYears(1);
+        return LocalDate.of(year.getValue(), 2, 1);
+    }
+
+    public static boolean isInCurrentBillingPeriod(LocalDate date) {
+        return date.isBefore(getNextBillingDate()) && getNextBillingDate().minusYears(1).minusDays(1).isBefore(date);
+    }
+
     @Scheduled(cron = "0 0 12 1 2 *", zone = "Europe/Berlin")
     public void calculateFee() {
 
@@ -44,7 +53,7 @@ public class BillingTask {
             Transaction tr = new Transaction(-fee, "Mitgliedsbeitrag " + member.getId() + ", " + member.getLastName(),
                     Transaction.FeeType.MITGLIEDSBEITRAG);
             publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
-            publisher.publishEvent(new EmailNotificationEvent(member));
+            publisher.publishEvent(new EmailNotificationEvent(member, EmailNotificationEvent.Type.AUFWENDUNGEN, tr));
         });
     }
 
@@ -53,17 +62,7 @@ public class BillingTask {
         LocalDate currentDate = LocalDate.now();
         int currentYear = currentDate.getYear();
         LocalDate billingDate = getNextBillingDate();
-        /** TODO angebrochene Monate?
-         *  Bsp: Ein Mitgliegt tritt am 3.1. (oder 16.1.) dem Verein bei?
-         *  Zahlt es in { Beiden | erstem | keinem } Fall einen Monat
-         *  Beitrittsgebühr?
-         */
-
-        /**
-         * In keinem der Fälle. Angebrochene Monate werden in der Rechnung nicht berücksichtigt.
-         *
-         *
-         */
+        // Angebrochene Monate werden nicht gezahlt
         int months = Period.between(currentDate, billingDate).getMonths();
 
         Fee.Status status = getStatus(member);
@@ -75,15 +74,6 @@ public class BillingTask {
         publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
         publisher.publishEvent(new EmailNotificationEvent(member, EmailNotificationEvent.Type.AUFWENDUNGEN, tr));
 
-    }
-
-    public static LocalDate getNextBillingDate() {
-        Year year = LocalDate.now().getDayOfYear() < 33 ? Year.now() : Year.now().plusYears(1);
-        return LocalDate.of(year.getValue(), 2, 1);
-    }
-
-    public static boolean isInCurrentBillingPeriod(LocalDate date) {
-        return date.isBefore(getNextBillingDate()) && getNextBillingDate().minusYears(1).minusDays(1).isBefore(date);
     }
 
     private Fee.Status getStatus(Member member) {
