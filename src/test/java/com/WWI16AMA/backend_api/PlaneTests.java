@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PlaneTests {
 
+    private static int nameSuffix;
     @Autowired
     PlaneRepository planeRepository;
     @Autowired
@@ -41,11 +42,8 @@ public class PlaneTests {
     OfficeRepository officeRepository;
     @Autowired
     PasswordEncoder enc;
-
     @Autowired
     private MockMvc mockMvc;
-
-    private static int nameSuffix;
 
     @Test
     public void testRepositoryPlane() throws Exception {

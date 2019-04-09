@@ -42,12 +42,6 @@ import static com.WWI16AMA.backend_api.Billing.BillingTask.getNextBillingDate;
 @EnableAsync
 public class Application extends SpringBootServletInitializer {
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
-    }
-
-
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -177,7 +171,6 @@ public class Application extends SpringBootServletInitializer {
         creditRepository.saveAll(Arrays.asList(credits));
     }
 
-
     private static void generateSomePlaneLogs(PlaneRepository planeRepository, MemberRepository memberRepository) {
         Member member = memberRepository.findAll().iterator().next();
         Plane plane = planeRepository.findById(1).get();
@@ -217,6 +210,11 @@ public class Application extends SpringBootServletInitializer {
         for (PilotLogEntry entry : pilotLogEntries) {
             member.getPilotLog().addPilotLogEntry(entry);
         }
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
     }
 
     private void generateSomeServices(MemberRepository memberRepository, CreditRepository creditRepository) {

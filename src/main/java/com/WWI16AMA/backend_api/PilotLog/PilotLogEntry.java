@@ -95,16 +95,24 @@ public class PilotLogEntry {
         return arrivalTime;
     }
 
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
     public double getFlightPrice() {
         return flightPrice;
+    }
+
+    public void setFlightPrice(double flightPrice) {
+        this.flightPrice = flightPrice;
     }
 
     public int getUsageTime() {
         return usageTime;
     }
 
-    public void setArrivalTime(LocalDateTime arrivalTime) {
-        this.arrivalTime = arrivalTime;
+    public void setUsageTime(int usageTime) {
+        this.usageTime = usageTime;
     }
 
     public boolean isFlightWithGuests() {
@@ -113,13 +121,5 @@ public class PilotLogEntry {
 
     public void setFlightWithGuests(boolean flightWithGuests) {
         this.flightWithGuests = flightWithGuests;
-    }
-
-    public void setUsageTime(int usageTime) {
-        this.usageTime = usageTime;
-    }
-
-    public void setFlightPrice(double flightPrice) {
-        this.flightPrice = flightPrice;
     }
 }

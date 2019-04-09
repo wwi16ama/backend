@@ -2,7 +2,6 @@ package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 import com.WWI16AMA.backend_api.Billing.BillingTask;
-import com.WWI16AMA.backend_api.Events.EmailNotificationEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -25,15 +24,15 @@ import static java.util.stream.Collectors.toList;
 public class MemberController {
 
     @Autowired
+    ApplicationEventPublisher publisher;
+    @Autowired
+    BillingTask task;
+    @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private OfficeRepository officeRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    ApplicationEventPublisher publisher;
-    @Autowired
-    BillingTask task;
 
     static private void checkPassword(String unhashedPw) {
 
@@ -98,7 +97,7 @@ public class MemberController {
 
         mem.setOffices(offices);
 
-        Member newMember= memberRepository.save(mem);
+        Member newMember = memberRepository.save(mem);
         task.calculateEntranceFee(newMember);
         return mem;
     }

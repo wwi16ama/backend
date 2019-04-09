@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Transaction {
 
+    @NotNull
+    private final LocalDateTime timestamp;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -17,8 +19,6 @@ public class Transaction {
     private FeeType type;
     @NotBlank
     private String text;
-    @NotNull
-    private final LocalDateTime timestamp;
     // TODO sollte vllt currency oder BigDecimal werden
     @NotNull
     private double amount;

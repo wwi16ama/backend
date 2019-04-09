@@ -1,21 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <title>Aufwandsentschädigung</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
 <!--[if (gte mso 9)|(IE)]>
 <![endif]-->
-<table class="size" align="center" cellpadding="0" cellspacing="0" border="0" bgcolor="white">
+<table align="center" bgcolor="white" border="0" cellpadding="0" cellspacing="0" class="size">
     <tr>
         <td class="header">
-            <img src="logo.png" th:src="|cid:${imageResourceName}|" align="right" width="150" height="150"> </img>
+            <img align="right" height="150" src="logo.png" th:src="|cid:${imageResourceName}|" width="150"> </img>
         </td>
     </tr>
     <tr>
-        <td class="h2" bgcolor="white">
+        <td bgcolor="white" class="h2">
             Sehr geehrte/r <span th:text="${memberName}"/>
             <br></br>
         </td>
@@ -35,10 +36,12 @@
         </td>
     </tr>
     <tr>
-        <td class="footer" bgcolor="#0081C9">
+        <td bgcolor="#0081C9" class="footer">
             <br/>
             <br/>
-            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht drauf, da uns Ihre Nachricht auf diesem Weg nicht erreichen wird. Sollten Sie Fragen zu dem Inhalt dieser E-Mail haben, wenden Sie sich bitte driekt an den in der E-Mail erwähnten Ansprechpartner.
+            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht drauf, da uns Ihre Nachricht auf
+            diesem Weg nicht erreichen wird. Sollten Sie Fragen zu dem Inhalt dieser E-Mail haben, wenden Sie sich bitte
+            driekt an den in der E-Mail erwähnten Ansprechpartner.
         </td>
     </tr>
 </table>

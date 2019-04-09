@@ -37,6 +37,9 @@ public class PlaneLogEntry {
         this.memberId = memberId;
     }
 
+    public PlaneLogEntry() {
+    }
+
     public long getId() {
         return id;
     }
@@ -49,16 +52,16 @@ public class PlaneLogEntry {
         return refuelDateTime;
     }
 
+    public void setRefuelDateTime(LocalDateTime refuelDateTime) {
+        this.refuelDateTime = refuelDateTime;
+    }
+
     public Integer getMemberId() {
         return memberId;
     }
 
     public void setMemberId(Integer memberId) {
         this.memberId = memberId;
-    }
-
-    public void setRefuelDateTime(LocalDateTime refuelDateTime) {
-        this.refuelDateTime = refuelDateTime;
     }
 
     public String getLocation() {
@@ -91,9 +94,6 @@ public class PlaneLogEntry {
 
     public void setFuelPrice(float fuelPrice) {
         this.fuelPrice = fuelPrice;
-    }
-
-    public PlaneLogEntry() {
     }
 
 }

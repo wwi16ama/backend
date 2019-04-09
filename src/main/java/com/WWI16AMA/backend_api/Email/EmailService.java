@@ -66,7 +66,7 @@ public class EmailService {
 
     }
 
-    public MultipartFile getLogo() {
+    private MultipartFile getLogo() {
         File file = null;
         FileInputStream input = null;
         MultipartFile multipartFile = null;
