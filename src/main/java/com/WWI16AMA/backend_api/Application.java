@@ -1,12 +1,10 @@
 package com.WWI16AMA.backend_api;
 
 import com.WWI16AMA.backend_api.Account.AccountRepository;
-import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Billing.BillingTask;
 import com.WWI16AMA.backend_api.Credit.Credit;
 import com.WWI16AMA.backend_api.Credit.CreditRepository;
 import com.WWI16AMA.backend_api.Credit.Period;
-import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
@@ -23,6 +21,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -40,6 +39,7 @@ import static com.WWI16AMA.backend_api.Billing.BillingTask.getNextBillingDate;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableAsync
 public class Application extends SpringBootServletInitializer {
 
     @Override
@@ -64,9 +64,9 @@ public class Application extends SpringBootServletInitializer {
         return Arrays.asList(offices);
     }
 
-    private static void generateSomeMembers(MemberRepository memberRepository,
-                                            List<Office> offices,
-                                            PasswordEncoder enc, ApplicationEventPublisher publisher) {
+    private static List<Member> generateSomeMembers(MemberRepository memberRepository,
+                                                    List<Office> offices,
+                                                    PasswordEncoder enc, ApplicationEventPublisher publisher) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -121,8 +121,6 @@ public class Application extends SpringBootServletInitializer {
         mem3.setAddress(adr3);
         generateSomePilotLogEntries(mem3);
         memberRepository.save(mem3);
-        Transaction tr = new Transaction(200.05002, "Dummy-Transaktion", Transaction.FeeType.GUTSCHRIFTAMT);
-        publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
         System.out.println("active MemberID:\t" + mem3.getId());
 
         Address adr4 = new Address("22345", "Hamburg", "Hafenstraße 5");
@@ -133,9 +131,8 @@ public class Application extends SpringBootServletInitializer {
         mem4.setAddress(adr4);
         generateSomePilotLogEntries(mem4);
         memberRepository.save(mem4);
-        Transaction tr1 = new Transaction(200.05002, "Dummy-Transaktion", Transaction.FeeType.GUTSCHRIFTAMT);
-        publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr1));
         System.out.println("passive MemberID:\t" + mem4.getId());
+        return Arrays.asList(mem, mem1, mem2, mem3, mem4);
     }
 
     private static void generateSomePlanes(PlaneRepository planeRepository) throws Exception {
@@ -245,13 +242,15 @@ public class Application extends SpringBootServletInitializer {
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
-            generateSomeMembers(memberRepository, offices, passwordEncoder, publisher);
+            List<Member> memberList = generateSomeMembers(memberRepository, offices, passwordEncoder, publisher);
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
             generateSomePlaneLogs(planeRepository, memberRepository);
             generateSomeServices(memberRepository, creditRepository);
 
+            BillingTask bt = new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
+            memberList.stream().forEach(bt::calculateEntranceFee);
         };
     }
 
