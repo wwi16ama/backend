@@ -69,7 +69,7 @@ public class BillingTask {
         double baseFee = feeRepository.findByCategory(status).get().getFee();
         double partialFee = ((baseFee / 12) * months);
 
-        Transaction tr = new Transaction(-partialFee, "Mitgliedsbeitrag " + member.getId() + ". " + member.getLastName(),
+        Transaction tr = new Transaction(-partialFee, "anteiliger Mitgliedsbeitrag wegen Neueintritt " + member.getId() + ". " + member.getLastName(),
                 Transaction.FeeType.MITGLIEDSBEITRAG);
         publisher.publishEvent(new IntTransactionEvent(member.getMemberBankingAccount(), tr));
         publisher.publishEvent(new EmailNotificationEvent(member, EmailNotificationEvent.Type.AUFWENDUNGEN, tr));

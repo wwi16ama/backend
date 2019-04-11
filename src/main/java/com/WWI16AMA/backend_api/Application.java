@@ -60,7 +60,7 @@ public class Application extends SpringBootServletInitializer {
 
     private static List<Member> generateSomeMembers(MemberRepository memberRepository,
                                                     List<Office> offices,
-                                                    PasswordEncoder enc, ApplicationEventPublisher publisher) {
+                                                    PasswordEncoder enc, AccountRepository accountRepository) {
 
         FlightAuthorization fl1 = new FlightAuthorization(FlightAuthorization.Authorization.PPLA,
                 LocalDate.of(2017, 11, 11),
@@ -81,8 +81,14 @@ public class Application extends SpringBootServletInitializer {
         mem.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.VORSTANDSVORSITZENDER)).collect(Collectors.toList()));
         mem.setFlightAuthorization(flList);
         mem.setId(9999);
-        generateSomePilotLogEntries(mem);
+        /**
+         * Hier funktioniert irgendwie das cascading nicht,
+         * deshalb wird hier der Acc einmalig händisch ge-
+         * speichert
+         */
+        accountRepository.save(mem.getMemberBankingAccount());
         memberRepository.save(mem);
+        generateSomePilotLogEntries(mem);
         System.out.println("Vorstandsvorsitzender:\t" + mem.getId());
 
         Address adr1 = new Address("25524", "Itzehoe", "Twietbergstraße 53");
@@ -244,7 +250,7 @@ public class Application extends SpringBootServletInitializer {
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
 
-            List<Member> memberList = generateSomeMembers(memberRepository, offices, passwordEncoder, publisher);
+            List<Member> memberList = generateSomeMembers(memberRepository, offices, passwordEncoder, accountRepository);
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
