@@ -8,7 +8,6 @@ import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +19,6 @@ public class TransactionEventListener {
     AccountRepository accountRepository;
 
 
-    @Async
     @EventListener
     public void makeExternalTransaction(final ExtTransactionEvent transactionEvent) {
 
@@ -33,7 +31,6 @@ public class TransactionEventListener {
         accountRepository.save(account);
     }
 
-    @Async
     @EventListener
     public void makeInternalTransaction(IntTransactionEvent ev) {
 

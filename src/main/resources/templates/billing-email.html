@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<link href="static/css/layout.css" rel="stylesheet" th:href="@{static/css/layout.css}"/>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title>Aufwendung</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<!--[if (gte mso 9)|(IE)]>
+<![endif]-->
+<table align="center" bgcolor="white" border="0" cellpadding="0" cellspacing="0" class="size">
+    <tr>
+        <td class="header">
+            <img align="right" height="150" src="logo.png" th:src="|cid:${imageResourceName}|" width="150"> </img>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="white" class="h2">
+            Hallo Herr/ Frau <span th:text="${lastName}"/>,
+            <br>
+        </td>
+    </tr>
+    <tr>
+        <td class="content">
+            <br/>
+            wir freuen uns, dass Sie auch dieses Jahr Mitglied im Flugsportverein Reilingen sind.<br/>
+            Ihr Mitgliedsbeitrag in Höhe von <span th:text="${amount}"/>€ wurde von ihrem Mitgliedskonto abgebucht.
+            <br/>
+            <br/>
+            Freundliche Grüße,
+            <br/>
+            der Finanzverwalter des Flugsportvereins Reilingen e.V.
+            <br/>
+            <br/>
+        </td>
+    </tr>
+    <br/>
+    <br/>
+    <tr>
+        <td bgcolor="#0081C9" class="footer">
+            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht drauf, da uns Ihre Nachricht auf
+            diesem Weg nicht erreichen wird.
+    </tr>
+</table>
+<!--[if (gte mso 9)|(IE)]>
+</td>
+</tr>
+</table>
+<![endif]-->
+</body>
+</html>

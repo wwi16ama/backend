@@ -11,13 +11,12 @@ import java.util.List;
 public class VereinsAccount extends Account {
 
     private static VereinsAccount instance;
-
-    private VereinsAccount() {
-    }
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
     private List<VereinsKontoTransaction> vereinsTransactions = new ArrayList<>();
+
+    private VereinsAccount() {
+    }
 
     public static VereinsAccount getInstance(AccountRepository accountRepository) {
         if (instance == null) {

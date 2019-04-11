@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<link href="static/css/layout.css" rel="stylesheet" th:href="@{static/css/layout.css}"/>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title>Aufwendung</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<!--[if (gte mso 9)|(IE)]>
+<table class="size" align="center" cellpadding="0" cellspacing="0" border="0" bgcolor="white">
+    <tr>
+        <td class="header">
+            <img src="logo.png" th:src="|cid:${imageResourceName}|" align="right" width="150" height="150"> </img>
+        </td>
+    </tr>
+    <tr>
+        <td class="h2" bgcolor="white">
+            Hallo Herr/ Frau <span th:text="${lastName}"/>,
+            <br>
+        </td>
+    </tr>
+    <tr>
+        <td class="content">
+            vielen Dank für das Betanken des Flugzeuges <span th:text="${planeName}"/>.<br/>
+            Der Betrag in Höhe von <span th:text="${amount}"/>€ wurde ihrem Mitgliedskonto gutgeschrieben
+            <br/>
+            <br/>
+            Freundliche Grüße,
+            <br/>
+            <br/>
+            der Finanzverwalter des Flugsportvereins Reilingen e.V.
+            <br/>
+        </td>
+    </tr>
+    <br/>
+    <br/>
+    <tr>
+        <td class="footer" bgcolor="#0081C9">
+            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht drauf, da uns Ihre Nachricht auf
+            diesem Weg nicht erreichen wird. Sollten Sie Fragen zu dem Inhalt dieser E-Mail haben, wenden Sie sich bitte
+            driekt an den in der E-Mail erwähnten Ansprechpartner.
+        </td>
+    </tr>
+</table>
+<!--[if (gte mso 9)|(IE)]>
+</td>
+</tr>
+</table>
+<![endif]-->
+</body>
+</html>
