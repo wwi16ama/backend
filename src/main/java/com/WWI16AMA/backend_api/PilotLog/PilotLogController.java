@@ -82,17 +82,22 @@ public class PilotLogController {
 
             double price = -pilotLogEntry.getFlightPrice();
 
-            Transaction tr = new Transaction(price, "Mitgliedsnummer: " + memberId + " Flug: " + pilotLog.getLastEntry().getFlightId() + 1, Transaction.FeeType.GEBÜHRFLUGZEUG);
+            pilotLog.addPilotLogEntry(pilotLogEntry);
+
+            memberRepository.save(mem);
+
+            Transaction tr = new Transaction(price, "Mitgliedsnummer: " + memberId + " Flug: " + pilotLog.getLastEntry().getFlightId(), Transaction.FeeType.GEBÜHRFLUGZEUG);
             publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
 
         } else {
             pilotLogEntry.setFlightPrice(0);
+            pilotLog.addPilotLogEntry(pilotLogEntry);
+
+            memberRepository.save(mem);
+
         }
 
-        pilotLog.addPilotLogEntry(pilotLogEntry);
 
-
-        memberRepository.save(mem);
         return pilotLog.getLastEntry();
 
     }
