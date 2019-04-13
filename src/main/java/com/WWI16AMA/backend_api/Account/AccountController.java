@@ -35,7 +35,7 @@ public class AccountController {
                 .collect(toList());
     }
 
-    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER') or #id == principal.id")
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER') or #id == principal.getMemberBankingAccount().getId()")
     @GetMapping(path = "/{id}")
     public Account showAccountDetail(@PathVariable int id) {
         return accountRepository.findById(id)
