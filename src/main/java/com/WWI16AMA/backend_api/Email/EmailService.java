@@ -47,8 +47,7 @@ public class EmailService {
                 new MimeMessageHelper(mimeMessage, true, "UTF-8"); // true = multipart
         message.setSubject("Abbuchung Ihres Mitgliedsbeitrages");
         message.setFrom("Flugverein Reilingen <flugverein@reilingen.com>");
-        //message.setTo(member.getEmail());
-        message.setTo("him.kourouma@hotmail.com");
+        message.setTo(member.getEmail());
 
         final String htmlContent = this.htmlTemplateEngine.process("billing-email.html", billingCtx);
         message.setText(htmlContent, true); // true = isHtml
