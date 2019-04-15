@@ -73,14 +73,15 @@ public class PilotLogController {
 
         PilotLog pilotLog = mem.getPilotLog();
 
+        long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(), pilotLogEntry.getArrivalTime());
+
+        double price;
 
         if (!pilotLogEntry.isFlightWithGuests()) {
 
-            long minutes = ChronoUnit.MINUTES.between(pilotLogEntry.getDepartureTime(), pilotLogEntry.getArrivalTime());
-
             pilotLogEntry.setFlightPrice(plane.getPricePerFlightMinute() * minutes + pilotLogEntry.getUsageTime() * plane.getPricePerBookedHour());
 
-            double price = -pilotLogEntry.getFlightPrice();
+            price = -pilotLogEntry.getFlightPrice();
 
             pilotLog.addPilotLogEntry(pilotLogEntry);
 
@@ -90,10 +91,15 @@ public class PilotLogController {
             publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
 
         } else {
-            pilotLogEntry.setFlightPrice(0);
+            pilotLogEntry.setFlightPrice(plane.getPricePerFlightMinute() * minutes);
             pilotLog.addPilotLogEntry(pilotLogEntry);
 
+            price = -pilotLogEntry.getFlightPrice();
+
             memberRepository.save(mem);
+
+            Transaction tr = new Transaction(price, "Gastflug Kosten für Flug " + pilotLog.getLastEntry().getFlightId() + " durchgeführt von " + memberId , Transaction.FeeType.GEBÜHRFLUGZEUG);
+            publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
 
         }
 
