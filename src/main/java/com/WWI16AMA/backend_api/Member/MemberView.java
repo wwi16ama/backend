@@ -2,13 +2,16 @@ package com.WWI16AMA.backend_api.Member;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"id", "firstName", "lastName", "memberBankingAccountId"})
+import java.util.List;
+
+@JsonPropertyOrder({"id", "firstName", "lastName", "memberBankingAccountId", "offices"})
 public class MemberView {
 
     private int Id;
     private String firstName;
     private String lastName;
     private Integer memberBankingAccountId;
+    private List<Office> offices;
 
     public MemberView() {
     }
@@ -18,6 +21,7 @@ public class MemberView {
         this.firstName = mem.getFirstName();
         this.lastName = mem.getLastName();
         this.memberBankingAccountId = mem.getMemberBankingAccount().getId();
+        this.offices = mem.getOffices();
     }
 
     public int getId() {
@@ -34,5 +38,9 @@ public class MemberView {
 
     public Integer getMemberBankingAccountId() {
         return memberBankingAccountId;
+    }
+
+    public List<Office> getOffices() {
+        return offices;
     }
 }
