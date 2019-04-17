@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PlaneTests {
 
-    private static int nameSuffix;
+    private static int nameSuffix = 'A';
     @Autowired
     PlaneRepository planeRepository;
     @Autowired
@@ -76,7 +76,7 @@ public class PlaneTests {
         long found = planeRepository.count();
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        Plane plane = new Plane(" D-EJEK", "DR 400 Remorqueur", auth, "Halle1",
+        Plane plane = new Plane("D-ALL" + (char) nameSuffix++, "DR 400 Remorqueur", auth, "Halle1",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 1, 2);
 
@@ -91,7 +91,7 @@ public class PlaneTests {
     public void createPlaneWithoutPermission() throws Exception {
         this.mockMvc.perform(post("/planes")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtil.marshal(new Plane("n", "name",
+                .content(TestUtil.marshal(new Plane("D-AJAX", "Karl-Georg",
                         FlightAuthorization.Authorization.BZFI, "1", new URL("http://was.com"),
                         2.3, 2.3))))
                 .andExpect(status().isForbidden());
@@ -104,7 +104,7 @@ public class PlaneTests {
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
         Plane plane = saveAndGetPlane();
 
-        Plane newPlaneInfos = new Plane(" D-EJEK", "DR 500 Adler", auth, "Halle1",
+        Plane newPlaneInfos = new Plane("D-EJEK", "DR 500 Adler", auth, "Halle1",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 1, 2);
         this.mockMvc.perform(put("/planes/" + plane.getId())
@@ -239,7 +239,10 @@ public class PlaneTests {
     }
 
     private Plane saveAndGetPlane() throws Exception {
-        Plane plane = new Plane("name" + nameSuffix++, "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
+
+        String number = "D-ALL" + (char) nameSuffix++;
+
+        Plane plane = new Plane(number, "DR 400 Adler", FlightAuthorization.Authorization.PPLA, "Halle 1",
                 new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
                 5.2, 0.8);
         return planeRepository.save(plane);

@@ -48,7 +48,7 @@ public class MemberController {
             throw new IllegalArgumentException("Passwort muss mindestens eine Zahl enthalten");
         }
 
-        if (!Pattern.matches(".*\\w.*", unhashedPw)) {
+        if (!Pattern.matches(".*[a-zA-Z].*", unhashedPw)) {
             throw new IllegalArgumentException("Passwort muss mindestens einen Buchstaben enthalten");
         }
 

@@ -5,9 +5,7 @@ import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,18 +18,23 @@ public class Plane {
     private Integer id;
     @NotBlank
     @Column(unique = true)
+    @Pattern(regexp = "[A-Z]{1}-{1}[A-Z]{4}")
     private String number;
     @NotBlank
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß0-9/. \\-]+")
     private String name;
     @NotBlank
     private String position;
+    @Column(length = 500)
     private URL pictureUrl;
     @NotNull
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
     @PositiveOrZero
+    @Max(999)
     private double pricePerBookedHour;
     @PositiveOrZero
+    @Max(999)
     private double pricePerFlightMinute;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

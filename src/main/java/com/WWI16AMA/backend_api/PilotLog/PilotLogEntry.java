@@ -5,10 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,18 +17,19 @@ public class PilotLogEntry {
     @NotBlank
     private String planeNumber;
     @NotBlank
-    @Pattern(regexp = ".{0,35}")
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß0-9/. \\-\\(\\)\\.]{0,35}")
     private String departureLocation;
     @NotNull
     private LocalDateTime departureTime;
     @NotBlank
-    @Pattern(regexp = ".{0,35}")
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß0-9/. \\-\\(\\)\\.]{0,35}")
     private String arrivalLocation;
     @NotNull
     private LocalDateTime arrivalTime;
     @NotNull
     private boolean flightWithGuests;
     @PositiveOrZero
+    @Max(99)
     private int usageTime;
     @NotNull
     private double flightPrice;

@@ -18,11 +18,13 @@ public class PlaneLogEntry {
     @NotNull
     private Integer memberId;
     @NotNull
-    @Pattern(regexp = ".{0,35}")
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß0-9/. \\-\\(\\)\\.]{0,35}")
     private String location;
     @NotNull
+    @PositiveOrZero
     private float startCount;
     @NotNull
+    @PositiveOrZero
     private float endCount;
     @NotNull
     @PositiveOrZero

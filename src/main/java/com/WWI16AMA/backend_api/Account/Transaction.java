@@ -3,6 +3,7 @@ package com.WWI16AMA.backend_api.Account;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class Transaction {
     @NotNull
     private FeeType type;
     @NotBlank
+    @Pattern(regexp = ".{4,50}")
     private String text;
     // TODO sollte vllt currency oder BigDecimal werden
     @NotNull
