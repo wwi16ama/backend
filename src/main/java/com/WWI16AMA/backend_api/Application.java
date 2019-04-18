@@ -87,8 +87,8 @@ public class Application extends SpringBootServletInitializer {
          * speichert
          */
         accountRepository.save(mem.getMemberBankingAccount());
-        memberRepository.save(mem);
         generateSomePilotLogEntries(mem);
+        memberRepository.save(mem);
         System.out.println("Vorstandsvorsitzender:\t" + mem.getId());
 
         Address adr1 = new Address("25524", "Itzehoe", "Twietbergstraße 53");
@@ -140,16 +140,16 @@ public class Application extends SpringBootServletInitializer {
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
         FlightAuthorization.Authorization auth1 = FlightAuthorization.Authorization.PPLB;
         Plane plane1 = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle 1",
-                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                new URL("https://wwi16ama.feste-ip.net/Bilder/TDI.png"),
                 4.60, 1.60);
         Plane plane2 = new Plane("D-EJEK", "DR 400 Remorqueur", auth, "Halle 1",
-                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                new URL("https://wwi16ama.feste-ip.net/Bilder/Remo.png"),
                 6.0, 1.8);
         Plane plane3 = new Plane("D-KNIF", "SF25C Falke", auth1, "Halle 2",
-                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                new URL("https://wwi16ama.feste-ip.net/Bilder/Falke.png"),
                 2.40, 0.65);
         Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2",
-                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                new URL("https://wwi16ama.feste-ip.net/Bilder/Dimona.png"),
                 3.60, 0.85);
         Plane[] planes = {plane1, plane2, plane3, plane4};
         planeRepository.saveAll(Arrays.asList(planes));
