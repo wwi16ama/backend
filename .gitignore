@@ -60,8 +60,8 @@ buildNumber.properties
 
 # Own additions
 
-src/main/resources/
-src/test/resources/
+src/main/resources/application.properties
+src/test/resources/application.properties
 .idea/
 .idea/compiler.xml
 backend_api.iml

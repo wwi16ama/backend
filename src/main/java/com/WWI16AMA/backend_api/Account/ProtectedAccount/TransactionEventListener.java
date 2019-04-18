@@ -8,7 +8,6 @@ import com.WWI16AMA.backend_api.Events.IntTransactionEvent;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,20 +19,11 @@ public class TransactionEventListener {
     AccountRepository accountRepository;
 
 
-    @Async
     @EventListener
     public void makeExternalTransaction(final ExtTransactionEvent transactionEvent) {
 
         Transaction tr = transactionEvent.getTransaction();
-
-        // TODO mit Holtermann absprechen
-        boolean korrekteEinzahlung = tr.getType().equals(Transaction.FeeType.EINZAHLUNG) && tr.getAmount() > 0;
-        boolean korrekteAuszahlung = tr.getType().equals(Transaction.FeeType.AUSZAHLUNG) && tr.getAmount() < 0;
-
-        if (!(korrekteEinzahlung || korrekteAuszahlung)) {
-            throw new IllegalArgumentException("Die Transaktion ist weder eine korrekte Einzahlung " +
-                    "noch eine korrekte Auszahlung");
-        }
+        tr.setType(tr.getAmount() > 0 ? Transaction.FeeType.EINZAHLUNG : Transaction.FeeType.AUSZAHLUNG);
 
         Account account = transactionEvent.getAccount();
         account.addTransaction(tr);
@@ -41,18 +31,17 @@ public class TransactionEventListener {
         accountRepository.save(account);
     }
 
-    @Async
     @EventListener
     public void makeInternalTransaction(IntTransactionEvent ev) {
 
         Transaction tr = ev.getTransaction();
 
         // TODO mit Holtermann absprechen
-        boolean korrekteAbbuchung = tr.getAmount() < 0 &&
+        boolean korrekteAbbuchung = tr.getAmount() <= 0 &&
                 (tr.getType().equals(Transaction.FeeType.MITGLIEDSBEITRAG)
                         || tr.getType().equals(Transaction.FeeType.GEBÜHRFLUGZEUG));
 
-        boolean korrekteGutschrift = tr.getAmount() > 0 &&
+        boolean korrekteGutschrift = tr.getAmount() >= 0 &&
                 (tr.getType().equals(Transaction.FeeType.GUTSCHRIFTAMT)
                         || tr.getType().equals(Transaction.FeeType.GUTSCHRIFTLEISTUNG));
 
@@ -65,7 +54,8 @@ public class TransactionEventListener {
         Account memAcc = ev.getAccount();
         memAcc.addTransaction(tr);
 
-        VereinsAccount vAcc = VereinsAccount.getInstance();
+
+        VereinsAccount vAcc = VereinsAccount.getInstance(accountRepository);
         VereinsKontoTransaction vtr = new VereinsKontoTransaction(tr, ev.getAccount());
         vAcc.addTransaction(vtr);
 

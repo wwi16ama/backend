@@ -26,8 +26,10 @@ public class Member {
     private Integer id;
 
     @NotBlank
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß\\-]+")
     private String firstName;
     @NotBlank
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß\\-]+")
     private String lastName;
     @NotNull
     private LocalDate dateOfBirth;
@@ -45,6 +47,7 @@ public class Member {
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+    @NotBlank
     @Pattern(regexp = "DE[0-9]{20}")
     private String bankingAccount;
     @NotNull

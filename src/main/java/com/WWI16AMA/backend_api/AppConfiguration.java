@@ -1,11 +1,12 @@
 package com.WWI16AMA.backend_api;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class AppConfiguration implements WebMvcConfigurer {
+public class AppConfiguration implements WebMvcConfigurer, AsyncConfigurer {
 
     final String[] origins = {"http://localhost", "http://localhost:4200",
             "https://localhost", "https://localhost:4200",
@@ -19,4 +20,9 @@ public class AppConfiguration implements WebMvcConfigurer {
                 .allowedMethods(methods);
     }
 
+    // TODO wenn aysnces Exceptionhandling gewünscht ist..
+    // @Override
+    // public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    //     return new CustomAsyncExceptionHandler();
+    // }
 }

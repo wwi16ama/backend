@@ -53,6 +53,10 @@ public class Account {
         return transactions;
     }
 
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
     void addToBalance(double amount) {
         this.balance += amount;
     }

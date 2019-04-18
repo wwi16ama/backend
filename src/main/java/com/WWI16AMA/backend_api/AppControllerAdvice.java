@@ -1,5 +1,6 @@
 package com.WWI16AMA.backend_api;
 
+import org.hibernate.exception.DataException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,8 @@ public class AppControllerAdvice {
             HttpMessageNotReadableException.class,
             IllegalArgumentException.class,
             PropertyReferenceException.class,
-            TransactionSystemException.class})
+            TransactionSystemException.class,
+            DataException.class})
     public ResponseEntity<String> handleBadRequest(Exception ex) {
         return new ResponseEntity<>(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
     }

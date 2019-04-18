@@ -1,5 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,11 +15,14 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotBlank
     @Pattern(regexp = "\\d{5}")
     private String postalCode;
     @NotBlank
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß \\.\\(\\)\\-]+")
     private String city;
     @NotBlank
+    @Length(min = 3)
     private String streetAddress;
 
     public Address() {

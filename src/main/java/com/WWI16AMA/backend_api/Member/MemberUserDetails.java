@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 public class MemberUserDetails extends Member implements UserDetails {
 
-    private Member thisMem;
-
     public MemberUserDetails(final Member member) {
         super(member);
     }
@@ -18,10 +16,18 @@ public class MemberUserDetails extends Member implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return getOffices()
+        Collection<SimpleGrantedAuthority> authorities = getOffices()
                 .stream()
                 .map(off -> new SimpleGrantedAuthority("ROLE_" + off.toString()))
                 .collect(Collectors.toList());
+
+        if (getStatus() == Status.ACTIVE) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ACTIVE"));
+        } else {
+            authorities.add(new SimpleGrantedAuthority("ROLE_PASSIVE"));
+        }
+
+        return authorities;
     }
 
     @Override
