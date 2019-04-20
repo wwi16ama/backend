@@ -78,7 +78,8 @@ public class Application extends SpringBootServletInitializer {
                 "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
         // publisher.publishEvent(new EmailNotificationEvent(mem));
-        mem.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.VORSTANDSVORSITZENDER)).collect(Collectors.toList()));
+        mem.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.VORSTANDSVORSITZENDER)
+                || of.getTitle().equals(Office.Title.SYSTEMADMINISTRATOR)).collect(Collectors.toList()));
         mem.setFlightAuthorization(flList);
         mem.setId(9999);
         /**

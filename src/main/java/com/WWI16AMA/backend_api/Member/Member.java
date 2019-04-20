@@ -70,6 +70,8 @@ public class Member {
 
     @OneToOne(cascade = CascadeType.ALL)
     private PilotLog pilotLog;
+    @JsonIgnore
+    private boolean isDeleted;
 
     public Member() {
 
@@ -111,7 +113,6 @@ public class Member {
         this.flightAuthorization = member.getFlightAuthorization();
         this.pilotLog = member.getPilotLog();
     }
-
 
     public Integer getId() {
         return id;
@@ -239,6 +240,14 @@ public class Member {
 
     public PilotLog getPilotLog() {
         return pilotLog;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 
     public enum Status {

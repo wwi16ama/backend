@@ -51,7 +51,7 @@ public class PilotLogTests {
         saveAndGetMember(memberRepository, officeRepository, passwordEncoder, "123password");
 
         // Check that an PilotLog was created
-        assertThat(memberRepository.count()).isEqualTo(pilotLogRepository.count());
+        assertThat(memberRepository.countIncludingDeleted()).isEqualTo(pilotLogRepository.count());
     }
 
     @Test
