@@ -68,8 +68,7 @@ public class PlaneController {
 
         Plane plane = planeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist"));
-        planeRepository.delete(plane);
-
+        plane.delete(planeRepository);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
