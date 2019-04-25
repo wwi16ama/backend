@@ -51,7 +51,6 @@ public class PlaneLogController {
     @PutMapping(path = "/{id}/{planeLogId}")
     public ResponseEntity<PlaneLogEntry> put(@RequestBody PlaneLogEntry putPlaneLogEntry, @PathVariable int id, @PathVariable long planeLogId) {
 
-
         Plane foundPlane = planeRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Plane with the id " +id+ " does not exist"));
 
