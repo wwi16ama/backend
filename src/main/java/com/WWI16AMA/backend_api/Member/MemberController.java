@@ -108,8 +108,7 @@ public class MemberController {
 
         Member dbMember = memberRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Member with the id " + id + " does not exist"));
-        dbMember.delete();
-        memberRepository.save(dbMember);
+        dbMember.delete(memberRepository);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

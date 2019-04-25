@@ -246,8 +246,10 @@ public class Member {
         return isDeleted;
     }
 
-    public void delete() {
+    public void delete(MemberRepository mr) {
+        if (isDeleted) throw new IllegalStateException("This Entity is already deleted");
         this.isDeleted = true;
+        mr.save(this);
     }
 
     public enum Status {
