@@ -258,7 +258,7 @@ public class Application extends SpringBootServletInitializer {
             generateSomePlaneLogs(planeRepository, memberRepository);
             generateSomeServices(memberRepository, creditRepository);
 
-            BillingTask bt = new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
+            BillingTask bt = new BillingTask(feeRepository, memberRepository, publisher);
             memberList.stream().forEach(bt::calculateEntranceFee);
         };
     }
@@ -266,6 +266,6 @@ public class Application extends SpringBootServletInitializer {
     @Bean
     public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository, ApplicationEventPublisher publisher) {
 
-        return new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
+        return new BillingTask(feeRepository, memberRepository, publisher);
     }
 }
