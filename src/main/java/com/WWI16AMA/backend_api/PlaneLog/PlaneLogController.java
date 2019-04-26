@@ -1,5 +1,6 @@
 package com.WWI16AMA.backend_api.PlaneLog;
 
+import com.WWI16AMA.backend_api.Member.MemberRepository;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,10 @@ public class PlaneLogController {
 
     @Autowired
     private PlaneRepository planeRepository;
-
+    @Autowired
+    private PlaneLogRepository planeLogRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @PreAuthorize("hasRole('ACTIVE')")
     @GetMapping(path = "/{id}")
@@ -42,9 +46,29 @@ public class PlaneLogController {
 
         plane.addPlaneLogEntry(entry);
 
-
         planeRepository.save(plane);
         return plane.getPlaneLog();
+    }
+
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER')")
+    @PutMapping(path = "/{id}/{planeLogId}")
+    public ResponseEntity<PlaneLogEntry> put(@RequestBody PlaneLogEntry putPlaneLogEntry, @PathVariable int id, @PathVariable long planeLogId) {
+
+        Plane foundPlane = planeRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Plane with the id " +id+ " does not exist"));
+
+        PlaneLogEntry foundPlaneLogEntry = planeLogRepository.findById(planeLogId).orElseThrow(() ->
+                new NoSuchElementException("PlaneLogEntry with the id " +planeLogId+ " does not exist"));
+
+        if (!memberRepository.existsById(putPlaneLogEntry.getMemberId())) {
+            throw new NoSuchElementException("Member with the id " +putPlaneLogEntry.getMemberId()+" does not exist");
+        }
+
+        putPlaneLogEntry.setId(foundPlaneLogEntry.getId());
+        planeLogRepository.save(putPlaneLogEntry);
+        planeRepository.save(foundPlane);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

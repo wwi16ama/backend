@@ -53,12 +53,12 @@ public class PlaneController {
     @PutMapping(path = "/{id}")
     public ResponseEntity<Plane> put(@RequestBody Plane putPlane, @PathVariable int id) {
 
-        if (planeRepository.existsById(id)) {
-            putPlane.setId(id);
-            planeRepository.save(putPlane);
-        } else {
-            throw new NoSuchElementException("Plane with id " + id + " does not exist.");
-        }
+        Plane foundPlane = planeRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Plane with the id " +id+ " does not exist"));
+        putPlane.setId(id);
+        putPlane.setPlaneLog(foundPlane.getPlaneLog());
+        planeRepository.save(putPlane);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
