@@ -1,9 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<link href="static/css/layout.css" rel="stylesheet" th:href="@{static/css/layout.css}"/>
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>Aufwandsentschädigung</title>
+    <title>Gutschrift</title>
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
@@ -17,32 +18,32 @@
     </tr>
     <tr>
         <td bgcolor="white" class="h2">
-            Sehr <span th:text="${geehrt}"/> <span th:text="${anrede}"/> <span th:text="${memberName}"/>
-            <br></br>
-        </td>
-    </tr>
-    <tr>
-        <td class="content">
-            das Guthaben Ihres Mitgliedskontos ist unter 200€ gefallen. <br/>
-            Wenn Sie auch in Zukunft Flugzeuge reservieren wollen,
-            dann sorgen Sie bitte dafür, dass Sie Ihr Konto auffüllen.
-            <span th:text="${amount}"/> Überweisen Sie dazu Geld an das Konto des Vereins
-            mit dem Betreff: "*Mitgliedsnr* + Guthaben aufstocken".
-            <br/>
-            Mit freundlichen Grüßen,
-            <br/>
-            Ihr Vorstand Vorstand des Flugsportvereins Reilingen e.V.
+            Hallo <span th:text="${anrede}"/> <span th:text="${lastName}"/>,
             <br>
         </td>
     </tr>
     <tr>
-        <td bgcolor="#0081C9" class="footer">
+        <td class="content">
+            <br/>
+            wir bedanken uns, dass Sie auch dieses Jahr Dienste und Aufgaben im Flugsportverein Reilingen übernommen
+            haben.<br/>
+            Als Aufwandsentschädigung wurde Ihnen ein Betrag von <span th:text="${amount}"/>€ auf ihr Mitgliedskonto
+            überwiesen.
             <br/>
             <br/>
-            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht drauf, da uns Ihre Nachricht auf
-            diesem Weg nicht erreichen wird. Sollten Sie Fragen zu dem Inhalt dieser E-Mail haben, wenden Sie sich bitte
-            driekt an den in der E-Mail erwähnten Ansprechpartner.
+            Freundliche Grüße,
+            <br/>
+            der Finanzverwalter des Flugsportvereins Reilingen e.V.
+            <br/>
+            <br/>
         </td>
+    </tr>
+    <br/>
+    <br/>
+    <tr>
+        <td bgcolor="#0081C9" class="footer">
+            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht drauf, da uns Ihre Nachricht auf
+            diesem Weg nicht erreichen wird.
     </tr>
 </table>
 <!--[if (gte mso 9)|(IE)]>

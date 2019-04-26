@@ -9,9 +9,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import javax.mail.MessagingException;
-import java.util.Locale;
-
 @Component
 public class EmailEventListener {
 
@@ -30,23 +27,20 @@ public class EmailEventListener {
 
         if (mailEnabled) {
             Member member = emailNotificationEvent.getMember();
-            Locale locale = new Locale("de");
-            String contact = "Jörg Steinfeld";
-
 
             if (emailNotificationEvent.getType().equals(EmailNotificationEvent.Type.AUFWENDUNGEN)) {
-                String subjectContent = "des Mitgliedbeitrages";
-                try {
-                    service.sendBillingNotification(member, locale, emailNotificationEvent.getTransaction());
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                }
+                service.sendBillingNotification(member, emailNotificationEvent.getTransaction());
+            }
+
+            if (emailNotificationEvent.getType().equals(EmailNotificationEvent.Type.AUFWANDSENTSCHÄDIGUNG)) {
+                service.sendGutschriftNotification(member, emailNotificationEvent.getTransaction());
             }
 
         } else {
             System.out.print("Der Mailversand ist deaktiviert. ");
-            System.out.println("Es wäre eine Mail an "
-                    + emailNotificationEvent.getMember().getEmail()
+            System.out.println("Es wäre eine Mail vom Typ "
+                    + emailNotificationEvent.getType().toString()
+                    + " an " + emailNotificationEvent.getMember().getEmail()
                     + " geschickt worden.");
         }
     }

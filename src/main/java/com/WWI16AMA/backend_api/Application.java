@@ -117,7 +117,7 @@ public class Application extends SpringBootServletInitializer {
         Address adr3 = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem3 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.ACTIVE,
-                "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
+                "kurt.kroemer@mail.com", adr, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem3.setAddress(adr3);
         generateSomePilotLogEntries(mem3);
@@ -127,7 +127,7 @@ public class Application extends SpringBootServletInitializer {
         Address adr4 = new Address("22345", "Hamburg", "Hafenstraße 5");
         Member mem4 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
-                "kurt.krömer@mail.com", adr, "DE22345678902234567890", false,
+                "kurt.kroemer@mail.com", adr, "DE22345678902234567890", false,
                 enc.encode("koala"));
         mem4.setAddress(adr4);
         generateSomePilotLogEntries(mem4);
