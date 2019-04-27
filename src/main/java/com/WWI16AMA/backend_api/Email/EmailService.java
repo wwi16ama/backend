@@ -3,6 +3,7 @@ package com.WWI16AMA.backend_api.Email;
 import com.WWI16AMA.backend_api.Account.Transaction;
 import com.WWI16AMA.backend_api.Member.Gender;
 import com.WWI16AMA.backend_api.Member.Member;
+import com.WWI16AMA.backend_api.Plane.Plane;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Locale;
 
 @Service
@@ -52,6 +54,18 @@ public class EmailService {
 
         Context ctx = new Context(new Locale("de"));
         ctx.setVariable("amount", formatAmount(transaction.getAmount()));
+
+        sendMail(subject, ctx, template, member);
+    }
+
+    public void sendTankNotification(Member member, Transaction transaction, Plane plane) {
+
+        String subject = "Erstattung Tankkosten";
+        String template = "betankung-email.html";
+
+        Context ctx = new Context(new Locale("de"));
+        ctx.setVariable("amount", formatAmount(transaction.getAmount()));
+        ctx.setVariable("planeName", plane.getName());
 
         sendMail(subject, ctx, template, member);
     }
@@ -109,13 +123,8 @@ public class EmailService {
     }
 
     private String formatAmount(double amount) {
-        if (amount < 0) {
-            // Negatives Vorzeichen wird für die E-Mail entfernt.
-            // "0" wird am Ende angehängt, damit z.B. 12.00 statt 12.0
-            return (-amount) + "0";
-        } else {
-            return amount + "0";
-        }
+        amount = Math.abs(amount);
+        return BigDecimal.valueOf(amount).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString();
     }
 
 }

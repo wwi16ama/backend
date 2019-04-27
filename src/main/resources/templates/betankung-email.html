@@ -8,15 +8,14 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
-<!--[if (gte mso 9)|(IE)]>
-<table class="size" align="center" cellpadding="0" cellspacing="0" border="0" bgcolor="white">
+<table align="center" bgcolor="white" border="0" cellpadding="0" cellspacing="0" class="size">
     <tr>
         <td class="header">
-            <img src="logo.png" th:src="|cid:${imageResourceName}|" align="right" width="150" height="150"> </img>
+            <img align="right" height="150" src="logo.png" th:src="|cid:${imageResourceName}|" width="150"> </img>
         </td>
     </tr>
     <tr>
-        <td class="h2" bgcolor="white">
+        <td bgcolor="white" class="h2">
             Hallo <span th:text="${anrede}"/> <span th:text="${lastName}"/>,
             <br>
         </td>
@@ -24,7 +23,7 @@
     <tr>
         <td class="content">
             vielen Dank für das Betanken des Flugzeuges <span th:text="${planeName}"/>.<br/>
-            Der Betrag in Höhe von <span th:text="${amount}"/>€ wurde ihrem Mitgliedskonto gutgeschrieben
+            Der Betrag in Höhe von <span th:text="${amount}"/>€ wurde ihrem Mitgliedskonto gutgeschrieben.
             <br/>
             <br/>
             Freundliche Grüße,
@@ -37,17 +36,12 @@
     <br/>
     <br/>
     <tr>
-        <td class="footer" bgcolor="#0081C9">
+        <td bgcolor="#0081C9" class="footer">
             Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht drauf, da uns Ihre Nachricht auf
             diesem Weg nicht erreichen wird. Sollten Sie Fragen zu dem Inhalt dieser E-Mail haben, wenden Sie sich bitte
             driekt an den in der E-Mail erwähnten Ansprechpartner.
         </td>
     </tr>
 </table>
-<!--[if (gte mso 9)|(IE)]>
-</td>
-</tr>
-</table>
-<![endif]-->
 </body>
 </html>

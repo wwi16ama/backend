@@ -98,7 +98,7 @@ public class PilotLogController {
 
             memberRepository.save(mem);
 
-            Transaction tr = new Transaction(price, "Gastflug Kosten für Flug " + pilotLog.getLastEntry().getFlightId() + " durchgeführt von " + memberId , Transaction.FeeType.GEBÜHRFLUGZEUG);
+            Transaction tr = new Transaction(price, "Gastflug Kosten für Flug " + pilotLog.getLastEntry().getFlightId() + " durchgeführt von " + memberId, Transaction.FeeType.GEBÜHRFLUGZEUG);
             publisher.publishEvent(new IntTransactionEvent(mem.getMemberBankingAccount(), tr));
 
         }

@@ -54,7 +54,7 @@ public class PlaneController {
     public ResponseEntity<Plane> put(@RequestBody Plane putPlane, @PathVariable int id) {
 
         Plane foundPlane = planeRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Plane with the id " +id+ " does not exist"));
+                new NoSuchElementException("Plane with the id " + id + " does not exist"));
         putPlane.setId(id);
         putPlane.setPlaneLog(foundPlane.getPlaneLog());
         planeRepository.save(putPlane);

@@ -43,10 +43,10 @@ public class TransactionEventListener {
 
         boolean korrekteGutschrift = tr.getAmount() >= 0 &&
                 (tr.getType().equals(Transaction.FeeType.GUTSCHRIFTAMT)
-                        || tr.getType().equals(Transaction.FeeType.GUTSCHRIFTLEISTUNG));
+                        || tr.getType().equals(Transaction.FeeType.GUTSCHRIFTLEISTUNG)|| tr.getType().equals(Transaction.FeeType.BETANKUNGSKOSTENERSTATTUNG));
 
         if (!(korrekteAbbuchung || korrekteGutschrift)) {
-            throw new IllegalArgumentException("Die Transaktion ist weder eine korrekte Abbuchung" +
+            throw new IllegalArgumentException("Die Transaktion ist weder eine korrekte Abbuchung " +
                     "noch eine korrekte Gutschrift");
         }
 

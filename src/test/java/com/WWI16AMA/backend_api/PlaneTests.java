@@ -1,5 +1,7 @@
 package com.WWI16AMA.backend_api;
 
+import com.WWI16AMA.backend_api.Account.AccountRepository;
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.VereinsAccount;
 import com.WWI16AMA.backend_api.Member.FlightAuthorization;
 import com.WWI16AMA.backend_api.Member.Member;
 import com.WWI16AMA.backend_api.Member.MemberRepository;
@@ -40,6 +42,8 @@ public class PlaneTests {
     MemberRepository memberRepository;
     @Autowired
     OfficeRepository officeRepository;
+    @Autowired
+    AccountRepository accountRepository;
     @Autowired
     PasswordEncoder enc;
     @Autowired
@@ -207,6 +211,22 @@ public class PlaneTests {
     }
 
     @Test
+    @WithMockUser(roles = {"SYSTEMADMINISTRATOR"})
+    public void testPostPlaneLogMemberNotFound() throws Exception {
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14,
+                55, 13), TestUtil.getUnusedId(memberRepository), "TestOrt",
+                69, 88, 5);
+        this.mockMvc.perform(post("/planeLog/" + TestUtil.getUnusedId(memberRepository))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(planeLogEntry)))
+                .andExpect(status().isForbidden());
+    }
+
+
+
+    @Test
     public void testPostPlaneLogOk() throws Exception {
 
         String pw = "wasGeht123";
@@ -235,7 +255,39 @@ public class PlaneTests {
                 .headers(TestUtil.createBasicAuthHeader(mem.getId().toString(), pw))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testPostPlaneLogTransactionCreate() throws Exception {
+
+        String pw = "test1234";
+        Member member = TestUtil.saveAndGetMember(memberRepository, officeRepository, enc, pw);
+
+        int oldMemberTransactionSize = member.getMemberBankingAccount().getTransactions().size();
+        int oldVereinTransactionSize = VereinsAccount.getInstance(accountRepository).getTransactions().size();
+        double oldBalanceMember = member.getMemberBankingAccount().getBalance();
+        double oldBalanceVerein = VereinsAccount.getInstance(accountRepository).getBalance();
+        float amount = 56.00f;
+
+        FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14,
+                55, 13), member.getId(), "TestOrt",
+                69, 88, amount);
+
+        this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
+                .headers(TestUtil.createBasicAuthHeader(member.getId().toString(), pw))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.marshal(planeLogEntry)))
+                .andExpect(status().isOk());
+
+        member = memberRepository.findById(member.getId()).orElseThrow(() -> new IllegalStateException(("Member verloren gegangen")));
+
+        assertThat(member.getMemberBankingAccount().getTransactions().size()).isEqualTo(oldMemberTransactionSize + 1);
+        assertThat(VereinsAccount.getInstance(accountRepository).getTransactions().size()).isEqualTo(oldVereinTransactionSize + 1);
+
+        assertThat(member.getMemberBankingAccount().getBalance()).isEqualTo(oldBalanceMember + amount);
+        assertThat(VereinsAccount.getInstance(accountRepository).getBalance()).isEqualTo(oldBalanceVerein - amount);
     }
 
     private Plane saveAndGetPlane() throws Exception {

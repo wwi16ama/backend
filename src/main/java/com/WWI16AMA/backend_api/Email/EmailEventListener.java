@@ -23,24 +23,28 @@ public class EmailEventListener {
 
     @Async
     @EventListener
-    public void sendEmail(final EmailNotificationEvent emailNotificationEvent) {
+    public void sendEmail(final EmailNotificationEvent ev) {
 
         if (mailEnabled) {
-            Member member = emailNotificationEvent.getMember();
+            Member member = ev.getMember();
 
-            if (emailNotificationEvent.getType().equals(EmailNotificationEvent.Type.AUFWENDUNGEN)) {
-                service.sendBillingNotification(member, emailNotificationEvent.getTransaction());
+            if (ev.getType().equals(EmailNotificationEvent.Type.AUFWENDUNGEN)) {
+                service.sendBillingNotification(member, ev.getTransaction());
             }
 
-            if (emailNotificationEvent.getType().equals(EmailNotificationEvent.Type.AUFWANDSENTSCHÄDIGUNG)) {
-                service.sendGutschriftNotification(member, emailNotificationEvent.getTransaction());
+            if (ev.getType().equals(EmailNotificationEvent.Type.AUFWANDSENTSCHÄDIGUNG)) {
+                service.sendGutschriftNotification(member, ev.getTransaction());
+            }
+
+            if (ev.getType().equals(EmailNotificationEvent.Type.TANKEN)) {
+                service.sendTankNotification(member, ev.getTransaction(), ev.getPlane());
             }
 
         } else {
             System.out.print("Der Mailversand ist deaktiviert. ");
             System.out.println("Es wäre eine Mail vom Typ "
-                    + emailNotificationEvent.getType().toString()
-                    + " an " + emailNotificationEvent.getMember().getEmail()
+                    + ev.getType().toString()
+                    + " an " + ev.getMember().getEmail()
                     + " geschickt worden.");
         }
     }
