@@ -38,6 +38,12 @@ public class PlaneController {
                     ". Id has to be null when a new plane shall be created");
         }
 
+        if (planeRepository.findByNumber(reqPlane.getNumber()).isPresent()) {
+
+            throw new IllegalArgumentException("Plane with number: " + reqPlane.getNumber() + " already exists!");
+        }
+
+
         planeRepository.save(reqPlane);
 
         return reqPlane;
@@ -47,12 +53,12 @@ public class PlaneController {
     @PutMapping(path = "/{id}")
     public ResponseEntity<Plane> put(@RequestBody Plane putPlane, @PathVariable int id) {
 
-        if (planeRepository.existsById(id)) {
-            putPlane.setId(id);
-            planeRepository.save(putPlane);
-        } else {
-            throw new NoSuchElementException("Plane with id " + id + " does not exist.");
-        }
+        Plane foundPlane = planeRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Plane with the id " + id + " does not exist"));
+        putPlane.setId(id);
+        putPlane.setPlaneLog(foundPlane.getPlaneLog());
+        planeRepository.save(putPlane);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -62,8 +68,7 @@ public class PlaneController {
 
         Plane plane = planeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist"));
-        planeRepository.delete(plane);
-
+        plane.delete(planeRepository);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

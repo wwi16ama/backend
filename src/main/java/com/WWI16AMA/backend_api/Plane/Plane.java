@@ -5,9 +5,7 @@ import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,23 +17,31 @@ public class Plane {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotBlank
+    @Column(unique = true)
+    @Pattern(regexp = "[A-Z]{1}-{1}[A-Z]{4}")
     private String number;
     @NotBlank
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß0-9/. \\-]+")
     private String name;
     @NotBlank
     private String position;
+    @Column(length = 500)
     private URL pictureUrl;
     @NotNull
     @Enumerated(EnumType.STRING)
     private FlightAuthorization.Authorization neededAuthorization;
     @PositiveOrZero
+    @Max(999)
     private double pricePerBookedHour;
     @PositiveOrZero
+    @Max(999)
     private double pricePerFlightMinute;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
+    @JoinColumn(name = "plane_id")
     private List<PlaneLogEntry> planeLog;
+    @JsonIgnore
+    private boolean isDeleted;
 
     Plane() {
     }
@@ -133,6 +139,14 @@ public class Plane {
         this.planeLog = entries;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
 
+    public void delete(PlaneRepository pr) {
+        if (isDeleted) throw new IllegalStateException("This Entity is already deleted");
+        this.isDeleted = true;
+        pr.save(this);
+    }
 
 }

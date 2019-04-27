@@ -26,8 +26,10 @@ public class Member {
     private Integer id;
 
     @NotBlank
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß\\-]+")
     private String firstName;
     @NotBlank
+    @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß\\-]+")
     private String lastName;
     @NotNull
     private LocalDate dateOfBirth;
@@ -45,6 +47,7 @@ public class Member {
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+    @NotBlank
     @Pattern(regexp = "DE[0-9]{20}")
     private String bankingAccount;
     @NotNull
@@ -67,6 +70,8 @@ public class Member {
 
     @OneToOne(cascade = CascadeType.ALL)
     private PilotLog pilotLog;
+    @JsonIgnore
+    private boolean isDeleted;
 
     public Member() {
 
@@ -108,7 +113,6 @@ public class Member {
         this.flightAuthorization = member.getFlightAuthorization();
         this.pilotLog = member.getPilotLog();
     }
-
 
     public Integer getId() {
         return id;
@@ -236,6 +240,16 @@ public class Member {
 
     public PilotLog getPilotLog() {
         return pilotLog;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void delete(MemberRepository mr) {
+        if (isDeleted) throw new IllegalStateException("This Entity is already deleted");
+        this.isDeleted = true;
+        mr.save(this);
     }
 
     public enum Status {

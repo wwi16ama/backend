@@ -2,9 +2,11 @@ package com.WWI16AMA.backend_api.Service;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+
 
 @Entity
-public abstract class Service {
+public class Service {
 
     @Id
     @GeneratedValue
@@ -14,6 +16,18 @@ public abstract class Service {
     private ServiceName name;
     @NotNull
     private double gutschrift;
+    @NotNull
+    private LocalDate startDate;
+    @NotNull
+    private LocalDate endDate;
+
+
+    public Service(ServiceName name, LocalDate startDate, LocalDate endDate, double gutschrift) {
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.gutschrift = gutschrift;
+    }
 
     public Service() {
 
@@ -31,11 +45,6 @@ public abstract class Service {
         return name;
     }
 
-    /**
-     * TODO
-     * ausprobieren, ob der hier von Jackson genutzt wird. Wenn ja:
-     * Die J_, T_-Checks ausm Konstruktor hierhin verlagern..
-     */
     public void setName(ServiceName name) {
         this.name = name;
     }
@@ -46,5 +55,21 @@ public abstract class Service {
 
     public void setGutschrift(double gutschrift) {
         this.gutschrift = gutschrift;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 }

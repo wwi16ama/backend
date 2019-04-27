@@ -22,7 +22,7 @@ public class VereinsKontoTransaction extends Transaction {
     public VereinsKontoTransaction(Transaction tr, Account memAcc) {
 
         // MAN BEACHTE DAS NEGATIVE VORZEICHEN!!
-        super(-tr.getAmount(), tr.getType());
+        super(-tr.getAmount(), tr.getText(), tr.getType());
         if (memAcc == null) {
             throw new IllegalArgumentException("Member darf nicht null sein");
         }
