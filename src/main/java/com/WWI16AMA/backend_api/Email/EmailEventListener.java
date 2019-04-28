@@ -40,6 +40,10 @@ public class EmailEventListener {
                 service.sendTankNotification(member, ev.getTransaction(), ev.getPlane());
             }
 
+            if (ev.getType().equals(EmailNotificationEvent.Type.LOW_BALANCE)) {
+                service.sendLowBalanceNotification(member, ev.getTransaction());
+            }
+
         } else {
             System.out.print("Der Mailversand ist deaktiviert. ");
             System.out.println("Es wäre eine Mail vom Typ "

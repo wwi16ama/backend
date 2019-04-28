@@ -17,8 +17,8 @@
     </tr>
     <tr>
         <td bgcolor="white" class="h2">
-            Sehr <span th:text="${geehrt}"/> <span th:text="${anrede}"/> <span th:text="${memberName}"/>
-            <br></br>
+            Sehr <span th:text="${geehrt}"/> <span th:text="${anrede}"/> <span th:text="${lastName}"/>,
+            <br/>
         </td>
     </tr>
     <tr>
@@ -26,8 +26,8 @@
             das Guthaben Ihres Mitgliedskontos ist unter 200€ gefallen. <br/>
             Wenn Sie auch in Zukunft Flugzeuge reservieren wollen,
             dann sorgen Sie bitte dafür, dass Sie Ihr Konto auffüllen.
-            <span th:text="${amount}"/> Überweisen Sie dazu Geld an das Konto des Vereins
-            mit dem Betreff: "*Mitgliedsnr* + Guthaben aufstocken".
+            Überweisen Sie dazu Geld an das Konto des Vereins
+            mit dem Betreff: "<b><span th:text="${id}"/></b> + Guthaben aufstocken".
             <br/>
             Mit freundlichen Grüßen,
             <br/>

@@ -40,6 +40,7 @@ public class EmailNotificationEvent extends MemberEvent {
         AUFWANDSENTSCHÄDIGUNG,
         AUFWENDUNGEN,
         TANKEN,
+        LOW_BALANCE,
         DELETE_MAIL_EXTERNAL,
         DELETE_MAIL_INTERNAL,
         MEMBER_DATA

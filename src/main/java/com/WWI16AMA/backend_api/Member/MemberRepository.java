@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
 
+import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -27,4 +28,6 @@ public interface MemberRepository extends PagingAndSortingRepository<Member, Int
 
     @Query(value = "SELECT COUNT(*) FROM member", nativeQuery = true)
     long countIncludingDeleted();
+
+    Optional<Member> findByMemberBankingAccount(Account acc);
 }

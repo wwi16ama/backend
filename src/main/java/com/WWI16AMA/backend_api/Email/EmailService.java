@@ -70,6 +70,18 @@ public class EmailService {
         sendMail(subject, ctx, template, member);
     }
 
+    public void sendLowBalanceNotification(Member member, Transaction transaction) {
+
+        String subject = "Erinnerung: Niedriger Kontostand";
+        String template = "low-balance-email.html";
+
+        Context ctx = new Context(new Locale("de"));
+        ctx.setVariable("id", member.getId());
+        ctx.setVariable("geehrt", member.getGender().equals(Gender.MALE) ? "geehrter" : "geehrte");
+
+        sendMail(subject, ctx, template, member);
+    }
+
     private void sendMail(String subject, Context ctx, String template, Member member) {
         try {
 
