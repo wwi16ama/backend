@@ -20,11 +20,13 @@ public class PilotLogEntry {
     @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß0-9/. \\-\\(\\)\\.]{0,35}")
     private String departureLocation;
     @NotNull
+    @Past
     private LocalDateTime departureTime;
     @NotBlank
     @Pattern(regexp = "[a-zA-Z_äÄöÖüÜß0-9/. \\-\\(\\)\\.]{0,35}")
     private String arrivalLocation;
     @NotNull
+    @Past
     private LocalDateTime arrivalTime;
     @NotNull
     private boolean flightWithGuests;
