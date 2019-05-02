@@ -49,9 +49,8 @@ public class PlaneLogController {
         Plane plane = planeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Plane with the id " + id + " does not exist"));
 
-        if (entry.getRefuelDateTime().isAfter(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Refuel Date cant be in future.");
-        }
+        entry.setRefuelDateTime(LocalDateTime.now());
+
         Integer memberId = entry.getMemberId();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("Member with the id " + memberId + " does not exist"));
