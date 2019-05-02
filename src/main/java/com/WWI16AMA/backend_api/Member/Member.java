@@ -226,6 +226,16 @@ public class Member {
         return services;
     }
 
+    public double getSumCredits() {
+
+        double sumCredits = 0.00;
+
+        List<Service> Services = this.getServices();
+        for (Service service : Services) {
+            sumCredits = sumCredits + service.getGutschrift();
+        }
+        return sumCredits;}
+
     public void setServices(List<Service> services) {
         this.services = services;
     }
