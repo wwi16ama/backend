@@ -225,7 +225,6 @@ public class PlaneTests {
     }
 
 
-
     @Test
     public void testPostPlaneLogOk() throws Exception {
 
