@@ -10,6 +10,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Entity
+@ValidStartAndEndcount
 public class PlaneLogEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -54,7 +54,6 @@ public class PlaneLogController {
         Integer memberId = entry.getMemberId();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("Member with the id " + memberId + " does not exist"));
-
         Transaction tr = new Transaction(entry.getFuelPrice(), "Betankungskosten für " + member.getId(),
                 Transaction.FeeType.BETANKUNGSKOSTENERSTATTUNG);
 

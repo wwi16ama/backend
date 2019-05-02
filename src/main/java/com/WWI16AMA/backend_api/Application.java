@@ -182,13 +182,13 @@ public class Application extends SpringBootServletInitializer {
         Member member = memberRepository.findAll().iterator().next();
         Plane plane = planeRepository.findById(1).get();
 
-        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 69, 88, 5);
-        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 88, 97, 10);
-        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 97, 150, 30);
-        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 150, 896, 5000);
-        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 896, 1000, 200);
-        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1000, 1001, 2);
-        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1001, 2000, 800);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 2000, 1001, 800);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1001, 1000, 2);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1000, 896, 200);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 896, 150, 5000);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 150, 97, 30);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 97, 87, 10);
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 87, 70, 5);
         PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
 
         for (PlaneLogEntry entry : entries) {

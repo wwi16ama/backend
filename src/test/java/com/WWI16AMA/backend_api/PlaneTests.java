@@ -199,7 +199,7 @@ public class PlaneTests {
     public void testPostPlaneLogNotFound() throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 88, 5);
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), 0, "TestOrt", 69, 87, 5);
 
         int id = TestUtil.getUnusedId(planeRepository);
 
@@ -217,7 +217,7 @@ public class PlaneTests {
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
         PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14,
                 55, 13), TestUtil.getUnusedId(memberRepository), "TestOrt",
-                69, 88, 5);
+                62, 60, 5);
         this.mockMvc.perform(post("/planeLog/" + TestUtil.getUnusedId(memberRepository))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.marshal(planeLogEntry)))
@@ -232,7 +232,7 @@ public class PlaneTests {
         Member mem = TestUtil.saveAndGetMember(memberRepository, officeRepository, enc, pw);
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
-        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), mem.getId(), "TestOrt", 69, 88, 5);
+        PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14, 55, 13), mem.getId(), "TestOrt", 100, 50, 5);
 
         this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
                 .headers(TestUtil.createBasicAuthHeader(mem.getId().toString(), pw))
@@ -272,7 +272,7 @@ public class PlaneTests {
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLB;
         PlaneLogEntry planeLogEntry = new PlaneLogEntry(LocalDateTime.of(2019, 3, 12, 14,
                 55, 13), member.getId(), "TestOrt",
-                69, 88, amount);
+                100, 90, amount);
 
         this.mockMvc.perform(post("/planeLog/" + planeRepository.findAll().iterator().next().getId())
                 .headers(TestUtil.createBasicAuthHeader(member.getId().toString(), pw))
