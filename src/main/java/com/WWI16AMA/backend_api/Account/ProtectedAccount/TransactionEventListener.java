@@ -78,6 +78,9 @@ public class TransactionEventListener {
      */
     private void checkIfBalanceGetsLow(Account acc, Transaction tr) {
 
+        // Vereinsaccount hat keinen zugeordneten Member, daher keine Prüfung
+        if (acc instanceof VereinsAccount) return;
+
         Member mem = memberRepository.findByMemberBankingAccount(acc)
                 .orElseThrow(() -> new IllegalStateException("Member des Accounts kann nicht gefunden werden"));
 
