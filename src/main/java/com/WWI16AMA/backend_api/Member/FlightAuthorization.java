@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Member;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 
@@ -10,9 +11,12 @@ public class FlightAuthorization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Authorization authorization;
+    @NotNull
     private LocalDate dateOfIssue;
+    @NotNull
     private LocalDate expires;
 
     public FlightAuthorization() {

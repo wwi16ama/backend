@@ -1,10 +1,17 @@
 package com.WWI16AMA.backend_api.Member;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class MemberContactDetails {
 
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotBlank
     private String email;
+    @NotNull
     private Address address;
 
     public MemberContactDetails() {

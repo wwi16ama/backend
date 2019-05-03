@@ -21,6 +21,7 @@ public class Account {
     @NotNull
     private double balance;
 
+    @NotNull
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
     private List<Transaction> transactions = new ArrayList<>();

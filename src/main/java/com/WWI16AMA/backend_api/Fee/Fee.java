@@ -1,6 +1,7 @@
 package com.WWI16AMA.backend_api.Fee;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Fee {
@@ -9,9 +10,11 @@ public class Fee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Fee.Status category;
 
+    @NotNull
     private double fee;
 
     public Fee(Status category, int fee) {

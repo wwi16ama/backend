@@ -53,6 +53,7 @@ public class Member {
     @NotNull
     private boolean admissioned;
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"balance", "transactions"})
     @JoinColumn(name = "account_id")
@@ -61,13 +62,16 @@ public class Member {
     @ManyToMany
     private List<Office> offices;
 
+    @NotNull
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "member_id")
     private List<Service> services = new ArrayList<>();
 
+    @NotNull
     @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private PilotLog pilotLog;
     @JsonIgnore
