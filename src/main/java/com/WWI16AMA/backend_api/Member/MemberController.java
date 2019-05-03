@@ -2,6 +2,7 @@ package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 import com.WWI16AMA.backend_api.Billing.BillingTask;
+import com.WWI16AMA.backend_api.PilotLog.PilotLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -83,6 +84,11 @@ public class MemberController {
             throw new IllegalArgumentException("Account shall be null to create a new member");
         }
         mem.setMemberBankingAccount(new Account());
+
+        if (mem.getPilotLog() != null){
+            throw new IllegalArgumentException("PilotLog shall be null to create a new member");
+        }
+        mem.setPilotLog(new PilotLog());
 
         checkPassword(mem.getPassword());
         mem.setPassword(passwordEncoder.encode(mem.getPassword()));

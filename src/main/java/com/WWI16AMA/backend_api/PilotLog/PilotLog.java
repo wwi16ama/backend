@@ -20,6 +20,10 @@ public class PilotLog {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<PilotLogEntry> pilotLogEntries = new ArrayList<>();
 
+    public PilotLog(){
+
+    }
+
     public Integer getId() {
         return id;
     }

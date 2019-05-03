@@ -252,6 +252,10 @@ public class Member {
         return pilotLog;
     }
 
+    public void setPilotLog(PilotLog pilotLog) {
+        this.pilotLog = pilotLog;
+    }
+
     public boolean isDeleted() {
         return isDeleted;
     }
