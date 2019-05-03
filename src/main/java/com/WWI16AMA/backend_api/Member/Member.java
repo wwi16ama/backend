@@ -230,6 +230,10 @@ public class Member {
         return services;
     }
 
+    public void setServices(List<Service> services) {
+        this.services = services;
+    }
+
     public double getSumCredits() {
 
         double sumCredits = 0.00;
@@ -238,10 +242,7 @@ public class Member {
         for (Service service : Services) {
             sumCredits = sumCredits + service.getGutschrift();
         }
-        return sumCredits;}
-
-    public void setServices(List<Service> services) {
-        this.services = services;
+        return sumCredits;
     }
 
     public List<FlightAuthorization> getFlightAuthorization() {

@@ -124,30 +124,6 @@ public class Application extends SpringBootServletInitializer {
         return Arrays.asList(mem1, mem2, mem3, mem4);
     }
 
-    private Member createSuperUser(MemberRepository memberRepository, List<Office> offices, PasswordEncoder enc, AccountRepository accountRepository) {
-
-        Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
-        Member mem = new Member("Karl", "Hansen",
-                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.ACTIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
-                enc.encode(vorsitzenderPw));
-        // publisher.publishEvent(new EmailNotificationEvent(mem));
-        mem.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.VORSTANDSVORSITZENDER)
-                || of.getTitle().equals(Office.Title.SYSTEMADMINISTRATOR)).collect(Collectors.toList()));
-        mem.setId(9999);
-        /**
-         * Hier funktioniert irgendwie das cascading nicht,
-         * deshalb wird hier der Acc einmalig händisch ge-
-         * speichert
-         */
-        accountRepository.save(mem.getMemberBankingAccount());
-        generateSomePilotLogEntries(mem);
-        memberRepository.save(mem);
-        System.out.println("Vorstandsvorsitzender:\t" + mem.getId());
-
-        return mem;
-    }
-
     private static void generateSomePlanes(PlaneRepository planeRepository) throws Exception {
 
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
@@ -233,6 +209,30 @@ public class Application extends SpringBootServletInitializer {
         for (PilotLogEntry entry : pilotLogEntries) {
             member.getPilotLog().addPilotLogEntry(entry);
         }
+    }
+
+    private Member createSuperUser(MemberRepository memberRepository, List<Office> offices, PasswordEncoder enc, AccountRepository accountRepository) {
+
+        Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
+        Member mem = new Member("Karl", "Hansen",
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.ACTIVE,
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
+                enc.encode(vorsitzenderPw));
+        // publisher.publishEvent(new EmailNotificationEvent(mem));
+        mem.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.VORSTANDSVORSITZENDER)
+                || of.getTitle().equals(Office.Title.SYSTEMADMINISTRATOR)).collect(Collectors.toList()));
+        mem.setId(9999);
+        /**
+         * Hier funktioniert irgendwie das cascading nicht,
+         * deshalb wird hier der Acc einmalig händisch ge-
+         * speichert
+         */
+        accountRepository.save(mem.getMemberBankingAccount());
+        generateSomePilotLogEntries(mem);
+        memberRepository.save(mem);
+        System.out.println("Vorstandsvorsitzender:\t" + mem.getId());
+
+        return mem;
     }
 
     @Override

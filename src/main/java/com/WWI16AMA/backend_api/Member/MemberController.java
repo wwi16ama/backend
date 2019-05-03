@@ -86,7 +86,7 @@ public class MemberController {
         }
         mem.setMemberBankingAccount(new Account());
 
-        if (mem.getPilotLog() != null){
+        if (mem.getPilotLog() != null) {
             throw new IllegalArgumentException("PilotLog shall be null to create a new member");
         }
         mem.setPilotLog(new PilotLog());
