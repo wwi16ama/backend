@@ -264,14 +264,14 @@ public class Application extends SpringBootServletInitializer {
             officeRepository.saveAll(offices);
             Member su = createSuperUser(memberRepository, offices, passwordEncoder, accountRepository);
 
+            generateSomePlanes(planeRepository);
+            generateSomeFees(feeRepository);
+            generateSomeCredits(creditRepository);
+
             if (generateSomeUsers) {
                 List<Member> memberList = generateSomeMembers(memberRepository, offices, passwordEncoder, accountRepository);
-                generateSomePlanes(planeRepository);
-                generateSomeFees(feeRepository);
-                generateSomeCredits(creditRepository);
                 generateSomePlaneLogs(planeRepository, memberRepository);
                 generateSomeServices(memberRepository, creditRepository);
-
                 BillingTask bt = new BillingTask(feeRepository, memberRepository, publisher);
                 memberList.stream().forEach(bt::calculateEntranceFee);
                 bt.calculateEntranceFee(su);
