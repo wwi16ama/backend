@@ -72,13 +72,6 @@ public class Transaction {
         this.amount = amount;
     }
 
-    /**
-     * TODO:
-     * es wäre zB im Eventlistener cool, leicht zu sehen, ob es sich um einen Typ
-     * handelt, der auf dem Mitgliedskonto "eingezahlt" oder "abgebucht" wird,
-     * zB indem alle "Einzahlungen" mit "GUTSCHRIFT_" beginnen, à la: GUTSCHRIFT_AMT,
-     * genauso alle "Abbuchungen" zB mit "GEBÜHR_", also "GEBÜHR_MITGLIEDSBEITRAG".
-     */
     public enum FeeType {
         MITGLIEDSBEITRAG,
         GEBÜHRFLUGZEUG,

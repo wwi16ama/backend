@@ -20,7 +20,7 @@ public class AppConfiguration implements WebMvcConfigurer, AsyncConfigurer {
                 .allowedMethods(methods);
     }
 
-    // TODO wenn aysnces Exceptionhandling gewünscht ist..
+    // wenn aysnces Exceptionhandling gewünscht ist..
     // @Override
     // public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
     //     return new CustomAsyncExceptionHandler();
