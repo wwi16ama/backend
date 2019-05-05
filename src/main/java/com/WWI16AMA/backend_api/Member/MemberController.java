@@ -102,6 +102,8 @@ public class MemberController {
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
+        mem.setBankingAccount(mem.getBankingAccount().replace(" ", ""));
+
         mem.setOffices(offices);
 
         Member newMember = memberRepository.save(mem);
