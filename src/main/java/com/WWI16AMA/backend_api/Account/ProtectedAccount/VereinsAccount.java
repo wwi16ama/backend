@@ -26,15 +26,6 @@ public class VereinsAccount extends Account {
         }
         return (VereinsAccount) accountRepository.findById(instance.getId())
                 .orElseThrow(() -> new IllegalStateException("VereinsAccount nicht richtig gespeichert"));
-        // return instance;
     }
 
-//     public void addTransaction(VereinsKontoTransaction vtr) {
-//         addToBalance(vtr.getAmount());
-//         this.vereinsTransactions.add(vtr);
-//     }
-//
-//     public List<VereinsKontoTransaction> getVereinsTransactions() {
-//         return this.vereinsTransactions;
-//     }
 }

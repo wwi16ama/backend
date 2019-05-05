@@ -1,7 +1,10 @@
 package com.WWI16AMA.backend_api.Member;
 
+import javax.validation.constraints.NotBlank;
+
 public class MemberPwChangeMessage extends AdminPwChangeMessage {
 
+    @NotBlank
     private String password;
 
     public MemberPwChangeMessage() {

@@ -2,12 +2,14 @@ package com.WWI16AMA.backend_api.Member;
 
 import com.WWI16AMA.backend_api.Account.ProtectedAccount.Account;
 import com.WWI16AMA.backend_api.Billing.BillingTask;
+import com.WWI16AMA.backend_api.PilotLog.PilotLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -84,6 +86,11 @@ public class MemberController {
         }
         mem.setMemberBankingAccount(new Account());
 
+        if (mem.getPilotLog() != null) {
+            throw new IllegalArgumentException("PilotLog shall be null to create a new member");
+        }
+        mem.setPilotLog(new PilotLog());
+
         checkPassword(mem.getPassword());
         mem.setPassword(passwordEncoder.encode(mem.getPassword()));
 
@@ -108,7 +115,7 @@ public class MemberController {
 
         Member dbMember = memberRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Member with the id " + id + " does not exist"));
-        memberRepository.delete(dbMember);
+        dbMember.delete(memberRepository);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -119,9 +126,12 @@ public class MemberController {
 
         Member foundMember = memberRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Member with the id " + " does not exist"));
-        mem.setMemberBankingAccount(foundMember.getMemberBankingAccount());
+
         mem.setId(id);
+        mem.setMemberBankingAccount(foundMember.getMemberBankingAccount());
+        mem.setPilotLog(foundMember.getPilotLog());
         mem.setPassword(foundMember.getPassword());
+        mem.setServices(foundMember.getServices());
 
         if (mem.getOffices() != null) {
             List<Office> offices = mem.getOffices()
@@ -142,7 +152,7 @@ public class MemberController {
 
     @PreAuthorize("#id == principal.id")
     @PutMapping(value = "/{id}/changeContactDetails")
-    public ResponseEntity<Void> updateContactDetails(@RequestBody MemberContactDetails mcd, @PathVariable int id) {
+    public ResponseEntity<Void> updateContactDetails(@Validated @RequestBody MemberContactDetails mcd, @PathVariable int id) {
 
         Member mem = memberRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Member with the id " + " does not exist"));
@@ -158,13 +168,13 @@ public class MemberController {
 
     @PreAuthorize("#id == principal.id")
     @PutMapping(value = "{id}/changePasswordAsMember")
-    public ResponseEntity<Void> updatePassword(@RequestBody MemberPwChangeMessage msg, @PathVariable int id) {
+    public ResponseEntity<Void> updatePassword(@Validated @RequestBody MemberPwChangeMessage msg, @PathVariable int id) {
 
         Member mem = memberRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Kein Member gefunden"));
 
         if (msg.getPassword() == null || !passwordEncoder.matches(msg.getPassword(), mem.getPassword())) {
-            throw new IllegalArgumentException("Das alte Passwort ist nicht korrekt oder nicht angegeben.");
+            throw new IllegalArgumentException("Das alte Passwort ist nicht korrekt!");
         }
 
         checkPassword(msg.getNewPassword());

@@ -54,8 +54,16 @@ public class AccountController {
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER', 'SYSTEMADMINISTRATOR')")
     @GetMapping(path = "/vereinskonto")
     public VereinsAccount getVereinsAccount() {
-        return (VereinsAccount) accountRepository.findById(VereinsAccount.getInstance(accountRepository).getId())
-                .orElseThrow(() -> new IllegalStateException("Das Vereinskonto  ist verlorgen gegangen"));
+        return VereinsAccount.getInstance(accountRepository);
+    }
+
+    @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'KASSIERER', 'SYSTEMADMINISTRATOR')")
+    @PostMapping(path = "/vereinskonto/transactions")
+    public Transaction makeExtTransactionVereinsacc(@RequestBody VereinsKontoTransaction transaction) {
+        VereinsAccount account = VereinsAccount.getInstance(accountRepository);
+        transaction.setMemberAccount(null);
+        publisher.publishEvent(new ExtTransactionEvent(account, transaction));
+        return transaction;
     }
 
     @JsonPropertyOrder({"id", "balance"})

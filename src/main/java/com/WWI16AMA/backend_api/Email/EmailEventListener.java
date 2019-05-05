@@ -9,9 +9,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import javax.mail.MessagingException;
-import java.util.Locale;
-
 @Component
 public class EmailEventListener {
 
@@ -26,27 +23,32 @@ public class EmailEventListener {
 
     @Async
     @EventListener
-    public void sendEmail(final EmailNotificationEvent emailNotificationEvent) {
+    public void sendEmail(final EmailNotificationEvent ev) {
 
         if (mailEnabled) {
-            Member member = emailNotificationEvent.getMember();
-            Locale locale = new Locale("de");
-            String contact = "Jörg Steinfeld";
+            Member member = ev.getMember();
 
+            if (ev.getType().equals(EmailNotificationEvent.Type.AUFWENDUNGEN)) {
+                service.sendBillingNotification(member, ev.getTransaction());
+            }
 
-            if (emailNotificationEvent.getType().equals(EmailNotificationEvent.Type.AUFWENDUNGEN)) {
-                String subjectContent = "des Mitgliedbeitrages";
-                try {
-                    service.sendBillingNotification(member, locale, emailNotificationEvent.getTransaction());
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                }
+            if (ev.getType().equals(EmailNotificationEvent.Type.AUFWANDSENTSCHÄDIGUNG)) {
+                service.sendGutschriftNotification(member, ev.getTransaction());
+            }
+
+            if (ev.getType().equals(EmailNotificationEvent.Type.TANKEN)) {
+                service.sendTankNotification(member, ev.getTransaction(), ev.getPlane());
+            }
+
+            if (ev.getType().equals(EmailNotificationEvent.Type.LOW_BALANCE)) {
+                service.sendLowBalanceNotification(member, ev.getTransaction());
             }
 
         } else {
             System.out.print("Der Mailversand ist deaktiviert. ");
-            System.out.println("Es wäre eine Mail an "
-                    + emailNotificationEvent.getMember().getEmail()
+            System.out.println("Es wäre eine Mail vom Typ "
+                    + ev.getType().toString()
+                    + " an " + ev.getMember().getEmail()
                     + " geschickt worden.");
         }
     }

@@ -12,6 +12,7 @@ public class MemberView {
     private String lastName;
     private Integer memberBankingAccountId;
     private List<Office> offices;
+    private double sumCredits;
 
     public MemberView() {
     }
@@ -22,6 +23,7 @@ public class MemberView {
         this.lastName = mem.getLastName();
         this.memberBankingAccountId = mem.getMemberBankingAccount().getId();
         this.offices = mem.getOffices();
+        this.sumCredits = mem.getSumCredits();
     }
 
     public int getId() {
@@ -42,5 +44,9 @@ public class MemberView {
 
     public List<Office> getOffices() {
         return offices;
+    }
+
+    public double getSumCredits() {
+        return sumCredits;
     }
 }

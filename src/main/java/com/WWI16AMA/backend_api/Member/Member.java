@@ -53,6 +53,7 @@ public class Member {
     @NotNull
     private boolean admissioned;
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"balance", "transactions"})
     @JoinColumn(name = "account_id")
@@ -61,15 +62,20 @@ public class Member {
     @ManyToMany
     private List<Office> offices;
 
+    @NotNull
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "member_id")
     private List<Service> services = new ArrayList<>();
 
+    @NotNull
     @OneToMany(cascade = {CascadeType.ALL})
     private List<FlightAuthorization> flightAuthorization = new ArrayList<>();
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private PilotLog pilotLog;
+    @JsonIgnore
+    private boolean isDeleted;
 
     public Member() {
 
@@ -111,7 +117,6 @@ public class Member {
         this.flightAuthorization = member.getFlightAuthorization();
         this.pilotLog = member.getPilotLog();
     }
-
 
     public Integer getId() {
         return id;
@@ -229,6 +234,17 @@ public class Member {
         this.services = services;
     }
 
+    public double getSumCredits() {
+
+        double sumCredits = 0.00;
+
+        List<Service> Services = this.getServices();
+        for (Service service : Services) {
+            sumCredits = sumCredits + service.getGutschrift();
+        }
+        return sumCredits;
+    }
+
     public List<FlightAuthorization> getFlightAuthorization() {
         return flightAuthorization;
     }
@@ -239,6 +255,20 @@ public class Member {
 
     public PilotLog getPilotLog() {
         return pilotLog;
+    }
+
+    public void setPilotLog(PilotLog pilotLog) {
+        this.pilotLog = pilotLog;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void delete(MemberRepository mr) {
+        if (isDeleted) throw new IllegalStateException("This Entity is already deleted");
+        this.isDeleted = true;
+        mr.save(this);
     }
 
     public enum Status {

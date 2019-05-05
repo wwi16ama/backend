@@ -1,7 +1,9 @@
 package com.WWI16AMA.backend_api.Email;
 
 import com.WWI16AMA.backend_api.Account.Transaction;
+import com.WWI16AMA.backend_api.Member.Gender;
 import com.WWI16AMA.backend_api.Member.Member;
+import com.WWI16AMA.backend_api.Plane.Plane;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Locale;
 
 @Service
@@ -33,35 +36,82 @@ public class EmailService {
     private TemplateEngine htmlTemplateEngine;
 
 
-    public void sendBillingNotification(
-            final Member member, Locale locale, Transaction transaction)
-            throws MessagingException {
+    public void sendBillingNotification(Member member, Transaction transaction) {
 
-        final MultipartFile multipartFile = getLogo();
+        String subject = "Abbuchung Ihres Mitgliedsbeitrages";
+        String template = "billing-email.html";
 
-        Context billingCtx = prepareBasicData(locale, member, multipartFile);
-        billingCtx.setVariable("amount", formatAmount(transaction.getAmount()));
+        Context ctx = new Context(new Locale("de"));
+        ctx.setVariable("amount", formatAmount(transaction.getAmount()));
 
-        final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
-        final MimeMessageHelper message =
-                new MimeMessageHelper(mimeMessage, true, "UTF-8"); // true = multipart
-        message.setSubject("Abbuchung Ihres Mitgliedsbeitrages");
-        message.setFrom("Flugverein Reilingen <flugverein@reilingen.com>");
-        message.setTo(member.getEmail());
+        sendMail(subject, ctx, template, member);
+    }
 
-        final String htmlContent = this.htmlTemplateEngine.process("billing-email.html", billingCtx);
-        message.setText(htmlContent, true); // true = isHtml
+    public void sendGutschriftNotification(Member member, Transaction transaction) {
 
-        InputStreamSource imageSource = null;
+        String subject = "Auszahlung für getätigte Aufwände";
+        String template = "gutschrift-email.html";
 
+        Context ctx = new Context(new Locale("de"));
+        ctx.setVariable("amount", formatAmount(transaction.getAmount()));
+
+        sendMail(subject, ctx, template, member);
+    }
+
+    public void sendTankNotification(Member member, Transaction transaction, Plane plane) {
+
+        String subject = "Erstattung Tankkosten";
+        String template = "betankung-email.html";
+
+        Context ctx = new Context(new Locale("de"));
+        ctx.setVariable("amount", formatAmount(transaction.getAmount()));
+        ctx.setVariable("planeName", plane.getName());
+
+        sendMail(subject, ctx, template, member);
+    }
+
+    public void sendLowBalanceNotification(Member member, Transaction transaction) {
+
+        String subject = "Erinnerung: Niedriger Kontostand";
+        String template = "low-balance-email.html";
+
+        Context ctx = new Context(new Locale("de"));
+        ctx.setVariable("id", member.getId());
+        ctx.setVariable("geehrt", member.getGender().equals(Gender.MALE) ? "geehrter" : "geehrte");
+
+        sendMail(subject, ctx, template, member);
+    }
+
+    private void sendMail(String subject, Context ctx, String template, Member member) {
         try {
-            imageSource = new ByteArrayResource(multipartFile.getBytes());
+
+            ctx.setVariable("anrede", member.getGender().equals(Gender.MALE) ? "Herr" : "Frau");
+            ctx.setVariable("lastName", member.getLastName());
+
+            final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
+            final MimeMessageHelper message; // true = multipart
+            message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            message.setSubject(subject);
+            message.setFrom("Flugverein Reilingen <flugverein@reilingen.com>");
+            message.setTo(member.getEmail());
+
+            MultipartFile multipartFile = getLogo();
+            ctx.setVariable("imageResourceName", multipartFile.getName());
+
+            String htmlContent = this.htmlTemplateEngine.process(template, ctx);
+            message.setText(htmlContent, true); // true = isHtml
+
+            InputStreamSource imageSource = new ByteArrayResource(multipartFile.getBytes());
+
+            message.addInline(multipartFile.getName(), imageSource, multipartFile.getContentType());
+            this.javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        message.addInline(multipartFile.getName(), imageSource, multipartFile.getContentType());
-
-        this.javaMailSender.send(mimeMessage);
 
     }
 
@@ -84,20 +134,9 @@ public class EmailService {
         return multipartFile;
     }
 
-    private Context prepareBasicData(Locale locale, Member member, MultipartFile multipartFile) {
-        final Context ctx = new Context(locale);
-        ctx.setVariable("lastName", member.getLastName());
-        ctx.setVariable("imageResourceName", multipartFile.getName());
-
-        return ctx;
-    }
-
     private String formatAmount(double amount) {
-        if (amount < 0) {
-            return (-amount) + "0"; // Negatives Vorzeichen wird für die E-Mail entfernt.
-        } else {
-            return amount + "0";
-        }
+        amount = Math.abs(amount);
+        return BigDecimal.valueOf(amount).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString();
     }
 
 }

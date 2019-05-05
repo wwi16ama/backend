@@ -5,6 +5,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +16,15 @@ public class PilotLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "pilot_log_id")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<PilotLogEntry> pilotLogEntries = new ArrayList<>();
+
+    public PilotLog() {
+
+    }
 
     public Integer getId() {
         return id;

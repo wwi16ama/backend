@@ -5,15 +5,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Entity
+@ValidStartAndEndcount
 public class PlaneLogEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotNull
+    @Past
     private LocalDateTime refuelDateTime;
     @NotNull
     private Integer memberId;
@@ -30,7 +34,7 @@ public class PlaneLogEntry {
     @PositiveOrZero
     private float fuelPrice;
 
-    public PlaneLogEntry(LocalDateTime refuelDateTime, @NotNull Integer memberId, @NotNull String location, @NotNull float startCount, @NotNull float endCount, @NotNull float fuelPrice) {
+    public PlaneLogEntry(@NotNull LocalDateTime refuelDateTime, @NotNull Integer memberId, @NotNull String location, @NotNull float startCount, @NotNull float endCount, @NotNull float fuelPrice) {
         this.refuelDateTime = refuelDateTime;
         this.location = location;
         this.startCount = startCount;

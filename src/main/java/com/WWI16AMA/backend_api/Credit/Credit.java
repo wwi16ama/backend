@@ -3,6 +3,7 @@ package com.WWI16AMA.backend_api.Credit;
 import com.WWI16AMA.backend_api.Service.ServiceName;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Credit {
@@ -11,9 +12,12 @@ public class Credit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Enumerated
+    @NotNull
     private ServiceName serviceName;
+    @NotNull
     private double amount;
     @Enumerated
+    @NotNull
     private Period period;
 
     public Credit() {

@@ -36,11 +36,12 @@ public class Plane {
     @PositiveOrZero
     @Max(999)
     private double pricePerFlightMinute;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "plane_id")
     private List<PlaneLogEntry> planeLog;
+    @JsonIgnore
+    private boolean isDeleted;
 
     Plane() {
     }
@@ -138,5 +139,14 @@ public class Plane {
         this.planeLog = entries;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void delete(PlaneRepository pr) {
+        if (isDeleted) throw new IllegalStateException("This Entity is already deleted");
+        this.isDeleted = true;
+        pr.save(this);
+    }
 
 }

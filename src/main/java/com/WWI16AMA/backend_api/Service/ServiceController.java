@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.temporal.ChronoUnit;
@@ -39,7 +40,8 @@ public class ServiceController {
 
     @PreAuthorize("hasAnyRole('VORSTANDSVORSITZENDER', 'SYSTEMADMINISTRATOR')")
     @PostMapping(value = "/{id}")
-    public ResponseEntity<Void> addDailyService(@PathVariable Integer id, @RequestBody Service service) {
+    public ResponseEntity<Void> addDailyService(@PathVariable Integer id, @Validated @RequestBody Service service) {
+
 
         Member member = memberRepository
                 .findById(id)
@@ -73,7 +75,8 @@ public class ServiceController {
         double amount = creditRepository.findCreditByServiceName(service.getName())
                 .orElseThrow(() -> new IllegalArgumentException("Keine Gebühr zum Service gefunden"))
                 .getAmount();
-        double gutschrift = isYearly ? amount : amount * ChronoUnit.DAYS.between(service.getStartDate(), service.getEndDate());
+        // Ein Tagesservice hat gleiches Start- und Enddate, bei .between(d1, d2) is d2 aber exklusiv
+        double gutschrift = isYearly ? amount : amount * ChronoUnit.DAYS.between(service.getStartDate(), service.getEndDate().plusDays(1));
         Service dailyService = new Service(service.getName(), service.getStartDate(), service.getEndDate(), gutschrift);
         member.getServices().add(dailyService);
         memberRepository.save(member);

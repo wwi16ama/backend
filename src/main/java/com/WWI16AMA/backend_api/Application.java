@@ -14,6 +14,7 @@ import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
 import com.WWI16AMA.backend_api.Service.Service;
 import com.WWI16AMA.backend_api.Service.ServiceName;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -41,6 +42,12 @@ import static com.WWI16AMA.backend_api.Billing.BillingTask.getNextBillingDate;
 @EnableScheduling
 @EnableAsync
 public class Application extends SpringBootServletInitializer {
+
+    // nimmt den Wert aus der application.properties
+    @Value("${wwi16ama.vorsitzender.passwort:koala}")
+    private String vorsitzenderPw;
+    @Value("${wwi16ama.generate-users:true}")
+    private boolean generateSomeUsers;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -72,24 +79,6 @@ public class Application extends SpringBootServletInitializer {
         flList.add(fl1);
         flList.add(fl2);
 
-        Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
-        Member mem = new Member("Karl", "Hansen",
-                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.ACTIVE,
-                "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
-                enc.encode("koala"));
-        // publisher.publishEvent(new EmailNotificationEvent(mem));
-        mem.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.VORSTANDSVORSITZENDER)).collect(Collectors.toList()));
-        mem.setFlightAuthorization(flList);
-        mem.setId(9999);
-        /**
-         * Hier funktioniert irgendwie das cascading nicht,
-         * deshalb wird hier der Acc einmalig händisch ge-
-         * speichert
-         */
-        accountRepository.save(mem.getMemberBankingAccount());
-        memberRepository.save(mem);
-        generateSomePilotLogEntries(mem);
-        System.out.println("Vorstandsvorsitzender:\t" + mem.getId());
 
         Address adr1 = new Address("25524", "Itzehoe", "Twietbergstraße 53");
         Member mem1 = new Member("Karl", "Hansen",
@@ -116,7 +105,7 @@ public class Application extends SpringBootServletInitializer {
         Address adr3 = new Address("12345", "Hamburg", "Hafenstraße 5");
         Member mem3 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.ACTIVE,
-                "kurt.krömer@mail.com", adr, "DE12345678901234567890", false,
+                "kurt.kroemer@mail.com", adr3, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem3.setAddress(adr3);
         generateSomePilotLogEntries(mem3);
@@ -126,13 +115,13 @@ public class Application extends SpringBootServletInitializer {
         Address adr4 = new Address("22345", "Hamburg", "Hafenstraße 5");
         Member mem4 = new Member("Kurt", "Krömer",
                 LocalDate.of(1975, Month.DECEMBER, 2), Gender.MALE, Member.Status.PASSIVE,
-                "kurt.krömer@mail.com", adr, "DE22345678902234567890", false,
+                "kurt.kroemer@mail.com", adr4, "DE22345678902234567890", false,
                 enc.encode("koala"));
         mem4.setAddress(adr4);
         generateSomePilotLogEntries(mem4);
         memberRepository.save(mem4);
         System.out.println("passive MemberID:\t" + mem4.getId());
-        return Arrays.asList(mem, mem1, mem2, mem3, mem4);
+        return Arrays.asList(mem1, mem2, mem3, mem4);
     }
 
     private static void generateSomePlanes(PlaneRepository planeRepository) throws Exception {
@@ -140,16 +129,16 @@ public class Application extends SpringBootServletInitializer {
         FlightAuthorization.Authorization auth = FlightAuthorization.Authorization.PPLA;
         FlightAuthorization.Authorization auth1 = FlightAuthorization.Authorization.PPLB;
         Plane plane1 = new Plane("D-ERFI", "Diamond DA-40 TDI", auth, "Halle 1",
-                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                new URL("https://wwi16ama.feste-ip.net/Bilder/TDI.png"),
                 4.60, 1.60);
         Plane plane2 = new Plane("D-EJEK", "DR 400 Remorqueur", auth, "Halle 1",
-                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                new URL("https://wwi16ama.feste-ip.net/Bilder/Remo.png"),
                 6.0, 1.8);
         Plane plane3 = new Plane("D-KNIF", "SF25C Falke", auth1, "Halle 2",
-                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                new URL("https://wwi16ama.feste-ip.net/Bilder/Falke.png"),
                 2.40, 0.65);
         Plane plane4 = new Plane("D-KMGA", "Diamond HK36 Dimona", auth1, "Halle 2",
-                new URL("https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/03/23/17/electricplane.jpg?w968h681"),
+                new URL("https://wwi16ama.feste-ip.net/Bilder/Dimona.png"),
                 3.60, 0.85);
         Plane[] planes = {plane1, plane2, plane3, plane4};
         planeRepository.saveAll(Arrays.asList(planes));
@@ -181,13 +170,13 @@ public class Application extends SpringBootServletInitializer {
         Member member = memberRepository.findAll().iterator().next();
         Plane plane = planeRepository.findById(1).get();
 
-        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 69, 88, 5);
-        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 88, 97, 10);
-        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 97, 150, 30);
-        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 150, 896, 5000);
-        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 896, 1000, 200);
-        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1000, 1001, 2);
-        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1001, 2000, 800);
+        PlaneLogEntry e7 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 2000, 1001, 800);
+        PlaneLogEntry e6 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1001, 1000, 2);
+        PlaneLogEntry e5 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 1000, 896, 200);
+        PlaneLogEntry e4 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 896, 150, 5000);
+        PlaneLogEntry e3 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 150, 97, 30);
+        PlaneLogEntry e2 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 97, 87, 10);
+        PlaneLogEntry e1 = new PlaneLogEntry(LocalDateTime.now(), member.getId(), "Reilingen", 87, 70, 5);
         PlaneLogEntry[] entries = {e1, e2, e3, e4, e5, e6, e7};
 
         for (PlaneLogEntry entry : entries) {
@@ -222,6 +211,30 @@ public class Application extends SpringBootServletInitializer {
         }
     }
 
+    private Member createSuperUser(MemberRepository memberRepository, List<Office> offices, PasswordEncoder enc, AccountRepository accountRepository) {
+
+        Address adr = new Address("25524", "Itzehoe", "Twietbergstraße 53");
+        Member mem = new Member("Karl", "Hansen",
+                LocalDate.of(1996, Month.DECEMBER, 21), Gender.MALE, Member.Status.ACTIVE,
+                "karl.hansen@mail.com", adr, "DE12345678901234567890", false,
+                enc.encode(vorsitzenderPw));
+        // publisher.publishEvent(new EmailNotificationEvent(mem));
+        mem.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.VORSTANDSVORSITZENDER)
+                || of.getTitle().equals(Office.Title.SYSTEMADMINISTRATOR)).collect(Collectors.toList()));
+        mem.setId(9999);
+        /**
+         * Hier funktioniert irgendwie das cascading nicht,
+         * deshalb wird hier der Acc einmalig händisch ge-
+         * speichert
+         */
+        accountRepository.save(mem.getMemberBankingAccount());
+        generateSomePilotLogEntries(mem);
+        memberRepository.save(mem);
+        System.out.println("Vorstandsvorsitzender:\t" + mem.getId());
+
+        return mem;
+    }
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(Application.class);
@@ -249,22 +262,26 @@ public class Application extends SpringBootServletInitializer {
 
             List<Office> offices = initOfficeTable();
             officeRepository.saveAll(offices);
+            Member su = createSuperUser(memberRepository, offices, passwordEncoder, accountRepository);
 
-            List<Member> memberList = generateSomeMembers(memberRepository, offices, passwordEncoder, accountRepository);
             generateSomePlanes(planeRepository);
             generateSomeFees(feeRepository);
             generateSomeCredits(creditRepository);
-            generateSomePlaneLogs(planeRepository, memberRepository);
-            generateSomeServices(memberRepository, creditRepository);
 
-            BillingTask bt = new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
-            memberList.stream().forEach(bt::calculateEntranceFee);
+            if (generateSomeUsers) {
+                List<Member> memberList = generateSomeMembers(memberRepository, offices, passwordEncoder, accountRepository);
+                generateSomePlaneLogs(planeRepository, memberRepository);
+                generateSomeServices(memberRepository, creditRepository);
+                BillingTask bt = new BillingTask(feeRepository, memberRepository, publisher);
+                memberList.stream().forEach(bt::calculateEntranceFee);
+                bt.calculateEntranceFee(su);
+            }
         };
     }
 
     @Bean
     public BillingTask startBillingTask(AccountRepository accountRepository, FeeRepository feeRepository, MemberRepository memberRepository, ApplicationEventPublisher publisher) {
 
-        return new BillingTask(accountRepository, feeRepository, memberRepository, publisher);
+        return new BillingTask(feeRepository, memberRepository, publisher);
     }
 }

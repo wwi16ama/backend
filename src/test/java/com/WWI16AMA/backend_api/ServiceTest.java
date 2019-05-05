@@ -80,7 +80,7 @@ public class ServiceTest {
                 .andExpect(jsonPath("$[0].startDate").value(service.getStartDate().toString()))
                 .andExpect(jsonPath("$[0].endDate").value(service.getEndDate().toString()))
                 .andExpect(jsonPath("$[0].gutschrift").value(cr.getAmount()
-                        * (double) ChronoUnit.DAYS.between(service.getStartDate(), service.getEndDate()) + ""));
+                        * (double) ChronoUnit.DAYS.between(service.getStartDate(), service.getEndDate().plusDays(1)) + ""));
 
         cr = crRep.findCreditByServiceName(snYearly)
                 .orElseThrow(() -> new NoSuchElementException("Hier ist ein Credit verloren gegangen"));

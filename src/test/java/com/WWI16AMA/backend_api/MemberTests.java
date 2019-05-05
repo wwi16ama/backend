@@ -116,6 +116,7 @@ public class MemberTests {
         mem.setPassword(klartextPw);
 
         mem.setMemberBankingAccount(null);
+        mem.setPilotLog(null);
 
         Office[] off = {new Office(Office.Title.FLUGWART), new Office(Office.Title.KASSIERER)};
         mem.setOffices(asList(off));
