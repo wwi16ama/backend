@@ -8,7 +8,6 @@ import com.WWI16AMA.backend_api.Credit.Period;
 import com.WWI16AMA.backend_api.Fee.Fee;
 import com.WWI16AMA.backend_api.Fee.FeeRepository;
 import com.WWI16AMA.backend_api.Member.*;
-import com.WWI16AMA.backend_api.PilotLog.PilotLogEntry;
 import com.WWI16AMA.backend_api.Plane.Plane;
 import com.WWI16AMA.backend_api.Plane.PlaneRepository;
 import com.WWI16AMA.backend_api.PlaneLog.PlaneLogEntry;
@@ -87,7 +86,7 @@ public class Application extends SpringBootServletInitializer {
                 enc.encode("koala"));
         // publisher.publishEvent(new EmailNotificationEvent(mem1));
         mem1.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.KASSIERER)).collect(Collectors.toList()));
-        generateSomePilotLogEntries(mem1);
+        // generateSomePilotLogEntries(mem1);
         memberRepository.save(mem1);
         System.out.println("Kassierer:\t\t" + mem1.getId());
 
@@ -98,7 +97,7 @@ public class Application extends SpringBootServletInitializer {
                 enc.encode("koala"));
         // publisher.publishEvent(new EmailNotificationEvent(mem2));
         mem2.setOffices(offices.stream().filter((of) -> of.getTitle().equals(Office.Title.FLUGWART)).collect(Collectors.toList()));
-        generateSomePilotLogEntries(mem2);
+        // generateSomePilotLogEntries(mem2);
         memberRepository.save(mem2);
         System.out.println("Flugwart:\t\t" + mem2.getId());
 
@@ -108,7 +107,7 @@ public class Application extends SpringBootServletInitializer {
                 "kurt.kroemer@mail.com", adr3, "DE12345678901234567890", false,
                 enc.encode("koala"));
         mem3.setAddress(adr3);
-        generateSomePilotLogEntries(mem3);
+        // generateSomePilotLogEntries(mem3);
         memberRepository.save(mem3);
         System.out.println("active MemberID:\t" + mem3.getId());
 
@@ -118,7 +117,7 @@ public class Application extends SpringBootServletInitializer {
                 "kurt.kroemer@mail.com", adr4, "DE22345678902234567890", false,
                 enc.encode("koala"));
         mem4.setAddress(adr4);
-        generateSomePilotLogEntries(mem4);
+        // generateSomePilotLogEntries(mem4);
         memberRepository.save(mem4);
         System.out.println("passive MemberID:\t" + mem4.getId());
         return Arrays.asList(mem1, mem2, mem3, mem4);
@@ -187,29 +186,29 @@ public class Application extends SpringBootServletInitializer {
 
     }
 
-    private static void generateSomePilotLogEntries(Member member) {
-        PilotLogEntry ple1 = new PilotLogEntry("D-ERFI", "Reilingen", LocalDateTime.of(2019, Month.FEBRUARY,
-                15, 10, 30), "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
-                15, 10, 45), true, 1);
-        ple1.setFlightPrice(30.0);
-        PilotLogEntry ple2 = new PilotLogEntry("D-EJEK", "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
-                20, 10, 00), "Berlin", LocalDateTime.of(2019, Month.FEBRUARY,
-                20, 13, 45), true, 2);
-        ple2.setFlightPrice(15.0);
-        PilotLogEntry ple3 = new PilotLogEntry("D-EJEK", "Berlin", LocalDateTime.of(2019, Month.MARCH,
-                03, 10, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
-                03, 14, 30), true, 3);
-        ple3.setFlightPrice(22.5);
-        PilotLogEntry ple4 = new PilotLogEntry("D-EJEK", "Reilingen", LocalDateTime.of(2019, Month.MARCH,
-                20, 12, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
-                20, 13, 00), false, 1);
-        ple4.setFlightPrice(47.11);
+    // private static void generateSomePilotLogEntries(Member member) {
+    //     PilotLogEntry ple1 = new PilotLogEntry("D-ERFI", "Reilingen", LocalDateTime.of(2019, Month.FEBRUARY,
+    //             15, 10, 30), "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
+    //             15, 10, 45), true, 1);
+    //     ple1.setFlightPrice(30.0);
+    //     PilotLogEntry ple2 = new PilotLogEntry("D-EJEK", "Mannheim", LocalDateTime.of(2019, Month.FEBRUARY,
+    //             20, 10, 00), "Berlin", LocalDateTime.of(2019, Month.FEBRUARY,
+    //             20, 13, 45), true, 2);
+    //     ple2.setFlightPrice(15.0);
+    //     PilotLogEntry ple3 = new PilotLogEntry("D-EJEK", "Berlin", LocalDateTime.of(2019, Month.MARCH,
+    //             03, 10, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+    //             03, 14, 30), true, 3);
+    //     ple3.setFlightPrice(22.5);
+    //     PilotLogEntry ple4 = new PilotLogEntry("D-EJEK", "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+    //             20, 12, 00), "Reilingen", LocalDateTime.of(2019, Month.MARCH,
+    //             20, 13, 00), false, 1);
+    //     ple4.setFlightPrice(47.11);
 
-        PilotLogEntry[] pilotLogEntries = {ple1, ple2, ple3, ple4};
-        for (PilotLogEntry entry : pilotLogEntries) {
-            member.getPilotLog().addPilotLogEntry(entry);
-        }
-    }
+    //     PilotLogEntry[] pilotLogEntries = {ple1, ple2, ple3, ple4};
+    //     for (PilotLogEntry entry : pilotLogEntries) {
+    //         member.getPilotLog().addPilotLogEntry(entry);
+    //     }
+    // }
 
     private Member createSuperUser(MemberRepository memberRepository, List<Office> offices, PasswordEncoder enc, AccountRepository accountRepository) {
 
@@ -228,7 +227,7 @@ public class Application extends SpringBootServletInitializer {
          * speichert
          */
         accountRepository.save(mem.getMemberBankingAccount());
-        generateSomePilotLogEntries(mem);
+        // generateSomePilotLogEntries(mem);
         memberRepository.save(mem);
         System.out.println("Vorstandsvorsitzender:\t" + mem.getId());
 
@@ -270,8 +269,8 @@ public class Application extends SpringBootServletInitializer {
 
             if (generateSomeUsers) {
                 List<Member> memberList = generateSomeMembers(memberRepository, offices, passwordEncoder, accountRepository);
-                generateSomePlaneLogs(planeRepository, memberRepository);
-                generateSomeServices(memberRepository, creditRepository);
+                // generateSomePlaneLogs(planeRepository, memberRepository);
+                // generateSomeServices(memberRepository, creditRepository);
                 BillingTask bt = new BillingTask(feeRepository, memberRepository, publisher);
                 memberList.stream().forEach(bt::calculateEntranceFee);
                 bt.calculateEntranceFee(su);
